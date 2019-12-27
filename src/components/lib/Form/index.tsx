@@ -147,45 +147,19 @@ export default class Form extends Component<IFormProps, IState> {
             const field = item.field || `${item.component}_${index}`
             const _porps: any = item.props || {}
             switch (item.component) {
-                case 'Radio': {
-                    vals[field] = _porps.value
-                    // tslint:disable-next-line: align
-                } break
-                case 'Slider': {
-                    vals[field] = _porps.value || _porps.defaultValue || 0
-                    // tslint:disable-next-line: align
-                } break
-                case 'Colors': {
-                    vals[field] = _porps.initColor || ''
-                    // tslint:disable-next-line: align
-                } break
-                case 'CheckBox': {
-                    vals[field] = _porps.value || []
-                    // tslint:disable-next-line: align
-                } break
-                case 'LUpload': {
-                    vals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : '')
-                    // tslint:disable-next-line: align
-                } break
-                case 'RadioGroup': {
-                    vals[field] = isUndefined(_porps.value) ? '' : _porps.value
-                    // tslint:disable-next-line: align
-                } break
-                case 'ImagePicker': {
-                    vals[field] = _porps.value || []
-                    // tslint:disable-next-line: align
-                } break
-                case 'Carousel': {
-                    vals[field] = _porps.value || []
-                    // tslint:disable-next-line: align
-                } break
-                case 'Map': {
-                    vals[field] = _porps.value || {}
-                    // tslint:disable-next-line: align
-                } break
-                default: {
-                    vals[field] = _porps.value || ''
-                }
+                // eslint-disable-next-line no-lone-blocks
+                case 'Radio': vals[field] = _porps.value; break
+                case 'Slider':
+                    vals[field] = _porps.value || _porps.defaultValue || 0; break
+                case 'Colors':
+                    vals[field] = _porps.initColor || ''; break
+                case 'CheckBox': vals[field] = _porps.value || []; break
+                case 'LUpload': vals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : ''); break
+                case 'RadioGroup': vals[field] = isUndefined(_porps.value) ? '' : _porps.value; break
+                case 'ImagePicker': vals[field] = _porps.value || []; break
+                case 'Carousel': vals[field] = _porps.value || []; break
+                case 'Map': vals[field] = _porps.value || {}; break
+                default: vals[field] = _porps.value || ''
             }
 
             childs.push({
@@ -231,49 +205,17 @@ export default class Form extends Component<IFormProps, IState> {
                     extend: item.extend
                 }
                 switch (item.component) {
-                    case 'Radio': {
-                        vals[field] = _porps.value
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'Slider': {
-                        vals[field] = _porps.value || _porps.defaultValue || 0
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'Colors': {
-                        vals[field] = _porps.initColor || ''
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'LUpload': {
-                        vals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : '')
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'ImagePicker': {
-                        vals[field] = _porps.value || []
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'Carousel': {
-                        vals[field] = _porps.value || []
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'RadioGroup': {
-                        vals[field] = isUndefined(_porps.value) ? '' : _porps.value
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'CheckBox': {
-                        vals[field] = _porps.value || []
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'RangePicker': {
-                        vals[field] = _porps.value || []
-                        // tslint:disable-next-line: align
-                    } break
-                    case 'Map': {
-                        vals[field] = _porps.value || {}
-                        // tslint:disable-next-line: align
-                    } break
-                    default: {
-                        vals[field] = _porps.value || ''
-                    }
+                    case 'Radio': vals[field] = _porps.value; break
+                    case 'Slider': vals[field] = _porps.value || _porps.defaultValue || 0; break
+                    case 'Colors': vals[field] = _porps.initColor || ''; break
+                    case 'LUpload': vals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : ''); break
+                    case 'ImagePicker': vals[field] = _porps.value || []; break
+                    case 'Carousel': vals[field] = _porps.value || []; break
+                    case 'RadioGroup': vals[field] = isUndefined(_porps.value) ? '' : _porps.value; break
+                    case 'CheckBox': vals[field] = _porps.value || []; break
+                    case 'RangePicker': vals[field] = _porps.value || []; break
+                    case 'Map': vals[field] = _porps.value || {}; break
+                    default: vals[field] = _porps.value || ''
                 }
                 return
             }
@@ -475,7 +417,7 @@ export default class Form extends Component<IFormProps, IState> {
                     <div className={getClassName(`${prefixClass}__list flex_justify`, className)} key={field}>
                         <div className="flex">
                             {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
-                            <div className="flex_1">
+                            <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
                                     key={field}
@@ -906,7 +848,7 @@ export default class Form extends Component<IFormProps, IState> {
     private getFieldValue(params?: string[]): IValue {
         const { childs } = this.state
         const val: IValue = {}
-        childs.map((item: IFormChild, index: number) => {
+        childs.forEach((item: IFormChild, index: number) => {
             if (params) {
                 params.map((i: string) => {
                     if (item.field === i) {
@@ -927,33 +869,13 @@ export default class Form extends Component<IFormProps, IState> {
             // tslint:disable-next-line: no-shadowed-variable
             const props: any = item.props || {}
             switch (item.component) {
-                case 'Radio': {
-                    vals[field] = props.value
-                    // tslint:disable-next-line: align
-                } break
-                case 'LUpload': {
-                    vals[field] = []
-                    // tslint:disable-next-line: align
-                } break
-                case 'CheckBox': {
-                    vals[field] = []
-                    // tslint:disable-next-line: align
-                } break
-                case 'RangePicker': {
-                    vals[field] = []
-                    // tslint:disable-next-line: align
-                } break
-                case 'Carousel': {
-                    vals[field] = []
-                    // tslint:disable-next-line: align
-                } break
-                case 'ImagePicker': {
-                    vals[field] = props.value ? props.value : []
-                    // tslint:disable-next-line: align
-                } break
-                default: {
-                    vals[field] = props.value ? props.value : ''
-                }
+                case 'Radio': vals[field] = props.value; break
+                case 'LUpload': vals[field] = []; break
+                case 'CheckBox': vals[field] = []; break
+                case 'RangePicker': vals[field] = []; break
+                case 'Carousel': vals[field] = []; break
+                case 'ImagePicker': vals[field] = props.value ? props.value : []; break
+                default: vals[field] = props.value ? props.value : ''
             }
         })
         this.setState({

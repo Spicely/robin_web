@@ -1,9 +1,10 @@
 
 import React, { Component, CSSProperties } from 'react'
 import { PreLoad, browser } from 'muka'
-import { getClassName } from '../utils'
 import { Consumer } from '../ScrollView'
 import styled, { css } from 'styled-components'
+
+type IFitType = 'fill' | 'contain' | 'cover' | 'none' | 'scale-down'
 
 export interface IImageProps {
     className?: string
@@ -12,6 +13,7 @@ export interface IImageProps {
     offsetBottom?: number
     controller?: Element
     loadingIndicatorSource?: string
+    fit?: IFitType
     onClick?: () => void
 }
 
@@ -29,6 +31,7 @@ interface IImageViewProps {
     imgOpacity: boolean
     fadeIn: boolean
     show: boolean
+    fit?: IFitType
 }
 
 const ImageView = styled.img<IImageViewProps>`
@@ -42,6 +45,7 @@ const ImageView = styled.img<IImageViewProps>`
     ${({ fadeIn }) => {
         if (fadeIn) return css`animation: fade-in 1.5s forwards;`
     }}
+    object-fit: ${({ fit }) => fit};
 `
 
 export const setImageLoadingSource = (uri: string) => {
@@ -50,8 +54,9 @@ export const setImageLoadingSource = (uri: string) => {
 
 export default class Image extends Component<IImageProps, IState> {
 
-    public static defaultProps = {
-        offsetBottom: 100
+    public static defaultProps: IImageProps = {
+        offsetBottom: 100,
+        fit: 'fill'
     }
 
     public state = {
@@ -156,7 +161,7 @@ export default class Image extends Component<IImageProps, IState> {
         if (this.controller) {
             top = (this.controller.scrollTop || 0) + browser.GL_SC_HEIGHT
         } else {
-            top = (document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + browser.GL_SC_HEIGHT
+            top = (document.documentElement.scrollTop || document.body.scrollTop) + browser.GL_SC_HEIGHT
         }
         if (!animation && this.imageNode && this.imageNode.offsetTop - (offsetBottom || 0) - top <= 0) {
             const loading = new PreLoad([src])

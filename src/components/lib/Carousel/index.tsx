@@ -3,7 +3,7 @@ import { isNumber, isFunction, isNil } from 'lodash'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import Image from '../Image'
-import { getClassName, prefix, CarouselThemeData, getUnit, transition, getRatioUnit, Color } from '../utils'
+import { getClassName, CarouselThemeData, getUnit, transition, getRatioUnit, Color } from '../utils'
 
 export interface ICarouselValueProps {
     url: string
@@ -74,7 +74,6 @@ interface ICarouselDotItemProps {
 }
 
 const CarouselDotItem = styled.div<ICarouselDotItemProps>`
-    background: ${({ carouselTheme, theme, dotColor }) => dotColor || carouselTheme.dotColor || theme.primarySwatch};
     cursor: pointer;
     ${transition(0.3)};
     ${({ dotPos }) => {
@@ -94,9 +93,9 @@ const CarouselDotItem = styled.div<ICarouselDotItemProps>`
             }
         }
     }}
-    ${({ active, carouselTheme, theme }) => {
-        if (active) return css`background: ${carouselTheme.dotColor || theme.primarySwatch};`
-        else return css`background: ${Color.setOpacity(carouselTheme.dotColor || theme.primarySwatch, 0.6).toString()};`
+    ${({ active, carouselTheme, theme, dotColor }) => {
+        if (active) return css`background: ${dotColor || carouselTheme.dotColor || theme.primarySwatch};`
+        else return css`background: ${Color.setOpacity(dotColor || carouselTheme.dotColor || theme.primarySwatch, 0.6).toString()};`
     }}
     ${({ active, dotType, carouselTheme, dotPos }) => {
         if (active && dotType === 'rectangle') {
@@ -257,7 +256,6 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                                                 className={dotClassName}
                                                                 key={index}
                                                                 onClick={this.handleTabIndex.bind(this, index)}
-                                                                style={dotStyle}
                                                             />
                                                         )
                                                     })

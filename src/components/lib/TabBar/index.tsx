@@ -2,7 +2,9 @@ import React, { Component, Children, CSSProperties, cloneElement, createContext 
 import styled, { css } from 'styled-components'
 import { isNil, isFunction } from 'lodash'
 import { Consumer as ThemeConsumer } from '../ThemeProvider'
-import { TabBarThemeData, getUnit, transition, getClassName, getRatioUnit, Color } from '../utils'
+import { TabBarThemeData, getUnit, transition, getClassName, getRatioUnit, Color, ThemeData } from '../utils'
+import { browser } from 'muka'
+import Icon from '../Icon'
 
 type IMode = 'tab' | 'menu'
 
@@ -18,6 +20,7 @@ export interface ITabBarProps {
     tabViewBarClassName?: string
     itemBarClassName?: string
     itemClassName?: string
+    onChange?: (field: number | string) => void
 }
 
 interface IDefaultValue {
@@ -40,7 +43,7 @@ const TabBarView = styled.div<ITabBarViewProps>`
     background: ${({ tabBarTheme }) => tabBarTheme.tabBarColor.toString()};
     ${({ mode, tabBarTheme }) => {
         if (mode === 'tab') return css`width: ${getUnit(tabBarTheme.width)}; height: ${getUnit(tabBarTheme.height)};`
-        if (mode === 'menu') return css`width: 100%; height: 100%;`
+        if (mode === 'menu') return css`width: 100%; height: 100vh;`
     }}
 `
 
@@ -64,6 +67,7 @@ const TabBarItemTabView = styled.div`
 
 interface ITabBarItemScrollViewProps {
     tabBarTheme: TabBarThemeData
+    mode?: IMode
 }
 
 const TabBarItemScrollView = styled.div<ITabBarItemScrollViewProps>`
@@ -71,7 +75,7 @@ const TabBarItemScrollView = styled.div<ITabBarItemScrollViewProps>`
     height: 100%;
     flex-shrink: 0;
     overflow: auto;
-    ${({ tabBarTheme }) => tabBarTheme.tabViewPadding.toString()};
+    ${({ tabBarTheme, mode }) => mode === 'menu' ? 0 : tabBarTheme.tabViewPadding.toString()};
     ${transition(0.5)}
 `
 
@@ -141,7 +145,7 @@ export class TabBarItem extends Component<ITabBarItemProps, any> {
                                         {
                                             icon ? (
                                                 <TabBarIcon className="flex_center">
-                                                    {icon}
+                                                    {this.getTypeIcon(icon, field === val.selected, val.theme, value.theme)}
                                                 </TabBarIcon>
                                             ) : null
                                         }
@@ -155,11 +159,24 @@ export class TabBarItem extends Component<ITabBarItemProps, any> {
             </ThemeConsumer>
         )
     }
+
+    private getTypeIcon = (icon: JSX.Element, selected: boolean, theme: TabBarThemeData, themeData: ThemeData) => {
+        if (icon.type === Icon) {
+            const iconTheme: any = { ...theme.iconTheme }
+            if (selected) {
+                iconTheme.color = theme.itemSelectColor || themeData.primarySwatch
+            }
+            return cloneElement(icon, { theme: iconTheme })
+        } else {
+            return icon
+        }
+    }
 }
 
 interface ITabBarState {
     selected?: number
-    height: number
+    height: number,
+    menuHeight: string | number
     width: number
     activeNum: number
 }
@@ -182,6 +199,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
         selected: undefined,
         width: 0,
         height: 0,
+        menuHeight: '100vh',
         activeNum: 0
     }
 
@@ -189,12 +207,16 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
 
     public render(): JSX.Element {
         const { mode, type, theme, style, children, tabViewClassName, tabViewBarClassName, itemBarClassName, itemClassName } = this.props
-        const { selected, height, width, activeNum } = this.state
+        const { selected, height, width, activeNum, menuHeight } = this.state
         const tabBars: JSX.Element[] = []
         const tabViews: JSX.Element[] = []
         Children.forEach(children, (child: any, index) => {
             if (child && child.type === TabBarItem) {
-                tabBars.push(cloneElement(child, { key: index, field: index, className: getClassName('tab_ev_item', itemClassName) }))
+                tabBars.push(cloneElement(child, {
+                    key: index,
+                    field: index,
+                    className: getClassName(`tab_ev_item${mode === 'menu' ? ' flex_1' : ''}`, itemClassName),
+                }))
                 tabViews.push(child.props.children)
             }
         })
@@ -213,7 +235,10 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                                 mode={mode}
                                 className={mode === 'tab' ? type === 'horizontal' ? 'flex_column' : 'flex' : 'flex_column'}
                                 tabBarTheme={theme || value.theme.tabBarTheme}
-                                style={style}
+                                style={{
+                                    ...style,
+                                    height: mode === 'menu' ? getUnit(menuHeight) : ''
+                                }}
                                 ref={(e) => this.node = e}
                             >
                                 {mode === 'tab' ? (
@@ -236,6 +261,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                                     {
                                         tabViews.map((i, index) => (
                                             <TabBarItemScrollView
+                                                mode={mode}
                                                 className={tabViewClassName}
                                                 tabBarTheme={theme || value.theme.tabBarTheme}
                                                 style={{
@@ -251,7 +277,10 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                                 {mode === 'menu' ? (
                                     <TabBarItemView
                                         type={type}
-                                        className={getClassName(type === 'vertical' ? 'flex_column' : 'flex', itemBarClassName)}
+                                        className={getClassName(`${type === 'vertical' ? 'flex_column' : 'flex'} mk_divider_top`, itemBarClassName)}
+                                        style={{
+                                            minHeight: getUnit(50),
+                                        }}
                                     >
                                         {tabBars}
                                     </TabBarItemView>
@@ -269,6 +298,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
         const itemInfo = this.getSelectedNodeInfo()
         this.setState({
             height: info.height,
+            menuHeight: browser.height,
             width: info.width,
             activeNum: itemInfo
         })
@@ -314,6 +344,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
     }
 
     private handleTabItemChange = (field?: number) => {
+        const { onChange } = this.props
         const { selected } = this.state
         if (selected === field) return
         if (!isNil(field)) {
@@ -325,6 +356,9 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                 height: info.height,
                 activeNum: itemInfo
             })
+            if (isFunction(onChange)) {
+                onChange(field)
+            }
         }
     }
 }

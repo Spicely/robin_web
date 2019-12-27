@@ -1,7 +1,7 @@
 import React, { Component, Fragment, CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import styled, { keyframes } from 'styled-components'
-import { isFunction, isNull, isUndefined, isNumber } from 'lodash'
+import { isFunction, isNull, isUndefined } from 'lodash'
 import { Consumer } from '../ThemeProvider'
 import { getClassName, IStyledProps, DialogThemeData, getRatioUnit, getUnit } from '../utils'
 import Button from '../Button'

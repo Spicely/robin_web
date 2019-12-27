@@ -18,7 +18,7 @@ export interface IRoutes {
 }
 
 export const routes: IRoutes[] = [{
-    component: import('../pages/Home'),
+    component: import('../pages/Index'),
     path: '/'
 },]
 

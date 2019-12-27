@@ -1,9 +1,9 @@
 import React, { Component, MouseEvent, CSSProperties } from 'react'
 import styled, { css } from 'styled-components'
-import { omit, isFunction, isNumber } from 'lodash'
+import { omit, isFunction } from 'lodash'
 import { Consumer } from '../ThemeProvider'
 import Icon from '../Icon'
-import { IStyledProps, transition, ButtonThemeData, getRatioUnit } from '../utils'
+import { IStyledProps, transition, ButtonThemeData, getRatioUnit, getUnit } from '../utils'
 import Color from '../utils/Color'
 
 export type buttonMold = 'circle' | 'error' | 'primary'
@@ -33,8 +33,7 @@ interface IBtnStyleProps extends IStyledProps {
 const Btn = styled.button<IBtnStyleProps>`
     height: ${({ buttonTheme }) => getRatioUnit(buttonTheme.height)};
     transition: all .1s cubic-bezier(0.65, 0.05, 0.36, 1);
-    border: none;
-    border-radius: ${({ buttonTheme, theme }) => buttonTheme.borderRadius ? isNumber(buttonTheme.borderRadius) ? getRatioUnit(buttonTheme.borderRadius) : buttonTheme.borderRadius : isNumber(theme.borderRadius) ? getRatioUnit(theme.borderRadius) : theme.borderRadius};
+    border-radius: ${({ buttonTheme, theme }) => getUnit(buttonTheme.borderRadius, theme.borderRadius)};
     background: initial;
     border: ${() => getRatioUnit(1)} solid #ddd;
     outline: none;
@@ -42,20 +41,21 @@ const Btn = styled.button<IBtnStyleProps>`
     cursor: pointer;
     ${transition(0.5)};
     -webkit-tap-highlight-color: transparent;
-
-    &:hover {
-        border-color: ${({ theme }) => Color.setOpacity(theme.primarySwatch, 0.8).toString()};
-    }
-
+    ${({ buttonTheme }) => {
+        if (buttonTheme.border) return css`${buttonTheme.border.toString()}`;
+        else return css`border: none;`
+    }}
+    
    ${({ theme, buttonTheme, mold }) => {
         if (mold === 'primary') {
             return css`
                 background: ${buttonTheme.buttonColor || theme.primarySwatch};
-                color: #fff;
-                border-color: ${theme.primarySwatch};
+                color:${(buttonTheme.color || Color.hex('#fff')).toString()};
+                border-color: ${buttonTheme.buttonColor || theme.primarySwatch};
                 align-items: center;
                 cursor: pointer;
-                &:hover {
+                :hover {
+                    color: ${Color.setOpacity(buttonTheme.color || Color.hex('#fff'), 0.8).toString()};
                     border-color: ${Color.setOpacity(buttonTheme.buttonColor || theme.primarySwatch, 0.8).toString()};
                     background: ${Color.setOpacity(buttonTheme.buttonColor || theme.primarySwatch, 0.8).toString()};
                 }
@@ -65,10 +65,10 @@ const Btn = styled.button<IBtnStyleProps>`
             return css`
                 color: ${buttonTheme.errorColor || theme.errorColor};
                 border-color: ${buttonTheme.errorColor || theme.errorColor};
-        
-                &:hover {
+                :hover {
+                    color: ${Color.setOpacity(buttonTheme.color || Color.hex('#fff'), 0.8).toString()};
                     border-color: ${buttonTheme.errorColor || theme.errorColor};
-                    background: ${Color.setOpacity(buttonTheme.errorColor || theme.errorColor, 0.4).toString()};
+                    background: ${Color.setOpacity(buttonTheme.errorColor || theme.errorColor, 0.8).toString()};
                 }
             `
         }
@@ -80,15 +80,27 @@ const Btn = styled.button<IBtnStyleProps>`
                 width: ${getRatioUnit(buttonTheme.height)};
                 min-width: initial;
                 background: ${buttonTheme.buttonColor || theme.primarySwatch};
-                color: #fff;
+                color: ${buttonTheme.color ? buttonTheme.color.toString() : '#fff'};
                 fill: #fff;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 border: 0;
+                :hover {
+                    color: ${Color.setOpacity(buttonTheme.color || Color.hex('#fff'), 0.8).toString()};
+                    border-color: ${Color.setOpacity(buttonTheme.buttonColor || theme.primarySwatch, 0.8).toString()};
+                    background: ${Color.setOpacity(buttonTheme.buttonColor || theme.primarySwatch, 0.8).toString()};
+                }
             `
         }
+        return css`
+            color: ${buttonTheme.color ? buttonTheme.color.toString() : Color.hex('#000').toString()};
+            :hover {
+                color: ${Color.setOpacity(buttonTheme.color || Color.hex('#000'), 0.8).toString()};
+                border-color: ${Color.setOpacity(buttonTheme.buttonColor || theme.primarySwatch, 0.8).toString()};
+            }
+        `
     }}
     ${({ disabled, buttonTheme }) => {
         if (disabled) {
@@ -125,7 +137,6 @@ const Btn = styled.button<IBtnStyleProps>`
 export default class Button extends Component<IButtonProps, IState> {
 
     public static defaultProps = {
-        mold: 'default',
         tick: true
     }
 

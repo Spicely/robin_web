@@ -1,10 +1,11 @@
 import ThemeData from './ThemeData'
-import { isNumber } from 'lodash'
+import { isNumber, isNil } from 'lodash'
 export { default as Border, BorderStyle } from './Border'
 export { default as Color } from './Color'
 export { default as Padding } from './Padding'
 export { default as ThemeData } from './ThemeData'
 export { default as AlertThemeData } from './AlertThemeData'
+export { default as CardThemeData } from './CardThemeData'
 export { default as ColorsThemeData } from './ColorsThemeData'
 export { default as CarouselThemeData } from './CarouselThemeData'
 export { default as IconThemeData } from './IconThemeData'
@@ -18,6 +19,7 @@ export { default as NavBarThemeData } from './NavBarThemeData'
 export { default as DialogThemeData } from './DialogThemeData'
 export { default as TagThemeData } from './TagThemeData'
 export { default as UploadThemeData } from './UploadThemeData'
+export { default as TextareaThemeData } from './TextareaThemeData'
 
 export const prefix: string = 'mk_'
 
@@ -42,9 +44,9 @@ export interface IStyledProps {
 
 export const transition = function (time: number, tag?: string[]): string {
     if (tag) {
-        return `transition: ${tag.map((i) => `${i} ${time}s`).toString()}`
+        return `transition: ${tag.map((i) => `${i} ${time}s`).toString()};`
     }
-    return `transition: all ${time}s`
+    return `transition: all ${time}s;`
 }
 
 export const getRatioUnit = function (num: number) {
@@ -52,5 +54,5 @@ export const getRatioUnit = function (num: number) {
 }
 
 export const getUnit = function (value?: number | string, themeValue?: number | string) {
-    return value ? isNumber(value) ? getRatioUnit(value) : value : isNumber(themeValue) ? getRatioUnit(themeValue) : themeValue
+    return !isNil(value) ? isNumber(value) ? getRatioUnit(value) : value : isNumber(themeValue) ? getRatioUnit(themeValue) : themeValue
 }

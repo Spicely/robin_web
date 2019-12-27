@@ -14,6 +14,8 @@ import AlertThemeData from './AlertThemeData'
 import ColorsThemeData from './ColorsThemeData'
 import UploadThemeData from './UploadThemeData'
 import ProgressThemeData from './ProgressThemeData'
+import TextareaThemeData from './TextareaThemeData'
+import CardThemeData from './CardThemeData'
 
 export type IUnit = 'px' | 'rem'
 
@@ -31,6 +33,7 @@ interface IThemeDataProps {
     fontSize?: number
     menuGroupHeight?: number
     inputTheme?: InputThemeData
+    cardTheme?: CardThemeData
     menuTheme?: MenuThemeData
     radioTheme?: RadioThemeData
     tabBarTheme?: TabBarThemeData
@@ -40,6 +43,8 @@ interface IThemeDataProps {
     uploadTheme?: UploadThemeData
     progressTheme?: ProgressThemeData
     navBarTheme?: NavBarThemeData
+    textareaTheme?: TextareaThemeData
+    disabledBorderColor?: Color
 }
 
 export default class ThemeData {
@@ -59,14 +64,17 @@ export default class ThemeData {
             if (data.menuTheme) this.menuTheme = data.menuTheme
             if (data.radioTheme) this.radioTheme = data.radioTheme
             if (data.tabBarTheme) this.tabBarTheme = data.tabBarTheme
+            if (data.textareaTheme) this.textareaTheme = data.textareaTheme
             if (data.alertTheme) this.alertTheme = data.alertTheme
             if (data.carouselTheme) this.carouselTheme = data.carouselTheme
-            if(data.navBarTheme) this.navBarTheme = data.navBarTheme
+            if (data.navBarTheme) this.navBarTheme = data.navBarTheme
             if (data.successColor) this.successColor = data.successColor
             if (data.warningColor) this.warningColor = data.warningColor
             if (data.colorsTheme) this.colorsTheme = data.colorsTheme
             if (data.uploadTheme) this.uploadTheme = data.uploadTheme
+            if (data.cardTheme) this.cardTheme = data.cardTheme
             if (data.progressTheme) this.progressTheme = data.progressTheme
+            if (data.disabledBorderColor) this.disabledBorderColor = data.disabledBorderColor
         }
     }
 
@@ -85,6 +93,8 @@ export default class ThemeData {
     public dividerColor: Color = Color.fromRGB(230, 230, 230)
 
     public fontColor: Color = Color.fromRGB(0, 0, 0)
+
+    public disabledBorderColor: Color = Color.fromRGB(231, 231, 231)
 
     public fontSize: number = 12
 
@@ -115,6 +125,10 @@ export default class ThemeData {
     public uploadTheme: UploadThemeData = new UploadThemeData()
 
     public progressTheme: ProgressThemeData = new ProgressThemeData()
+
+    public textareaTheme: TextareaThemeData = new TextareaThemeData()
+
+    public cardTheme: CardThemeData = new CardThemeData()
 
     public menuGroupHeight: number = 45
 

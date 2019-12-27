@@ -1,10 +1,10 @@
-import React, { Component, MouseEvent, CSSProperties, HtmlHTMLAttributes } from 'react'
+import React, { Component, MouseEvent, CSSProperties, HtmlHTMLAttributes, Fragment } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import { omit } from 'lodash'
 import { IStyledProps, transition, IconThemeData, ThemeData } from '../utils'
 
-export type iconType = 'logo-google' | 'ios-refresh' | 'md-refresh' | 'ios-document' | 'md-document' | 'md-more' | 'md-arrow-down' | 'ios-image' | 'ios-more' | 'ios-paper-plane' | 'ios-arrow-forward' | 'md-close-circle' | 'ios-arrow-down' | 'md-thumbs-up' | 'md-thumbs-down' | 'ios-home' | 'md-home' | 'ios-arrow-dropdown' | 'md-arrow-dropdown' | 'md-volume-mute' | 'ios-volume-high' | 'menu-open' | 'menu-close' | 'ios-close-circle-outline' | 'ios-close' | 'md-close' | 'md-checkmark' | 'ios-checkmark' | 'md-add' | 'ios-add' | 'loading' | 'ios-menu' | 'ios-settings' | 'md-settings' | 'ios-keypad' | 'md-create' | 'ios-arrow-back' | 'md-arrow-back' | 'md-search' | 'ios-search' | 'md-exit' | 'ios-exit' | 'shop' | 'double-arrow-left' | 'double-arrow-right' | 'shopping' | 'md-person' | 'ios-person' | 'shop-setting' | 'md-gift' | 'ios-gift' | 'purse' | 'md-trending-up' | 'ios-trending-up' | 'small-routine' | 'md-apps' | 'ios-apps' | 'md-remove' | 'ios-remove' | 'md-close-circle-outline' | 'md-expand' | 'ios-expand' | 'md-contract' | 'ios-contract' | 'msg' | 'file-box' | 'notifice' | 'md-lock' | 'ios-lock' | 'md-folder' | 'ios-folder' | 'security' | 'ios-filing' | 'md-filing' | 'md-alarm' | 'ios-alarm' | 'md-help' | 'ios-help' | 'md-help-circle' | 'ios-help-circle' | 'md-help-circle-outline' | 'ios-help-circle-outline'
+export type iconType = 'logo-google' | 'ios-refresh' | 'md-refresh' | 'ios-document' | 'md-document' | 'md-more' | 'md-arrow-down' | 'ios-image' | 'ios-more' | 'ios-paper-plane' | 'ios-arrow-forward' | 'md-close-circle' | 'ios-arrow-down' | 'md-thumbs-up' | 'md-thumbs-down' | 'ios-home' | 'md-home' | 'ios-arrow-dropdown' | 'md-arrow-dropdown' | 'md-volume-mute' | 'ios-volume-high' | 'menu-open' | 'menu-close' | 'ios-close-circle-outline' | 'ios-close' | 'md-close' | 'md-checkmark' | 'ios-checkmark' | 'md-add' | 'ios-add' | 'loading' | 'ios-menu' | 'ios-settings' | 'md-settings' | 'ios-keypad' | 'md-create' | 'ios-arrow-back' | 'md-arrow-back' | 'md-search' | 'ios-search' | 'md-exit' | 'ios-exit' | 'shop' | 'double-arrow-left' | 'double-arrow-right' | 'shopping' | 'md-person' | 'ios-person' | 'shop-setting' | 'md-gift' | 'ios-gift' | 'purse' | 'md-trending-up' | 'ios-trending-up' | 'small-routine' | 'md-apps' | 'ios-apps' | 'md-remove' | 'ios-remove' | 'md-close-circle-outline' | 'md-expand' | 'ios-expand' | 'md-contract' | 'ios-contract' | 'msg' | 'file-box' | 'notifice' | 'md-lock' | 'ios-lock' | 'md-folder' | 'ios-folder' | 'security' | 'ios-filing' | 'md-filing' | 'md-alarm' | 'ios-alarm' | 'md-help' | 'ios-help' | 'md-help-circle' | 'ios-help-circle' | 'md-help-circle-outline' | 'ios-help-circle-outline' | 'md-pin' | 'ios-pin' | 'md-cart' | 'ios-cart'
 
 export interface IIconProps extends HtmlHTMLAttributes<any> {
     icon?: iconType
@@ -88,6 +88,10 @@ const paths: any = {
     'ios-help-circle': import('./ios/help-circle').then((data) => data.default),
     'md-help-circle-outline': import('./md/help-circle-outline').then((data) => data.default),
     'ios-help-circle-outline': import('./ios/help-circle-outline').then((data) => data.default),
+    'md-pin': import('./md/pin').then((data) => data.default),
+    'ios-pin': import('./ios/pin').then((data) => data.default),
+    'md-cart': import('./md/cart').then((data) => data.default),
+    'ios-cart': import('./ios/cart').then((data) => data.default),
     'md-thumbs-up': import('./md/thumbs-up').then((data) => data.default),
     'md-refresh': import('./md/refresh').then((data) => data.default),
     'ios-paper-plane': import('./ios/paper-plane').then((data) => data.default),
@@ -242,7 +246,7 @@ export default class Icon extends Component<IIconProps, IState> {
     }
 
     public render() {
-        const { className, color, onClick, rotate, shake, beat, style, theme } = this.props
+        const { className, color, onClick, rotate, shake, beat, style, theme, icon } = this.props
         const props = omit(this.props, ['className', 'color', 'fontSize', 'onClick', 'rotate', 'shake', 'beat', 'style', 'viewBox'])
         const { path, viewBox } = this.state
         return (
@@ -261,6 +265,12 @@ export default class Icon extends Component<IIconProps, IState> {
                             onClick={onClick}
                             rotate={rotate ? 1 : 0}
                         >
+                            {icon === 'ios-cart' ? (
+                                <Fragment>
+                                    <ellipse transform="rotate(-1.057 159.995 423.97) scale(.99997)" cx="160" cy="424" rx="24" ry="24"/>
+                                    <ellipse transform="matrix(.02382 -.9997 .9997 .02382 -48.51 798.282)" cx="384.5" cy="424" rx="24" ry="24"/>
+                                </Fragment>
+                            ): null}
                             <path d={path} />
                         </Svg>
                     )

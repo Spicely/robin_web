@@ -1,6 +1,7 @@
 import { isNil } from 'lodash'
 import Color from './Color'
 import Padding from './Padding'
+import IconThemeData from './IconThemeData'
 
 interface ITabBarThemeDataProps {
     tabBarColor?: Color
@@ -11,6 +12,7 @@ interface ITabBarThemeDataProps {
     itemSelectColor?: Color
     tabViewPadding?: Padding
     activeBarColor?: Color
+    iconTheme?: IconThemeData
 }
 
 export default class TabBarThemeData {
@@ -24,6 +26,7 @@ export default class TabBarThemeData {
             if (data.itemSelectColor) this.itemSelectColor = data.itemSelectColor
             if (data.tabViewPadding) this.tabViewPadding = data.tabViewPadding
             if (data.activeBarColor) this.activeBarColor = data.activeBarColor
+            if (data.iconTheme) this.iconTheme = data.iconTheme
         }
     }
 
@@ -42,4 +45,6 @@ export default class TabBarThemeData {
     public tabViewPadding: Padding = Padding.symmetric({ horizontal: 10, vertical: 8 })
 
     public activeBarColor?: Color
+
+    public iconTheme: IconThemeData = new IconThemeData()
 }
