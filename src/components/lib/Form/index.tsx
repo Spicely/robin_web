@@ -2,11 +2,11 @@ import React, { Component, ChangeEvent, CSSProperties } from 'react'
 import Loadable from 'react-loadable'
 import moment from 'moment'
 import { omit, isFunction, isUndefined, hash, isBool, isNil, isArray } from 'muka'
-import { getClassName, getRatioUnit } from '../utils'
+import { getClassName, getRatioUnit, InputThemeData, Border } from '../utils'
 import { IButtonProps } from '../Button'
 import { RadioGroupProps } from 'antd/lib/radio'
 import { TimePickerProps } from 'antd/lib/time-picker'
-import { IInputProps } from '../Input'
+import Input, { IInputProps } from '../Input'
 import { ILUpload, ILUploadChangeParam } from '../LUpload'
 import { ILDatePicker } from '../DatePicker'
 import { IImagePickerProps } from '../ImagePicker'
@@ -18,15 +18,21 @@ import { ISelectProps } from '../Select'
 import { ICheckBoxProps } from '../CheckBox'
 import { IUploadProps } from '../Upload'
 import { IEditorProps } from '../Editor'
+import { IItemProps } from '../Item'
 import { ColorResult } from 'react-color'
 import styled from 'styled-components'
+
+const inputThemeData = new InputThemeData({
+    border: Border.all({ width: 0 }),
+    width: '100%'
+})
 
 interface IFormUpload extends ILUpload {
     label?: string | JSX.Element
 }
 
-type component = 'Colors' | 'Input' | 'Button' | 'Radio' | 'DatePicker' | 'LUpload' | 'RangePicker' | 'NULL' | 'Label' | 'RadioGroup' | 'Select' | 'ImagePicker' | 'Map' | 'Textarea' | 'Carousel' | 'Slider' | 'CheckBox' | 'Editor' | 'TimePicker' | 'Upload'
-type props = RadioGroupProps | IInputProps | IButtonProps | ILDatePicker | IFormUpload | IImagePickerProps | IMapProps | ICarouselProps | ITextareaProps | IColorsProps | ISelectProps | ICheckBoxProps | IEditorProps | TimePickerProps | IUploadProps | undefined
+type component = 'Colors' | 'Input' | 'Button' | 'Radio' | 'DatePicker' | 'LUpload' | 'RangePicker' | 'NULL' | 'Label' | 'RadioGroup' | 'Select' | 'ImagePicker' | 'Map' | 'Textarea' | 'Carousel' | 'Slider' | 'CheckBox' | 'Editor' | 'TimePicker' | 'Upload' | 'Item' | 'ItemInput'
+type props = RadioGroupProps | IInputProps | IButtonProps | ILDatePicker | IFormUpload | IImagePickerProps | IMapProps | ICarouselProps | ITextareaProps | IColorsProps | ISelectProps | ICheckBoxProps | IEditorProps | TimePickerProps | IUploadProps | IItemProps | undefined
 
 export interface IFormItem {
     component: component
@@ -313,6 +319,8 @@ export default class Form extends Component<IFormProps, IState> {
             case 'CheckBox': return loadableComponent(import('../CheckBox'))
             case 'Slider': return loadableComponent(import('antd/lib/slider'))
             case 'TimePicker': return loadableComponent(import('antd/lib/time-picker'))
+            case 'Item': return loadableComponent(import('../Item'))
+            case 'ItemInput': return loadableComponent(import('../Item'))
             default: return null
         }
     }
@@ -482,6 +490,42 @@ export default class Form extends Component<IFormProps, IState> {
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
                     </FormItem>
+                )
+            }
+            case 'Item': {
+                const vProps = omit(props, ['onChange', 'value'])
+                const _porps: any = props
+                const onChange: any = _porps.onChange
+                return (
+                    <View
+                        {...vProps}
+                        key={field}
+                        value={vals[field]}
+                        onChange={this.setRVal.bind(this, field, onChange)}
+                    />
+                )
+            }
+            case 'ItemInput': {
+                const vProps = omit(props, ['onChange', 'value'])
+                const _porps: any = props
+                const onChange: any = _porps.onChange
+                const onClose: any = _porps.onClose || function (val: string) { }
+                return (
+                    <View
+                        {...vProps}
+                        key={field}
+                        value={
+                            <Input
+                                theme={inputThemeData}
+                                placeholder={vProps.placeholder}
+                                type={vProps.type}
+                                value={vals[field]}
+                                onChange={this.setVal.bind(this, field, onChange)}
+                                onClose={this.cleanInputVal.bind(this, field, onClose)}
+                            />
+                        }
+                        onChange={this.setRVal.bind(this, field, onChange)}
+                    />
                 )
             }
             case 'Radio': {

@@ -20,6 +20,7 @@ export { default as DialogThemeData } from './DialogThemeData'
 export { default as TagThemeData } from './TagThemeData'
 export { default as UploadThemeData } from './UploadThemeData'
 export { default as TextareaThemeData } from './TextareaThemeData'
+export { default as ItemThemeData } from './ItemThemeData'
 
 export const prefix: string = 'mk_'
 

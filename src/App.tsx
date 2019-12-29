@@ -6,6 +6,7 @@ import { PersistGate } from 'redux-persist/lib/integration/react'
 import { store, persistor } from './store'
 import { routes, IRoutes, loadable } from './routes'
 import { ThemeData, NavBarThemeData, Color } from './components/lib/utils'
+import './App.css'
 
 class App extends React.Component {
   public render() {

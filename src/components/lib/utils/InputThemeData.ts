@@ -1,4 +1,4 @@
-import { isNumber } from 'lodash'
+import { isNumber , isNil} from 'lodash'
 import Color from './Color'
 import Border, { BorderStyle } from './Border'
 import IconThemeData from './IconThemeData'
@@ -6,10 +6,10 @@ import IconThemeData from './IconThemeData'
 interface IInputThemeDataProps {
     inputColor?: Color
     disabledColor?: Color
-    height?: number
+    height?: number | string
     fontSize?: number
     color?: Color
-    width?: number
+    width?: number | string
     border?: Border
     hoverColor?: Color
     iconCloseTheme?: IconThemeData
@@ -21,10 +21,11 @@ export default class InputThemeData {
         if (data) {
             if (data.inputColor) this.inputColor = data.inputColor
             if (data.disabledColor) this.disabledColor = data.disabledColor
-            if (isNumber(data.height)) this.height = data.height
+            if (!isNil(data.height)) this.height = data.height
             if (isNumber(data.fontSize)) this.fontSize = data.fontSize
-            if (isNumber(data.width)) this.width = data.width
+            if (!isNil(data.width)) this.width = data.width
             if (data.color) this.color = data.color
+            if (data.border) this.border = data.border
             if (data.hoverColor) this.hoverColor = data.hoverColor
             if (data.iconCloseTheme) this.iconCloseTheme = data.iconCloseTheme
         }
@@ -49,9 +50,9 @@ export default class InputThemeData {
         size: 13,
     })
 
-    public height: number = 32
+    public height: number | string = 32
 
-    public width?: number
+    public width?: number | string
 
     public disabledColor: Color = Color.fromRGB(255, 255, 255)
 }

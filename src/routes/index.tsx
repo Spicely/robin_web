@@ -20,6 +20,9 @@ export interface IRoutes {
 export const routes: IRoutes[] = [{
     component: import('../pages/Index'),
     path: '/'
+},{
+    component: import('../pages/Login'),
+    path: '/login'
 },]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {
