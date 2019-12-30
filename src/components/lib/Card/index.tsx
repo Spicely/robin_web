@@ -60,7 +60,6 @@ export default class Card extends Component<ICardProps, any> {
                     )
                 }
             </Consumer>
-
         )
     }
 }

@@ -5,7 +5,7 @@ import { ThemeProvider } from 'components'
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import { store, persistor } from './store'
 import { routes, IRoutes, loadable } from './routes'
-import { ThemeData, NavBarThemeData, Color } from './components/lib/utils'
+import { ThemeData, NavBarThemeData, Color, ButtonThemeData } from './components/lib/utils'
 import './App.css'
 
 class App extends React.Component {
@@ -17,7 +17,11 @@ class App extends React.Component {
             theme={new ThemeData({
               navBarTheme: new NavBarThemeData({
                 navBarColor: Color.fromRGB(255, 255, 255)
-              })
+              }),
+              buttonTheme: new ButtonThemeData({
+                height: 45,
+              }),
+              fontSize: 14
             })}
           >
             <BrowserRouter>

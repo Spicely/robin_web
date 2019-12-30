@@ -2,7 +2,7 @@ import React, { Component, ChangeEvent, CSSProperties } from 'react'
 import Loadable from 'react-loadable'
 import moment from 'moment'
 import { omit, isFunction, isUndefined, hash, isBool, isNil, isArray } from 'muka'
-import { getClassName, getRatioUnit, InputThemeData, Border } from '../utils'
+import { getClassName, getRatioUnit, InputThemeData, Border, getUnit } from '../utils'
 import { IButtonProps } from '../Button'
 import { RadioGroupProps } from 'antd/lib/radio'
 import { TimePickerProps } from 'antd/lib/time-picker'
@@ -119,6 +119,9 @@ const FormItemLabel = styled.div`
     margin-right: ${getRatioUnit(8)};
 `
 
+const ItemExtend = styled.div`
+    padding: 0 ${getUnit(10)};
+`
 export default class Form extends Component<IFormProps, IState> {
 
     public static defaultProps: IFormProps = {
@@ -511,21 +514,27 @@ export default class Form extends Component<IFormProps, IState> {
                 const onChange: any = _porps.onChange
                 const onClose: any = _porps.onClose || function (val: string) { }
                 return (
-                    <View
-                        {...vProps}
-                        key={field}
-                        value={
-                            <Input
-                                theme={inputThemeData}
-                                placeholder={vProps.placeholder}
-                                type={vProps.type}
-                                value={vals[field]}
-                                onChange={this.setVal.bind(this, field, onChange)}
-                                onClose={this.cleanInputVal.bind(this, field, onClose)}
+                    <div className="flex mk_divider" key={field}>
+                        <div className="flex_1">
+                            <View
+                                {...vProps}
+                                key={field}
+                                value={
+                                    <Input
+                                        theme={inputThemeData}
+                                        placeholder={vProps.placeholder}
+                                        type={vProps.type}
+                                        value={vals[field]}
+                                        maxLength={vProps.maxLength}
+                                        onChange={this.setVal.bind(this, field, onChange)}
+                                        onClose={this.cleanInputVal.bind(this, field, onClose)}
+                                    />
+                                }
+                                onChange={this.setRVal.bind(this, field, onChange)}
                             />
-                        }
-                        onChange={this.setRVal.bind(this, field, onChange)}
-                    />
+                        </div>
+                        <ItemExtend className="flex_justify">{extend}</ItemExtend>
+                    </div>
                 )
             }
             case 'Radio': {

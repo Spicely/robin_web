@@ -31,9 +31,9 @@ interface IBtnStyleProps extends IStyledProps {
 }
 
 const Btn = styled.button<IBtnStyleProps>`
-    height: ${({ buttonTheme }) => getRatioUnit(buttonTheme.height)};
+    height: ${({ buttonTheme }) => getUnit(buttonTheme.height)};
     transition: all .1s cubic-bezier(0.65, 0.05, 0.36, 1);
-    border-radius: ${({ buttonTheme, theme }) => getUnit(buttonTheme.borderRadius, theme.borderRadius)};
+    ${({ buttonTheme, theme }) => css`${buttonTheme.borderRadius || theme.borderRadius}`};
     background: initial;
     border: ${() => getRatioUnit(1)} solid #ddd;
     outline: none;
@@ -77,7 +77,7 @@ const Btn = styled.button<IBtnStyleProps>`
             return css`
                 border-radius: 50%;
                 padding: 0;
-                width: ${getRatioUnit(buttonTheme.height)};
+                width: ${getUnit(buttonTheme.height)};
                 min-width: initial;
                 background: ${buttonTheme.buttonColor || theme.primarySwatch};
                 color: ${buttonTheme.color ? buttonTheme.color.toString() : '#fff'};

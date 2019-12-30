@@ -1,7 +1,6 @@
 import { isNumber } from 'lodash'
 import { getUnit } from './index'
 import Color from './Color'
-import ThemeData from './ThemeData'
 
 interface IBorderAll {
     width?: number
@@ -29,7 +28,6 @@ export default class Border {
      * @param {IBorderAll} data 边框数据
      */
     public static all(data: IBorderAll): Border {
-        console.log((isNumber(data.width) ? data.width : 1))
         return `border:${getUnit((isNumber(data.width) ? data.width : 1))} ${data.style ? data.style.toString() : BorderStyle.none.toString()} ${data.color ? data.color.toString() : Color.fromRGBO(0, 0, 0, 0).toString()};`
     }
 }

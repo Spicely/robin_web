@@ -17,6 +17,8 @@ import ProgressThemeData from './ProgressThemeData'
 import TextareaThemeData from './TextareaThemeData'
 import CardThemeData from './CardThemeData'
 import ItemThemeData from './ItemThemeData'
+import BorderRadius from './BorderRadius'
+import ToastThemeData from './ToastThemeData'
 
 export type IUnit = 'px' | 'rem'
 
@@ -29,7 +31,7 @@ interface IThemeDataProps {
     fontColor?: Color
     buttonTheme?: ButtonThemeData
     iconTheme?: IconThemeData
-    borderRadius?: number
+    borderRadius?: BorderRadius
     dialogColor?: number
     fontSize?: number
     menuGroupHeight?: number
@@ -47,6 +49,7 @@ interface IThemeDataProps {
     textareaTheme?: TextareaThemeData
     disabledBorderColor?: Color
     itemTheme?: ItemThemeData
+    toastTheme?: ToastThemeData
 }
 
 export default class ThemeData {
@@ -56,7 +59,7 @@ export default class ThemeData {
             if (data.primarySwatch) this.primarySwatch = data.primarySwatch
             if (data.buttonTheme) this.buttonTheme = data.buttonTheme
             if (data.iconTheme) this.iconTheme = data.iconTheme
-            if (!isNil(data.borderRadius)) this.borderRadius = data.borderRadius
+            if (data.borderRadius) this.borderRadius = data.borderRadius
             if (!isNil(data.fontSize)) this.fontSize = data.fontSize
             if (data.errorColor) this.errorColor = data.errorColor
             if (data.dividerColor) this.dividerColor = data.dividerColor
@@ -76,8 +79,9 @@ export default class ThemeData {
             if (data.uploadTheme) this.uploadTheme = data.uploadTheme
             if (data.cardTheme) this.cardTheme = data.cardTheme
             if (data.progressTheme) this.progressTheme = data.progressTheme
-            if(data.itemTheme) this.itemTheme = data.itemTheme
+            if (data.itemTheme) this.itemTheme = data.itemTheme
             if (data.disabledBorderColor) this.disabledBorderColor = data.disabledBorderColor
+            if (data.toastTheme) this.toastTheme = data.toastTheme
         }
     }
 
@@ -132,8 +136,10 @@ export default class ThemeData {
     public textareaTheme: TextareaThemeData = new TextareaThemeData()
 
     public cardTheme: CardThemeData = new CardThemeData()
-    
+
     public itemTheme: ItemThemeData = new ItemThemeData()
+
+    public toastTheme: ToastThemeData = new ToastThemeData()
 
     public menuGroupHeight: number = 45
 
@@ -141,5 +147,5 @@ export default class ThemeData {
 
     public ratio: number = 0.05
 
-    public borderRadius: number = 0
+    public borderRadius: BorderRadius = BorderRadius.all(0)
 }

@@ -162,6 +162,7 @@ export default class Input extends Component<IInputProps, IState> {
         const { className, placeholder, placeAnimate, value, closeIconShow, disabled, label, labelClassName, labelStyle, showMaxLength, maxLength, extend, extendClassName, extendStyle, preIcon, style, theme } = this.props
         const { moveToTop, val, focus } = this.state
         const otherProps = omit(this.props, ['className', 'placeholder', 'placeAnimate', 'onFocus', 'onBlur', 'preIcon', 'onClose', 'value', 'closeIconShow', 'labelStyle', 'label', 'labelClassName', 'showMaxLength', 'extend', 'extendStyle', 'extendClassName', 'style'])
+        const status = val.length > 0 || (value || '').toString().length > 0
         return (
             <Consumer>
                 {(data) => (
@@ -207,7 +208,7 @@ export default class Input extends Component<IInputProps, IState> {
                             {(showMaxLength && maxLength) ? <div className={getClassName(`${prefixClass}_max_length flex_justify`)} style={{
                                 right: closeIconShow ? 26 : 5
                             }}>{val.length || (value || '').toString().length}/{maxLength}</div> : null}
-                            {(isNil(value) ? val : true) && closeIconShow && !disabled && (
+                            {status && closeIconShow && !disabled && (
                                 <CloseIcon
                                     onClick={this.handleClose}
                                     icon="ios-close"
