@@ -28,7 +28,7 @@ export default class ToastThemeData {
 
     public padding: Padding = Padding.symmetric({
         horizontal: 15,
-        vertical: 5
+        vertical: 10
     })
 
     public borderRadius: BorderRadius = BorderRadius.all(3)

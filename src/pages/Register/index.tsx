@@ -41,9 +41,9 @@ export default class Register extends Component<RouteComponentProps, IState> {
         }, {
             component: 'Button',
             props: {
-                children: '登录',
+                children: '注册',
                 mold: 'primary',
-                async: true,
+                // async: true,
                 style: {
                     margin: `${getUnit(10)} ${getUnit(30)} 0 ${getUnit(30)} `
                 },
@@ -77,19 +77,16 @@ export default class Register extends Component<RouteComponentProps, IState> {
     private getCode = async () => {
         if (this.fn) {
             try {
-                Toast.loading({
-                    content: ''
-                })
-                return false
-                // const form = this.fn.getFieldValue()
-                // if (!verify.isMobile(form.tel)) {
-                //     Toast.info({
-                //         content: '请输入正确的电话号码',
-                //     })
-                //     return false
-                // }
-                // await http('sms_api/send', { tel: form.tel })
-                // return true
+                Toast.loading()
+                const form = this.fn.getFieldValue()
+                if (!verify.isMobile(form.tel)) {
+                    Toast.info({
+                        content: '请输入正确的电话号码',
+                    })
+                    return false
+                }
+                await http('sms_api/send', { tel: form.tel })
+                return true
             } catch (e) {
                 return false
             }
@@ -122,6 +119,7 @@ export default class Register extends Component<RouteComponentProps, IState> {
                 history.goBack()
             }
         } catch (e) {
+            console.log(e)
             Toast.info({
                 content: '服务器繁忙,请稍后再试',
             })

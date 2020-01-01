@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Consumer } from '../ThemeProvider'
 import ReactDOM from 'react-dom'
 import styled, { css } from 'styled-components'
@@ -28,16 +28,16 @@ interface ICreateNotification {
 
 
 interface IToastMaskPorps {
-    type?: 'loading'
+    type?: IType
 }
 
 const ToastMask = styled.div<IToastMaskPorps>`
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 9;
+    ${({ type }) => {
+        if (type === 'loading') {
+            return css`position: absolute;left: 0;right: 0;top: 0;bottom: 0;z-index: 9;`
+        }
+    }}
+    
 `
 
 interface IToastProps {
@@ -70,22 +70,6 @@ const ToastContent = styled.span<IToastProps>`
     }}
     ${({ toastTheme }) => css`${toastTheme.borderRadius.toString()}`}
 `
-
-function createNotification(): ICreateNotification {
-    const div = document.createElement('div')
-    document.body.appendChild(div)
-    const notification: any = ReactDOM.render(<Notification />, div)
-    return {
-        addNotice(notice: INotices) {
-            return notification.addNotice(notice)
-        },
-        destroy() {
-            ReactDOM.unmountComponentAtNode(div)
-            document.body.removeChild(div)
-        }
-    }
-}
-
 
 let notification: ICreateNotification
 const notice = (data: INotices) => {
@@ -122,9 +106,9 @@ export default class Notification extends Component<any, IState> {
             type: 'error'
         })
     }
-    public static loading(data: INotices) {
+    public static loading(content?: string) {
         return notice({
-            ...data,
+            content: content || '',
             type: 'loading'
         })
     }
@@ -170,32 +154,51 @@ export default class Notification extends Component<any, IState> {
         return (
             <Consumer>
                 {(init) => (
-                    <ToastMask>
+                    <Fragment>
                         {
                             notices.map(notice => (
-                                <ToastView
+                                <ToastMask
                                     key={notice.key}
-                                    className="flex_center"
-                                    toastTheme={init.theme.toastTheme}
                                     type={notice.type}
                                 >
-                                    <ToastContent
+                                    <ToastView
+                                        className="flex_center"
                                         toastTheme={init.theme.toastTheme}
                                         type={notice.type}
                                     >
-                                        {notice.type === 'loading' ? <Icon
-                                            icon="loading"
-                                            theme={init.theme.toastTheme.iconTheme}
-                                            rotate
-                                        /> : null}
-                                        {notice.content}
-                                    </ToastContent>
-                                </ToastView>
+                                        <ToastContent
+                                            toastTheme={init.theme.toastTheme}
+                                            type={notice.type}
+                                        >
+                                            {notice.type === 'loading' ? <Icon
+                                                icon="loading"
+                                                theme={init.theme.toastTheme.iconTheme}
+                                                rotate
+                                            /> : null}
+                                            {notice.content}
+                                        </ToastContent>
+                                    </ToastView>
+                                </ToastMask>
                             ))
                         }
-                    </ToastMask>
+                    </Fragment>
                 )}
             </Consumer>
         )
+    }
+}
+
+function createNotification(): ICreateNotification {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const notification: any = ReactDOM.render(<Notification />, div)
+    return {
+        addNotice(notice: INotices) {
+            return notification.addNotice(notice)
+        },
+        destroy() {
+            ReactDOM.unmountComponentAtNode(div)
+            document.body.removeChild(div)
+        }
     }
 }
