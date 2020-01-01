@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
     "@svgr/webpack": "4.3.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -167,6 +168,7 @@
       "react-app"
     ],
     "plugins": [
+      "@babel/plugin-transform-runtime",
       [
         "import",
         {
