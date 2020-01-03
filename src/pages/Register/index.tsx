@@ -43,7 +43,7 @@ export default class Register extends Component<RouteComponentProps, IState> {
             props: {
                 children: '注册',
                 mold: 'primary',
-                // async: true,
+                async: true,
                 style: {
                     margin: `${getUnit(10)} ${getUnit(30)} 0 ${getUnit(30)} `
                 },
@@ -76,8 +76,8 @@ export default class Register extends Component<RouteComponentProps, IState> {
 
     private getCode = async () => {
         if (this.fn) {
+            const close = Toast.loading()
             try {
-                Toast.loading()
                 const form = this.fn.getFieldValue()
                 if (!verify.isMobile(form.tel)) {
                     Toast.info({
@@ -86,8 +86,10 @@ export default class Register extends Component<RouteComponentProps, IState> {
                     return false
                 }
                 await http('sms_api/send', { tel: form.tel })
+                close()
                 return true
             } catch (e) {
+                close()
                 return false
             }
         } else {

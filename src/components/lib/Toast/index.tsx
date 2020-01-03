@@ -21,7 +21,7 @@ interface IState {
 }
 
 interface ICreateNotification {
-    addNotice: (notice: INotices) => void
+    addNotice: (notice: INotices) => () => void
     destroy: () => void
 }
 
@@ -106,6 +106,7 @@ export default class Notification extends Component<any, IState> {
             type: 'error'
         })
     }
+
     public static loading(content?: string) {
         return notice({
             content: content || '',
@@ -130,14 +131,14 @@ export default class Notification extends Component<any, IState> {
             this.setState({ notices })
             if (notice.duration > 0) {
                 setTimeout(() => {
-                    this.removeNotice(notice.key)
+                    this.remove(notice.key)
                 }, notice.duration)
             }
         }
-        return () => { this.removeNotice(notice.key) }
+        return () => { this.remove(notice.key) }
     }
 
-    private removeNotice(key: string) {
+    private remove(key: string) {
         this.setState(previousState => ({
             notices: previousState.notices.filter((notice) => {
                 if (notice.key === key) {

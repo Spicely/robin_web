@@ -1,1 +1,1 @@
-export { default as http } from './axios'
+export { default as http , baseUrl, imgUrl} from './axios'

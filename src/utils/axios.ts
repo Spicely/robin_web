@@ -8,7 +8,7 @@ interface IValue {
 }
 
 export const baseUrl = 'http://app.whccu.com/api/'
-export const imgUrl = 'http://localhost:1337'
+export const imgUrl = 'http://app.whccu.com/uploads/'
 
 export interface IRresItem<T = any> {
     msg: string
@@ -61,7 +61,7 @@ export const deviaDecrypt = (data: string) => {
 instance.interceptors.response.use(async function (res: any) {
     // const devia = deviaDecrypt(res.data.devia)
     // res.data = JSON.parse(decrypt(res.data.value, res.data.secret, devia))
-    if (res.status === 200 && res.data.code === '1') {
+    if (res.status === 200 && res.data.code == '1') {
         return res.data
     } else {
         return Promise.reject(res.data)
@@ -70,9 +70,13 @@ instance.interceptors.response.use(async function (res: any) {
 
 const http = function (url: string, params?: IValue, config?: AxiosRequestConfig): any {
     const headers = config ? config.headers : {}
+    const token = localStorage.getItem('token')
     return instance(`${url}`, {
         ...config,
-        data: encrypt(params || {}),
+        data: {
+            ...params,
+            token
+        },
         headers: {
             ...headers,
         }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { NavBar, TabBar, Icon } from 'components'
 import Home from '../Home'
+import OrganList from '../OrganList'
 
 export default class Index extends Component<any, any> {
 
@@ -10,20 +11,17 @@ export default class Index extends Component<any, any> {
                 mode="menu"
             >
                 <TabBar.Item
-                    title="2121"
+                    title="首页"
                     icon={<Icon icon="ios-home" />}
                 >
                     <Home />
                 </TabBar.Item>
-                <TabBar.Item title="2121">
-                    <NavBar
-                        title="测试"
-                        titleCenter
-                    />
+                <TabBar.Item title="机构观点">
+                    <OrganList />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="2121"
-
+                    title="投顾团队"
+                    icon={<Icon icon="ios-person" />}
                 >
                     <NavBar
                         left={null}
@@ -32,7 +30,6 @@ export default class Index extends Component<any, any> {
                     />
                 </TabBar.Item>
             </TabBar>
-
         )
     }
 }
