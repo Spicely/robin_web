@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { ScrollView, NavBar, Image, MobileLayout, Toast } from 'components'
 import { http, imgUrl } from '../../utils'
 import { getUnit } from 'src/components/lib/utils'
+import { Link } from 'react-router-dom'
 
 interface IState {
     data: any[]
@@ -31,16 +32,17 @@ export default class Home extends Component<any, IState> {
             >
                 {
                     data.map((i, k) => (
-                        <Image
-                            src={imgUrl + i.img}
-                            style={{
-                                height: getUnit(160),
-                                width: '100%',
-                                marginTop: getUnit(10),
-                                borderRadius: getUnit(5)
-                            }}
-                            key={k}
-                        />
+                        <Link to={`/news/${i.id}`} key={k}>
+                            <Image
+                                src={imgUrl + i.img}
+                                style={{
+                                    height: getUnit(160),
+                                    width: '100%',
+                                    marginTop: getUnit(10),
+                                    borderRadius: getUnit(5)
+                                }}
+                            />
+                        </Link>
                     ))
                 }
 
@@ -54,6 +56,8 @@ export default class Home extends Component<any, IState> {
 
     private getData = async () => {
         try {
+            const des = await http('news/is_user')
+            console.log(des)
             const data = await http('news/index')
             this.setState({
                 data: data.msg

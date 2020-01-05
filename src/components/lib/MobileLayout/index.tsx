@@ -17,6 +17,11 @@ interface IMobileLayoutProps {
     appBar?: JSX.Element
     height?: number | string
     style?: CSSProperties
+    footer?: JSX.Element
+    onGetData?: (success: () => void) => void
+    scrollY?: boolean
+    scrollX?: boolean
+    onEndReachedThreshold?: number
 }
 
 interface IState {
@@ -26,7 +31,7 @@ interface IState {
 export default class MobileLayout extends Component<IMobileLayoutProps, IState> {
 
     public render(): JSX.Element {
-        const { className, appBar, children, height, style } = this.props
+        const { className, appBar, children, height, style, footer, onGetData, scrollY, scrollX, onEndReachedThreshold } = this.props
         return (
             <MobileLayoutView
                 viewHeight={height}
@@ -36,9 +41,14 @@ export default class MobileLayout extends Component<IMobileLayoutProps, IState> 
                 {appBar}
                 <ScrollView
                     className="flex_1"
+                    onGetData={onGetData}
+                    scrollY={scrollY}
+                    scrollX={scrollX}
+                    onEndReachedThreshold={onEndReachedThreshold}
                 >
                     {children}
                 </ScrollView>
+                {footer}
             </MobileLayoutView>
         )
     }

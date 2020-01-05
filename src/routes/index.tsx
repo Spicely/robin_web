@@ -21,11 +21,26 @@ export const routes: IRoutes[] = [{
     component: import('../pages/Index'),
     path: '/'
 }, {
+    component: import('../pages/Query'),
+    path: '/query/:id/:title'
+},{
+    component: import('../pages/News'),
+    path: '/news/:id'
+}, {
     component: import('../pages/Login'),
     path: '/login'
 }, {
     component: import('../pages/Register'),
     path: '/register'
+}, {
+    component: import('../pages/OrganInfo'),
+    path: '/organInfo/:id'
+}, {
+    component: import('../pages/Team'),
+    path: '/team/:id'
+}, {
+    component: import('../pages/TeamInfo'),
+    path: '/teamInfo/:id'
 },]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {

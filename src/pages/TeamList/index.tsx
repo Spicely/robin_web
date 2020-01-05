@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Tag } from 'antd'
-import { MobileLayout, NavBar, Toast } from 'components'
+import { MobileLayout, NavBar, Toast, Image } from 'components'
 import styled from 'styled-components'
 import { getUnit } from 'src/components/lib/utils'
 import moment from 'moment'
-import { http } from 'src/utils'
+import { http, imgUrl } from 'src/utils'
 import { Link } from 'react-router-dom'
 
 const OrganItem = styled.div`
@@ -26,18 +26,14 @@ const OrganItemTitle = styled.p`
     text-decoration: none;
 `
 
-const OrganItemLabel = styled.p`
-    font-family: PingFangSC;
-    font-weight: 400;
-    font-size: ${getUnit(12)};
-    color: rgba(16, 16, 16, 0.69);
-    font-style: normal;
-    letter-spacing: 0;
-    line-height: ${getUnit(20)};
-    text-decoration: none;
+const OrganItemLabel = styled.div`
+    height: ${getUnit(60)};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 ${getUnit(10)};
 `
 
-export default class OrganList extends Component<any, any> {
+export default class TeamList extends Component<any, any> {
 
     public state = {
         data: []
@@ -50,7 +46,7 @@ export default class OrganList extends Component<any, any> {
                 appBar={
                     <NavBar
                         left={null}
-                        title="机构观点"
+                        title="团队列表"
                         titleCenter
                         fixed
                     />
@@ -64,13 +60,13 @@ export default class OrganList extends Component<any, any> {
                     {
                         data.map((i: any, k) => (
                             <OrganItem key={k}>
-                                <Link to={`/organInfo/${i.id}`}>
-                                    <OrganItemTitle>【{i.title}】</OrganItemTitle>
+                                <Link to={`/team/${i.id}`}>
+                                    <OrganItemTitle>【{i.name}】</OrganItemTitle>
                                     <div className="flex">
-                                        <div className="flex_1">
-                                            <OrganItemLabel><Tag color="blue">{i.keywords}</Tag></OrganItemLabel>
+                                        <div>
+                                            <Image src={imgUrl + i.image} style={{ width: getUnit(80), height: getUnit(60) }} />
                                         </div>
-                                        <div className="flex_justify">{moment(i.time * 1000).format('YYYY-MM-DD HH:mm')}</div>
+                                        <OrganItemLabel className="flex_1" dangerouslySetInnerHTML={{ __html: i.text }} />
                                     </div>
                                 </Link>
                             </OrganItem>
@@ -87,7 +83,7 @@ export default class OrganList extends Component<any, any> {
 
     private getData = async () => {
         try {
-            const data = await http('news/get_mechanism', {
+            const data = await http('news/team_list', {
                 page: 1,
                 number: 10
             })

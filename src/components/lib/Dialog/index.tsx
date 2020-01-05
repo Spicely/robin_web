@@ -96,7 +96,7 @@ const DialogContent = styled.div<IDialogContentProps>`
     min-height: ${() => getRatioUnit(400)};
     height: ${({ dialogTheme }) => getUnit(dialogTheme.height)};
     background: ${({ dialogTheme }) => dialogTheme.dialogColor.toString()};
-    border-radius: ${({ dialogTheme, theme }) => getUnit(dialogTheme.borderRadius, theme.borderRadius)};
+    ${({ dialogTheme, theme }) => dialogTheme.borderRadius || theme.borderRadius};
     overflow: hidden;
     box-shadow: 0 0 ${() => getRatioUnit(10)} rgb(107, 107, 107);
 

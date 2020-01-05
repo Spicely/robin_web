@@ -35,6 +35,8 @@ const ToastMask = styled.div<IToastMaskPorps>`
     ${({ type }) => {
         if (type === 'loading') {
             return css`position: absolute;left: 0;right: 0;top: 0;bottom: 0;z-index: 9;`
+        } else {
+            return css`position: relative;z-index: 9;`
         }
     }}
     
@@ -71,9 +73,10 @@ const ToastContent = styled.span<IToastProps>`
     ${({ toastTheme }) => css`${toastTheme.borderRadius.toString()}`}
 `
 
-let notification: ICreateNotification
+let notification: ICreateNotification | undefined
 const notice = (data: INotices) => {
     if (!notification) notification = createNotification()
+    if (!notification) return () => { }
     return notification.addNotice(data)
 }
 
@@ -189,10 +192,11 @@ export default class Notification extends Component<any, IState> {
     }
 }
 
-function createNotification(): ICreateNotification {
+function createNotification(): ICreateNotification | undefined {
     const div = document.createElement('div')
     document.body.appendChild(div)
     const notification: any = ReactDOM.render(<Notification />, div)
+    if (!notification) return
     return {
         addNotice(notice: INotices) {
             return notification.addNotice(notice)

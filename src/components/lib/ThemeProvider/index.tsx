@@ -36,6 +36,7 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
     
     a {
         text-decoration: none;
+        color: initial;
     }
 
     * {

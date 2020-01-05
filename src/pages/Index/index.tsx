@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { NavBar, TabBar, Icon } from 'components'
+import { TabBar, Icon } from 'components'
 import Home from '../Home'
 import OrganList from '../OrganList'
+import TeamList from '../TeamList'
 
 export default class Index extends Component<any, any> {
 
@@ -23,11 +24,7 @@ export default class Index extends Component<any, any> {
                     title="投顾团队"
                     icon={<Icon icon="ios-person" />}
                 >
-                    <NavBar
-                        left={null}
-                        title="测试"
-                        titleCenter
-                    />
+                    <TeamList />
                 </TabBar.Item>
             </TabBar>
         )

@@ -10,8 +10,9 @@ interface ITextareaViewProps {
 
 const TextareaBox = styled.div<ITextareaViewProps>`
     position: relative;
+    height: ${({ textareaTheme }) => getUnit(textareaTheme.height)};
     background: ${({ textareaTheme }) => textareaTheme.textareaColor.toString()};
-    border-radius: ${({ textareaTheme, theme }) => getUnit(textareaTheme.borderRadius, theme.borderRadius)};
+    ${({ textareaTheme, theme }) => textareaTheme.borderRadius || theme.borderRadius};
 `
 
 const TextView = styled.textarea<ITextareaViewProps>`
@@ -19,7 +20,7 @@ const TextView = styled.textarea<ITextareaViewProps>`
     width: ${({ textareaTheme }) => getUnit(textareaTheme.width)};
     border: none;
     outline: none;
-    height: ${({ textareaTheme }) => getUnit(textareaTheme.height)};
+    height: 100%;
     font-size: ${({ textareaTheme, theme }) => getUnit(textareaTheme.fontSize, theme.fontSize)};
     resize: none;
     background: inherit;
