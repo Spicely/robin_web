@@ -2,7 +2,7 @@ import React, { Component, ChangeEvent } from 'react'
 import { http, imgUrl } from 'src/utils'
 import { Toast, MobileLayout, NavBar, Image, Dialog, Textarea, Button, ScrollView } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
-import styled, { keyframes, createGlobalStyle } from 'styled-components'
+import styled, { keyframes, createGlobalStyle, css } from 'styled-components'
 import { getUnit, DialogThemeData, TextareaThemeData, ButtonThemeData, Color } from 'src/components/lib/utils'
 import BorderRadius from 'src/components/lib/utils/BorderRadius'
 
@@ -20,13 +20,18 @@ interface IState {
     price: string
     code: string
     queryText: string
+    warning_string: string
+    warning_text: string
 }
 
-const InfoToa = styled.div`
+const InfoToa = styled.div<{ statusColor: 'red' | 'yel' }>`
     width: 100%;
     height: ${getUnit(68)};
     left: ${getUnit(1)};
-    background-color: rgba(255, 231, 0, 0.73);
+    ${({ statusColor }) => {
+        if (statusColor === 'red') return css`background-color: red;`
+        else return css`background-color: rgba(255, 231, 0, 0.73);`
+    }}
     /* border-color: rgb(187, 187, 187);
     border-width: ${getUnit(1)};
     border-style: solid; */
@@ -173,14 +178,16 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
         code: '',
         visibleQ1: false,
         visibleQ2: false,
-        queryText: ''
+        queryText: '',
+        warning_string: '',
+        warning_text: ''
     }
 
     private page = 1
 
     public render(): JSX.Element {
-        const {match} = this.props
-        const { img, visibleQ1, visibleQ2, text, dataList, warehouse, price_s, price, code, queryText } = this.state
+        const { match } = this.props
+        const { img, visibleQ1, visibleQ2, text, dataList, warehouse, price_s, price, code, queryText, warning_string, warning_text } = this.state
         return (
             <MobileLayout
                 appBar={
@@ -202,7 +209,7 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                 <div style={{ padding: `0 ${getUnit(10)}` }}>
                     {img ? <Image src={imgUrl + img} style={{ width: '100%', height: getUnit(140), borderRadius: getUnit(5) }} /> : null}
                 </div>
-                <InfoToa className="flex">
+                {(warning_string || warning_text) && <InfoToa statusColor={warning_string ? 'red' : 'yel'} className="flex">
                     <div>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -216,9 +223,9 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                         </svg>
                     </div>
                     <InfoLabel className="flex_1">
-                        全球钴矿山产量年均增速为4.6%。而钴下游需求在3C电池稳定增长以及动力电池高速增长的拉动下，
+                        {warning_string || warning_text}
                     </InfoLabel>
-                </InfoToa>
+                </InfoToa>}
                 <InfoItem className="flex">
                     <div className="flex_1">【实战教学指导】</div>
                 </InfoItem>
