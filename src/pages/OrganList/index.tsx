@@ -43,6 +43,8 @@ export default class OrganList extends Component<any, any> {
         data: []
     }
 
+    private page = 1
+
     public render(): JSX.Element {
         const { data } = this.state
         return (
@@ -55,6 +57,7 @@ export default class OrganList extends Component<any, any> {
                         fixed
                     />
                 }
+                onGetData={this.getData}
             >
                 <div
                     style={{
@@ -80,17 +83,15 @@ export default class OrganList extends Component<any, any> {
             </MobileLayout>
         )
     }
-
-    public componentDidMount() {
-        this.getData()
-    }
-
-    private getData = async () => {
+    private getData = async (success: () => void) => {
         try {
             const data = await http('news/get_mechanism', {
-                page: 1,
+                page: this.page++,
                 number: 10
             })
+            if (data.msg && data.msg.length) {
+                success()
+            }
             this.setState({
                 data: data.msg || []
             })

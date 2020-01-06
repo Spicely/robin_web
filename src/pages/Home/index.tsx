@@ -24,7 +24,7 @@ export default class Home extends Component<any, IState> {
                 appBar={
                     <NavBar
                         left={null}
-                        title="股大师"
+                        title="涨乐乐"
                         titleCenter
                         fixed
                     />
