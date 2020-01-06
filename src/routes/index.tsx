@@ -27,9 +27,6 @@ export const routes: IRoutes[] = [{
     component: import('../pages/News'),
     path: '/news/:id'
 }, {
-    component: import('../pages/Login'),
-    path: '/login'
-}, {
     component: import('../pages/Register'),
     path: '/register'
 }, {

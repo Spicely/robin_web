@@ -1,2 +1,6 @@
 import { combineReducers } from 'redux'
-export default combineReducers({})
+import token from './token'
+
+export default combineReducers({
+    token
+})

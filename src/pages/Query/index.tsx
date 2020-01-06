@@ -22,6 +22,8 @@ interface IState {
     queryText: string
     warning_string: string
     warning_text: string
+    nature: string
+    section: string
 }
 
 const InfoToa = styled.div<{ statusColor: 'red' | 'yel' }>`
@@ -180,14 +182,16 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
         visibleQ2: false,
         queryText: '',
         warning_string: '',
-        warning_text: ''
+        warning_text: '',
+        nature: '',
+        section: '',
     }
 
     private page = 1
 
     public render(): JSX.Element {
         const { match } = this.props
-        const { img, visibleQ1, visibleQ2, text, dataList, warehouse, price_s, price, code, queryText, warning_string, warning_text } = this.state
+        const { img, visibleQ1, visibleQ2, text, dataList, warehouse, price_s, price, code, queryText, warning_string, warning_text, nature, section } = this.state
         return (
             <MobileLayout
                 appBar={
@@ -243,10 +247,17 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                         <InfoLw>{warehouse}</InfoLw>
                     </div>
                 </div>
+                <div className="mk_divider_top" style={{ marginTop: getUnit(10), padding: `0 ${getUnit(10)}` }}>
+                    <div style={{fontSize: getUnit(14), color: '#000'}}>股票代码：{code}</div>
+                    <div style={{fontSize: getUnit(14), color: '#000'}}>价格区间：{section}</div>
+                    <div style={{fontSize: getUnit(14), color: '#000'}}>案列性质：{nature}年</div>
+                </div>
                 <InfoItem className="flex">
-                    <div className="flex_1">股票代码：{code}</div>
+                    <div className="flex_1">案列逻辑</div>
                 </InfoItem>
 
+
+                <div style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
                 <Dialog
                     title="提问"
                     visible={visibleQ1}
@@ -309,7 +320,7 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                     </ScrollView>
                 </Dialog>
 
-                <div style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
+
             </MobileLayout>
         )
     }

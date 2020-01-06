@@ -5,10 +5,12 @@ import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 import { getUnit } from 'src/components/lib/utils'
 import { http } from '../../utils'
+import { connect, DispatchProp } from 'react-redux'
+import { SET_TOKEN } from 'src/store/reducers/token'
 
 interface IState { }
 
-export default class Login extends Component<RouteComponentProps, IState> {
+class Login extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private fn?: IFormFun
 
@@ -119,8 +121,9 @@ export default class Login extends Component<RouteComponentProps, IState> {
                     return
                 }
                 const data = await http('user/login', form)
-                const { history } = this.props
+                const { history, dispatch } = this.props
                 localStorage.setItem('token', data.msg)
+                dispatch({ type: SET_TOKEN, data: data.msg })
                 Toast.info({
                     content: '登录成功',
                 })
@@ -133,5 +136,10 @@ export default class Login extends Component<RouteComponentProps, IState> {
             })
         }
     }
-
 }
+
+export default connect(
+    ({ token }: any) => ({
+        token
+    })
+)(Login as any)
