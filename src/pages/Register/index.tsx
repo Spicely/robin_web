@@ -39,6 +39,14 @@ export default class Register extends Component<RouteComponentProps, IState> {
             },
             field: 'code'
         }, {
+            component: 'ItemInput',
+            props: {
+                title: '密码',
+                placeholder: '请输入密码',
+                type: 'password',
+            },
+            field: 'pwd'
+        }, {
             component: 'Button',
             props: {
                 children: '注册',
@@ -110,6 +118,12 @@ export default class Register extends Component<RouteComponentProps, IState> {
                 if (!form.code) {
                     Toast.info({
                         content: '请输入验证码',
+                    })
+                    return
+                }
+                if (!form.pwd || form.pwd.length < 6) {
+                    Toast.info({
+                        content: '请输入长度不小于6位的密码',
                     })
                     return
                 }

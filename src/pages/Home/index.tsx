@@ -1,21 +1,32 @@
 import React, { Component } from 'react'
-import { ScrollView, NavBar, Image, MobileLayout, Toast } from 'components'
+import { NavBar, Image, MobileLayout, Toast, Dialog } from 'components'
 import { http, imgUrl } from '../../utils'
-import { getUnit } from 'src/components/lib/utils'
-import { Link } from 'react-router-dom'
+import { getUnit, DialogThemeData } from 'src/components/lib/utils'
+import { withRouter } from 'react-router-dom'
 
 interface IState {
     data: any[]
+    coo: any[]
+    visible: boolean
+    err: null | any
 }
 
-export default class Home extends Component<any, IState> {
+const queryTheme = new DialogThemeData({
+    width: '70%',
+    height: 245,
+})
+
+class Home extends Component<any, IState> {
 
     public state: IState = {
-        data: []
+        data: [],
+        coo: [],
+        visible: false,
+        err: null
     }
 
     public render(): JSX.Element {
-        const { data } = this.state
+        const { data, coo, visible, err } = this.state
         return (
             <MobileLayout
                 style={{
@@ -32,7 +43,7 @@ export default class Home extends Component<any, IState> {
             >
                 {
                     data.map((i, k) => (
-                        <Link to={`/news/${i.id}`} key={k}>
+                        <div key={k} onClick={this.handleView.bind(this, i.id)}>
                             <Image
                                 src={imgUrl + i.img}
                                 style={{
@@ -42,9 +53,35 @@ export default class Home extends Component<any, IState> {
                                     borderRadius: getUnit(5)
                                 }}
                             />
-                        </Link>
+                        </div>
                     ))
                 }
+                {
+                    coo.map((i, k) => {
+                        return (
+                            <a key={k} href={i.url} style={{ width: '25%', marginTop: getUnit(10), display: 'inline-block' }}>
+                                <Image src={imgUrl + i.image} />
+                                <div className="flex_center" style={{ marginTop: getUnit(5) }}>{i.name}</div>
+                            </a>
+                        )
+                    })
+                }
+
+                {err !== null && (
+                    <Dialog
+                        title="无访问权限"
+                        visible={visible}
+                        theme={queryTheme}
+                        onClose={this.handleQ1Close}
+                        onOk={this.handleQ1Close}
+                    >
+                        <div style={{ padding: getUnit(20) }}>
+                            <div style={{ lineHeight: getUnit(45) }}>联系人: {err.name}</div>
+                            <div style={{ lineHeight: getUnit(45) }}>微信号: {err.wx_code}</div>
+                            <Image src={imgUrl + err.image} style={{ width: getUnit(140) }} />
+                        </div>
+                    </Dialog>
+                )}
 
             </MobileLayout>
         )
@@ -54,13 +91,33 @@ export default class Home extends Component<any, IState> {
         this.getData()
     }
 
+    private handleView = (id: string) => {
+        const { err } = this.state
+        const { history } = this.props
+        if (err !== null) {
+            this.setState({
+                visible: true
+            })
+        } else {
+            history.push(`/news/${id}`)
+        }
+    }
+
+    private handleQ1Close = () => {
+        this.setState({
+            visible: false
+        })
+    }
+
     private getData = async () => {
         try {
             const des = await http('news/is_user')
-            console.log(des)
             const data = await http('news/index')
+            const coo = await http('news/cooperation')
             this.setState({
-                data: data.msg
+                data: data.msg,
+                coo: coo.msg,
+                err: des.msg
             })
         } catch (e) {
             Toast.info({
@@ -69,3 +126,5 @@ export default class Home extends Component<any, IState> {
         }
     }
 }
+
+export default withRouter(Home)

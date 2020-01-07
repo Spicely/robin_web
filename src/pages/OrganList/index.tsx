@@ -57,7 +57,6 @@ export default class OrganList extends Component<any, any> {
                         fixed
                     />
                 }
-                onGetData={this.getData}
             >
                 <div
                     style={{
@@ -83,15 +82,14 @@ export default class OrganList extends Component<any, any> {
             </MobileLayout>
         )
     }
-    private getData = async (success: () => void) => {
+
+    public componentDidMount() {
+        this.getData()
+    }
+
+    private getData = async () => {
         try {
-            const data = await http('news/get_mechanism', {
-                page: this.page++,
-                number: 10
-            })
-            if (data.msg && data.msg.length) {
-                success()
-            }
+            const data = await http('news/get_mechanism')
             this.setState({
                 data: data.msg || []
             })

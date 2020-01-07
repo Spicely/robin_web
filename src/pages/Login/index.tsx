@@ -27,19 +27,12 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
             field: 'tel'
         }, {
             component: 'ItemInput',
-            extend: <CountDown
-                initText="获取验证码"
-                seconds={60}
-                render={(val) => <div style={{ color: '#888888' }}>{val}s后重新获取</div>}
-                onClick={this.getCode}
-            />,
             props: {
-                title: '验证码',
-                placeholder: '请输入验证码',
-                type: 'tel',
-                maxLength: 4
+                title: '密码',
+                placeholder: '请输入密码',
+                type: 'password',
             },
-            field: 'code'
+            field: 'pwd'
         }, {
             component: 'Label',
             render: () => (
@@ -114,7 +107,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     })
                     return
                 }
-                if (!form.code) {
+                if (!form.pwd) {
                     Toast.info({
                         content: '请输入验证码',
                     })

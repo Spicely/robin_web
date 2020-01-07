@@ -61,7 +61,7 @@ export const deviaDecrypt = (data: string) => {
 instance.interceptors.response.use(async function (res: any) {
     // const devia = deviaDecrypt(res.data.devia)
     // res.data = JSON.parse(decrypt(res.data.value, res.data.secret, devia))
-    if (res.status === 200 && res.data.code == '1') {
+    if (res.status === 200 && (res.data.code == '1' || res.data.code == 2)) {
         return res.data
     } else {
         return Promise.reject(res.data)
