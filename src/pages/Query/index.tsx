@@ -248,9 +248,9 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                     </div>
                 </div>
                 <div className="mk_divider_top" style={{ marginTop: getUnit(10), padding: `0 ${getUnit(10)}` }}>
-                    <div style={{fontSize: getUnit(14), color: '#000'}}>股票代码：{code}</div>
-                    <div style={{fontSize: getUnit(14), color: '#000'}}>价格区间：{section}</div>
-                    <div style={{fontSize: getUnit(14), color: '#000'}}>案列性质：{nature}年</div>
+                    <div style={{ fontSize: getUnit(14), color: '#000' }}>股票代码：{code}</div>
+                    <div style={{ fontSize: getUnit(14), color: '#000' }}>价格区间：{section}</div>
+                    <div style={{ fontSize: getUnit(14), color: '#000' }}>案列性质：{nature}年</div>
                 </div>
                 <InfoItem className="flex">
                     <div className="flex_1">案列逻辑</div>
@@ -425,9 +425,9 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
             this.setState({
                 ...data.msg
             })
-        } catch (e) {
+        } catch (data) {
             Toast.info({
-                content: '服务器繁忙,请稍后再试',
+                content: data.msg || '服务器繁忙,请稍后再试',
             })
         }
     }

@@ -134,10 +134,9 @@ export default class Register extends Component<RouteComponentProps, IState> {
                 })
                 history.goBack()
             }
-        } catch (e) {
-            console.log(e)
+        } catch (data) {
             Toast.info({
-                content: '服务器繁忙,请稍后再试',
+                content: data.msg || '服务器繁忙,请稍后再试',
             })
         }
     }

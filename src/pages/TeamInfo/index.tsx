@@ -96,9 +96,9 @@ export default class TeamInfo extends Component<RouteComponentProps<any>, IState
             this.setState({
                 ...data.msg
             })
-        } catch (e) {
+        } catch (data) {
             Toast.info({
-                content: '服务器繁忙,请稍后再试',
+                content: data.msg || '服务器繁忙,请稍后再试',
             })
         }
     }

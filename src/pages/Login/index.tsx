@@ -122,10 +122,9 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                 })
                 history.replace('/')
             }
-        } catch (e) {
-            console.log(e)
+        } catch (data) {
             Toast.info({
-                content: '服务器繁忙,请稍后再试',
+                content: data.msg || '服务器繁忙,请稍后再试',
             })
         }
     }
