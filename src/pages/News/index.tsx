@@ -4,6 +4,7 @@ import { Toast, MobileLayout, NavBar, Image } from 'components'
 import { RouteComponentProps, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { getUnit } from 'src/components/lib/utils'
+import { Tag } from 'antd'
 
 interface IState {
     dataList: any[]
@@ -26,6 +27,7 @@ const OrganItemTitle = styled.p`
     letter-spacing: 0;
     line-height: ${getUnit(22)};
     text-decoration: none;
+    margin: 0;
 `
 
 const OrganItemLabel = styled.div`
@@ -61,12 +63,25 @@ export default class News extends Component<RouteComponentProps<any>, IState> {
                     dataList.map((i: any, k) => (
                         <OrganItem key={k}>
                             <Link to={`/query/${i.id}/${i.name}`}>
-                                <OrganItemTitle>【{i.name}】</OrganItemTitle>
                                 <div className="flex">
-                                    <OrganItemLabel className="flex_1" dangerouslySetInnerHTML={{ __html: i.text }} />
+                                    {i.state === 1 && <Tag color="red" style={{ marginLeft: getUnit(10) }}>最新</Tag>}
+                                    {i.state === 2 && <Tag color="yellow" style={{ marginLeft: getUnit(10) }}>更新</Tag>}
+                                    <OrganItemTitle>【{i.name}】</OrganItemTitle>
+                                </div>
+                                <div className="flex">
+                                    <div>
+                                        <div style={{ height: getUnit(48), overflow: 'hidden' }}>
+                                            <OrganItemLabel className="flex_1" dangerouslySetInnerHTML={{ __html: i.text }} />
+                                        </div>
+
+                                    </div>
                                     <div style={{ padding: `0 ${getUnit(10)}` }}>
                                         <Image src={imgUrl + i.img} style={{ width: getUnit(80), height: getUnit(60) }} />
                                     </div>
+                                </div>
+                                <div className="flex">
+                                    <div className="flex_1"><Tag color="blue" style={{ marginLeft: getUnit(10), background: '#1890ff', borderRadius: getUnit(20) }}><span style={{ color: 'white' }}>{i.keyword}</span></Tag></div>
+                                    <div style={{ marginRight: getUnit(10) }}>{i.state === 1 ? i.time : i.update_time}</div>
                                 </div>
                             </Link>
                         </OrganItem>

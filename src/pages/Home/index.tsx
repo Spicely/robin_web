@@ -3,6 +3,7 @@ import { NavBar, Image, MobileLayout, Toast, Dialog } from 'components'
 import { http, imgUrl } from '../../utils'
 import { getUnit, DialogThemeData } from 'src/components/lib/utils'
 import { withRouter } from 'react-router-dom'
+import { isObject } from 'muka'
 
 interface IState {
     data: any[]
@@ -117,7 +118,7 @@ class Home extends Component<any, IState> {
             this.setState({
                 data: data.msg,
                 coo: coo.msg,
-                err: des.msg
+                err: isObject(des.msg) ? des.msg : null
             })
         } catch (data) {
             Toast.info({
