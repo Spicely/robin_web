@@ -210,9 +210,9 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                 }
             >
                 <GlobalStyle />
-                <div style={{ padding: `0 ${getUnit(10)}` }}>
+                {/* <div style={{ padding: `0 ${getUnit(10)}` }}>
                     {img ? <Image src={imgUrl + img} style={{ width: '100%', height: getUnit(140), borderRadius: getUnit(5) }} /> : null}
-                </div>
+                </div> */}
                 {(warning_string || warning_text) && <InfoToa statusColor={warning_string ? 'red' : 'yel'} className="flex">
                     <div>
                         <svg
@@ -250,7 +250,7 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                 <div className="mk_divider_top" style={{ marginTop: getUnit(10), padding: `0 ${getUnit(10)}` }}>
                     <div style={{ fontSize: getUnit(14), color: '#000' }}>股票代码：{code}</div>
                     <div style={{ fontSize: getUnit(14), color: '#000' }}>价格区间：{section}</div>
-                    <div style={{ fontSize: getUnit(14), color: '#000' }}>案列性质：{nature}年</div>
+                    <div style={{ fontSize: getUnit(14), color: '#000' }}>案列性质：{nature}</div>
                 </div>
                 <InfoItem className="flex">
                     <div className="flex_1">案列逻辑</div>
