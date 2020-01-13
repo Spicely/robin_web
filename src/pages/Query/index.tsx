@@ -307,11 +307,11 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                                     <QueryList key={k}>
                                         <div className="flex">
                                             <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14) }}>提问：</div>
-                                            <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14) }}>{i.msg_text}</div>
+                                            <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14) }}>{i.text}</div>
                                         </div>
                                         <div className="flex" style={{ marginTop: getUnit(10) }}>
                                             <div style={{ color: 'rgba(229, 28, 35, 1)', fontSize: getUnit(14), paddingTop: getUnit(5) }}>回复：</div>
-                                            <div className="flex_1" style={{ color: 'rgba(229, 28, 35, 1)', fontSize: getUnit(14), borderTop: `${getUnit(1)} dashed rgba(187,187,187,1)`, paddingTop: getUnit(5) }}>{i.msg_hd_text}</div>
+                                            <div className="flex_1" style={{ color: 'rgba(229, 28, 35, 1)', fontSize: getUnit(14), borderTop: `${getUnit(1)} dashed rgba(187,187,187,1)`, paddingTop: getUnit(5) }}>{i.hd_text || '暂无回复'}</div>
                                         </div>
                                     </QueryList>
                                 )

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { NavBar, Image, MobileLayout, Toast, Dialog } from 'components'
 import { http, imgUrl } from '../../utils'
-import { getUnit, DialogThemeData } from 'src/components/lib/utils'
+import { getUnit, DialogThemeData, NavBarThemeData } from 'src/components/lib/utils'
 import { withRouter } from 'react-router-dom'
 import { isObject } from 'muka'
 
@@ -30,60 +30,67 @@ class Home extends Component<any, IState> {
         const { data, coo, visible, err } = this.state
         return (
             <MobileLayout
-                style={{
-                    padding: `0 ${getUnit(10)}`
-                }}
+
                 appBar={
                     <NavBar
                         left={null}
-                        title="涨乐乐"
+                        title={
+                            <div style={{color: '#fff'}}>涨乐乐</div>
+                        }
                         titleCenter
                         fixed
+                        theme={
+                            new NavBarThemeData({
+                                navBarColor: 'rgb(6,147,227,1)'
+                            })
+                        }
                     />
                 }
             >
-                {
-                    data.map((i, k) => (
-                        <div key={k} onClick={this.handleView.bind(this, i.id)}>
-                            <Image
-                                src={imgUrl + i.img}
-                                style={{
-                                    height: getUnit(160),
-                                    width: '100%',
-                                    marginTop: getUnit(10),
-                                    borderRadius: getUnit(5)
-                                }}
-                            />
-                        </div>
-                    ))
-                }
-                {
-                    coo.map((i, k) => {
-                        return (
-                            <a key={k} href={i.url} style={{ width: '25%', marginTop: getUnit(10), display: 'inline-block' }}>
-                                <Image src={imgUrl + i.image} />
-                                <div className="flex_center" style={{ marginTop: getUnit(5) }}>{i.name}</div>
-                            </a>
-                        )
-                    })
-                }
-
-                {err !== null && (
-                    <Dialog
-                        title="无访问权限"
-                        visible={visible}
-                        theme={queryTheme}
-                        onClose={this.handleQ1Close}
-                        onOk={this.handleQ1Close}
-                    >
-                        <div style={{ padding: getUnit(20) }}>
-                            <div style={{ lineHeight: getUnit(45) }}>联系人: {err.name}</div>
-                            <div style={{ lineHeight: getUnit(45) }}>微信号: {err.wx_code}</div>
-                            <Image src={imgUrl + err.image} style={{ width: getUnit(140) }} />
-                        </div>
-                    </Dialog>
-                )}
-
+                <div style={{
+                    padding: `0 ${getUnit(10)}`
+                }}>
+                    {
+                        data.map((i, k) => (
+                            <div key={k} onClick={this.handleView.bind(this, i.id)}>
+                                <Image
+                                    src={imgUrl + i.img}
+                                    style={{
+                                        height: getUnit(110),
+                                        width: '100%',
+                                        marginTop: getUnit(10),
+                                        borderRadius: getUnit(5)
+                                    }}
+                                />
+                            </div>
+                        ))
+                    }
+                    {
+                        coo.map((i, k) => {
+                            return (
+                                <a key={k} href={i.url} style={{ width: '25%', marginTop: getUnit(10), display: 'inline-block' }}>
+                                    <Image src={imgUrl + i.image} />
+                                    <div className="flex_center" style={{ marginTop: getUnit(5) }}>{i.name}</div>
+                                </a>
+                            )
+                        })
+                    }
+                    {err !== null && (
+                        <Dialog
+                            title="无访问权限"
+                            visible={visible}
+                            theme={queryTheme}
+                            onClose={this.handleQ1Close}
+                            onOk={this.handleQ1Close}
+                        >
+                            <div style={{ padding: getUnit(20) }}>
+                                <div style={{ lineHeight: getUnit(45) }}>联系人: {err.name}</div>
+                                <div style={{ lineHeight: getUnit(45) }}>微信号: {err.wx_code}</div>
+                                <Image src={imgUrl + err.image} style={{ width: getUnit(140) }} />
+                            </div>
+                        </Dialog>
+                    )}
+                </div>
             </MobileLayout>
         )
     }
