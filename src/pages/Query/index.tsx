@@ -1,6 +1,6 @@
 import React, { Component, ChangeEvent } from 'react'
 import { http, imgUrl } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Image, Dialog, Textarea, Button, ScrollView } from 'components'
+import { Toast, MobileLayout, NavBar, Image, Dialog, Textarea, Button, ScrollView, Divider } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import styled, { keyframes, createGlobalStyle, css } from 'styled-components'
 import { getUnit, DialogThemeData, TextareaThemeData, ButtonThemeData, Color } from 'src/components/lib/utils'
@@ -24,6 +24,7 @@ interface IState {
     warning_text: string
     nature: string
     section: string
+    time: string
 }
 
 const InfoToa = styled.div<{ statusColor: 'red' | 'yel' }>`
@@ -76,22 +77,22 @@ const InfoItem = styled.div`
     text-decoration: none;
 `
 
-const InfoLe = styled.div`
+const InfoLe = styled.div<{ color?: string }>`
     font-family: PingFangSC;
     font-weight: 400;
     font-size: ${getUnit(14)};
-    color: rgb(16, 16, 16);
+    color: ${({ color }) => color || 'rgb(16, 16, 16)'};
     font-style: normal;
     letter-spacing: 0;
     line-height: ${getUnit(22)};
     text-decoration: none;
 `
 
-const InfoLw = styled.div`
+const InfoLw = styled.div<{ color?: string }>`
     font-family: PingFangSC;
     font-weight: 400;
-    font-size: ${getUnit(16)};
-    color: rgba(229, 28, 35, 1);
+    font-size: ${getUnit(14)};
+    color: ${({ color }) => color || 'rgba(229, 28, 35, 1)'};
     font-style: normal;
     letter-spacing: 0;
     line-height: ${getUnit(22)};
@@ -185,13 +186,14 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
         warning_text: '',
         nature: '',
         section: '',
+        time: ''
     }
 
     private page = 1
 
     public render(): JSX.Element {
         const { match } = this.props
-        const { img, visibleQ1, visibleQ2, text, dataList, warehouse, price_s, price, code, queryText, warning_string, warning_text, nature, section } = this.state
+        const { time, visibleQ1, visibleQ2, text, dataList, warehouse, price_s, price, code, queryText, warning_string, warning_text, nature, section } = this.state
         return (
             <MobileLayout
                 appBar={
@@ -230,30 +232,45 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                         {warning_string || warning_text}
                     </InfoLabel>
                 </InfoToa>}
-                <InfoItem className="flex">
-                    <div className="flex_1">【实战教学指导】</div>
-                </InfoItem>
-                <div className="flex" style={{ marginTop: getUnit(10), textAlign: 'center' }}>
+                <InfoItem className="flex" style={{ marginTop: getUnit(10), padding: `${getUnit(5)} ${getUnit(10)}`, textAlign: 'center' }}>
                     <div className="flex_1">
-                        <InfoLe >止盈价</InfoLe>
-                        <InfoLw>￥：{price}</InfoLw>
+                        <InfoLe >股票代码</InfoLe>
+                        <InfoLw color="rgba(110, 117, 116, 0.59)" style={{ marginTop: getUnit(5) }}>{code}</InfoLw>
                     </div>
+                    <Divider type="vertical" height="auto" />
                     <div className="flex_1">
-                        <InfoLe >止损价</InfoLe>
-                        <InfoLw>￥：{price_s}</InfoLw>
+                        <InfoLe >案列性质</InfoLe>
+                        <InfoLw color="rgba(64, 137, 51, 1)" style={{ marginTop: getUnit(5) }}>{nature}</InfoLw>
                     </div>
+                    <Divider type="vertical" height="auto" />
                     <div className="flex_1">
                         <InfoLe >仓位</InfoLe>
-                        <InfoLw>{warehouse}</InfoLw>
+                        <InfoLw color="rgb(229, 28, 35)" style={{ marginTop: getUnit(5) }}>{warehouse}</InfoLw>
                     </div>
-                </div>
-                <div className="mk_divider_top" style={{ marginTop: getUnit(10), padding: `0 ${getUnit(10)}` }}>
-                    <div style={{ fontSize: getUnit(14), color: '#000' }}>股票代码：{code}</div>
-                    <div style={{ fontSize: getUnit(14), color: '#000' }}>价格区间：{section}</div>
-                    <div style={{ fontSize: getUnit(14), color: '#000' }}>案列性质：{nature}</div>
-                </div>
+                </InfoItem>
+                <InfoItem style={{ textAlign: 'center', marginTop: 0, padding: `${getUnit(5)} 0`, borderTop: 'none' }}>
+                    <div style={{ lineHeight: getUnit(28) }}>价格策略</div>
+                    <div className="flex">
+                        <div className="flex_1">
+                            <InfoLw color="rgba(106, 174, 201, 1)">￥:{price_s}</InfoLw>
+                            <InfoLe style={{ marginTop: getUnit(5) }}>止损价</InfoLe>
+                        </div>
+                        <div className="flex_1">
+                            <InfoLw color="rgb(229, 28, 35)">￥:{price}</InfoLw>
+                            <InfoLe style={{ marginTop: getUnit(5) }}>止盈价</InfoLe>
+                        </div>
+                        <div className="flex_1">
+                            <InfoLw color="rgba(62, 136, 49, 1)">￥:{section}</InfoLw>
+                            <InfoLe style={{ marginTop: getUnit(5) }}>买入区间</InfoLe>
+                        </div>
+                    </div>
+                </InfoItem>
+                <InfoItem className="flex" style={{ marginTop: 0, borderTop: 'none' }}>
+                    <div className="flex_1">发布时间</div>
+                    <div style={{color: 'rgba(16, 16, 16, 0.59)', fontSize: getUnit(14)}}>{time}</div>
+                </InfoItem>
                 <InfoItem className="flex">
-                    <div className="flex_1">案列逻辑</div>
+                    <div className="flex_1" style={{fontSize: getUnit(18)}}>案列逻辑</div>
                 </InfoItem>
 
 

@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import { Tag } from 'antd'
 import { MobileLayout, NavBar, Toast, Image } from 'components'
 import styled from 'styled-components'
 import { getUnit } from 'src/components/lib/utils'
-import moment from 'moment'
 import { http, imgUrl } from 'src/utils'
 import { Link } from 'react-router-dom'
 
