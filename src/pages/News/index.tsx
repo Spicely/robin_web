@@ -70,7 +70,7 @@ export default class News extends Component<RouteComponentProps<any>, IState> {
                                 </div>
                                 <div className="flex">
                                     <div>
-                                        <div style={{ height: getUnit(48), overflow: 'hidden' }}>
+                                        <div>
                                             <OrganItemLabel className="flex_1" dangerouslySetInnerHTML={{ __html: i.text }} />
                                         </div>
 

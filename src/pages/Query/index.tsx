@@ -234,13 +234,13 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                 </InfoToa>}
                 <InfoItem className="flex" style={{ marginTop: getUnit(10), padding: `${getUnit(5)} ${getUnit(10)}`, textAlign: 'center' }}>
                     <div className="flex_1">
-                        <InfoLe >股票代码</InfoLe>
-                        <InfoLw color="rgba(110, 117, 116, 0.59)" style={{ marginTop: getUnit(5) }}>{code}</InfoLw>
+                        <InfoLe >{(code || '').split('|')[0]}</InfoLe>
+                        <InfoLw color="#FF2c1F" style={{ marginTop: getUnit(5) }}>{(code || '').split('|')[1]}</InfoLw>
                     </div>
                     <Divider type="vertical" height="auto" />
                     <div className="flex_1">
                         <InfoLe >案列性质</InfoLe>
-                        <InfoLw color="rgba(64, 137, 51, 1)" style={{ marginTop: getUnit(5) }}>{nature}</InfoLw>
+                        <InfoLw color="#FF2c1F" style={{ marginTop: getUnit(5) }}>{nature}</InfoLw>
                     </div>
                     <Divider type="vertical" height="auto" />
                     <div className="flex_1">
@@ -252,7 +252,7 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                     <div style={{ lineHeight: getUnit(28) }}>价格策略</div>
                     <div className="flex">
                         <div className="flex_1">
-                            <InfoLw color="rgba(106, 174, 201, 1)">￥:{price_s}</InfoLw>
+                            <InfoLw color="#41ba41">￥:{price_s}</InfoLw>
                             <InfoLe style={{ marginTop: getUnit(5) }}>止损价</InfoLe>
                         </div>
                         <div className="flex_1">
@@ -260,7 +260,7 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                             <InfoLe style={{ marginTop: getUnit(5) }}>止盈价</InfoLe>
                         </div>
                         <div className="flex_1">
-                            <InfoLw color="rgba(62, 136, 49, 1)">￥:{section}</InfoLw>
+                            <InfoLw color="#57b7ff">￥:{section}</InfoLw>
                             <InfoLe style={{ marginTop: getUnit(5) }}>买入区间</InfoLe>
                         </div>
                     </div>
