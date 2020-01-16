@@ -274,7 +274,7 @@ export default class Query extends Component<RouteComponentProps<any>, IState> {
                 </InfoItem>
 
 
-                <div style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
+                <div className="gl" style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
                 <Dialog
                     title="提问"
                     visible={visibleQ1}

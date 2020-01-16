@@ -100,7 +100,7 @@ export default class Team extends Component<RouteComponentProps<any>, IState> {
                 <InfoItem className="flex">
                     <div className="flex_1">团队介绍</div>
                 </InfoItem>
-                <div style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
+                <div className="gl" style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
             </MobileLayout>
         )
     }

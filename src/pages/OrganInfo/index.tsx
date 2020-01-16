@@ -65,7 +65,7 @@ export default class OrganInfo extends Component<RouteComponentProps<any>, IStat
                     <div className="flex_1">来源：{keywords}</div>
                     <div>{time ? moment(time * 1000).format('YYYY-MM-DD HH:mm') : ''}</div>
                 </InfoItem>
-                <div style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
+                <div className="gl" style={{ padding: getUnit(10) }} dangerouslySetInnerHTML={{ __html: text }} />
             </MobileLayout>
         )
     }
