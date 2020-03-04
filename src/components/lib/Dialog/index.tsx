@@ -93,7 +93,7 @@ interface IDialogContentProps {
 const DialogContent = styled.div<IDialogContentProps>`
     width: ${({ dialogTheme }) => getUnit(dialogTheme.width)};
     min-width: ${() => getRatioUnit(300)};
-    min-height: ${() => getRatioUnit(400)};
+    /* min-height: ${() => getRatioUnit(400)}; */
     height: ${({ dialogTheme }) => getUnit(dialogTheme.height)};
     background: ${({ dialogTheme }) => dialogTheme.dialogColor.toString()};
     ${({ dialogTheme, theme }) => dialogTheme.borderRadius || theme.borderRadius};
@@ -110,8 +110,9 @@ const DialogContent = styled.div<IDialogContentProps>`
     }
 `
 
-const DialogBox = styled.div<IStyledProps>`
+const DialogBox = styled.div<IDialogContentProps>`
     min-height: ${() => getRatioUnit(300)};
+    ${({ dialogTheme }) => dialogTheme.padding.toString()};
     position: relative;
     margin: 0;
     overflow: auto;
@@ -216,10 +217,12 @@ export default class Dialog extends Component<IDialogProps, IState> {
                                         right={<Icon icon="ios-close" style={{ cursor: 'pointer' }} onClick={this.handleClose} />}
                                     />
                                     <DialogBox
+                                        dialogTheme={theme || value.theme.dialogTheme}
                                         className="flex_1"
                                     >
                                         {children}
                                     </DialogBox>
+                                    {isNull(footer) ? null : 
                                     <NavBar
                                         className="mk_divider_top"
                                         theme={theme ? theme.navBarTheme : value.theme.dialogTheme.navBarTheme}
@@ -228,7 +231,7 @@ export default class Dialog extends Component<IDialogProps, IState> {
                                         right={
                                             <div className="flex">
                                                 {
-                                                    isNull(footer) ? null : isUndefined(footer) ?
+                                                    isUndefined(footer) ?
                                                         (
                                                             <Fragment>
                                                                 <Button onClick={this.handleClose} style={{ marginRight: '10px' }}>取消</Button>
@@ -238,7 +241,7 @@ export default class Dialog extends Component<IDialogProps, IState> {
                                                 }
                                             </div>
                                         }
-                                    />
+                                    />}
                                 </DialogContent>
                             </Div>
                         )

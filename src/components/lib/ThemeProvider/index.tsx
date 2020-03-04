@@ -95,6 +95,13 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
         align-items: center;
     }
 
+    .flex_right {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
     .flex_bottom {
         display: flex;
         flex-direction: column;

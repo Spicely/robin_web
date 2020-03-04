@@ -28,11 +28,11 @@ const UploadView = styled.div`
 interface IUploadViewBoxProps {
     uploadTheme: UploadThemeData
 }
-
+/* height: ${({ uploadTheme }) => getUnit(uploadTheme.height)}; */
 const UploadViewBox = styled.div<IUploadViewBoxProps>`
     border-radius: ${({ uploadTheme, theme }) => getUnit(uploadTheme.borderRadius || theme.borderRadius)};
     ${({ uploadTheme }) => css`${uploadTheme.border.toString()};`}
-    height: ${({ uploadTheme }) => getUnit(uploadTheme.height)};
+    
     background: #fafafa;
     position: relative;
     cursor: pointer;
@@ -143,7 +143,7 @@ export interface IUploadProps {
     onUploadError?: (val: IUploadFileListProps, data: any, files: IUploadFileListProps[]) => void
     onFileTypeError?: () => void
     onUploadItemClear?: (delVal: IUploadFileListProps, data: IUploadFileListProps[]) => void
-    onUploadStart?: () => boolean
+    onBeforeUpload?: (file: File) => (boolean | object | Promise<object | boolean>)
     onMaxFileSizeError?: () => void
     theme?: UploadThemeData
 }
@@ -161,7 +161,7 @@ export default class Upload extends Component<IUploadProps, IState> {
 
     public static defaultProps: IUploadProps = {
         multiple: true,
-        onUploadStart: () => true
+        onBeforeUpload: () => true
     }
 
     private intNode: null | HTMLInputElement = null
@@ -245,7 +245,7 @@ export default class Upload extends Component<IUploadProps, IState> {
                                                                         <IconClose
                                                                             icon="ios-close"
                                                                             onClick={this.handleItemClose.bind(this, index)}
-                                                                            theme={new IconThemeData({size: 16})}
+                                                                            theme={new IconThemeData({ size: 16 })}
                                                                         />
                                                                     </UploadProViewItemClose>
                                                                 </UploadProViewItem>
@@ -316,7 +316,7 @@ export default class Upload extends Component<IUploadProps, IState> {
     }
 
     private updLoadFiles = (files: FileList) => {
-        const { fileTypes, maxLength, action, name, data, withCredentials, baserUrl, onUploadSuccess, onUploadError, onFileTypeError, headers, onUploadStart, maxFileSize, onMaxFileSizeError } = this.props
+        const { fileTypes, maxLength, action, name, data, withCredentials, baserUrl, onUploadSuccess, onUploadError, onFileTypeError, headers, onBeforeUpload, maxFileSize, onMaxFileSizeError } = this.props
         let { fileList } = this.state
         for (let i = 0; i < files.length; i++) {
             const file = files.item(i)
@@ -373,16 +373,20 @@ export default class Upload extends Component<IUploadProps, IState> {
                 }
                 return i
             }
-            const formData = new FormData()
-            formData.append(name || 'avatar', i.file)
-            if (isObject(data)) {
-                Object.keys(data).forEach((i: any) => {
-                    formData.append(i, data[i])
-                })
-            }
-            if (!i.xhr && isFunction(onUploadStart) && onUploadStart()) {
+            const uplodaFile = (val: IValue | boolean) => {
+                const formData = new FormData()
+                if (isObject(val)) {
+                    Object.keys(val).forEach((i: any) => {
+                        formData.append(i, val[i])
+                    })
+                }
+                formData.append(name || 'avatar', i.file)
+                if (isObject(data)) {
+                    Object.keys(data).forEach((i: any) => {
+                        formData.append(i, data[i])
+                    })
+                }
                 i.xhr = axios({
-                    baseURL: baserUrl,
                     method: 'POST',
                     headers,
                     url: action,
@@ -415,7 +419,31 @@ export default class Upload extends Component<IUploadProps, IState> {
                             onUploadError(i, response.data, fileList)
                         }
                     }
+                }).catch(() => {
+                    const { fileList } = this.state
+                    if (fileList[index]) {
+                        fileList[index].info = {
+                            ...fileList[index].info,
+                            progress: 100,
+                            status: 'error'
+                        }
+                        this.setState({
+                            fileList: [...fileList]
+                        })
+                    }
                 })
+            }
+            if (!i.xhr && isFunction(onBeforeUpload)) {
+                const fn = onBeforeUpload(i.file)
+                if (fn instanceof Promise) {
+                    fn.then((value) => {
+                        if (value) {
+                            uplodaFile(value)
+                        }
+                    })
+                } else if (fn) {
+                    uplodaFile(fn)
+                }
             }
             return i
         })

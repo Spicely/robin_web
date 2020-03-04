@@ -14,7 +14,9 @@ interface IButtonThemeDataProps {
     disabledBorderColor?: Color
     borderRadius?: BorderRadius
     height?: number | string
+    width?: number | string
     iconTheme?: IconThemeData
+    fontSize?: number | string
 }
 
 export default class ButtonThemeData {
@@ -30,7 +32,9 @@ export default class ButtonThemeData {
             if (data.iconTheme) this.iconTheme = data.iconTheme
             if (data.border) this.border = data.border
             if (!isNil(data.height)) this.height = data.height
+            if (!isNil(data.width)) this.width = data.width
             if (data.borderRadius) this.borderRadius = data.borderRadius
+            if (!isNil(data.fontSize)) this.fontSize = data.fontSize
         }
     }
 
@@ -40,7 +44,11 @@ export default class ButtonThemeData {
 
     public errorColor?: Color
 
+    public width?: number | string
+
     public height: number | string = 32
+
+    public fontSize?: number | string
 
     public disabledColor: Color = Color.fromRGB(241, 241, 241)
 

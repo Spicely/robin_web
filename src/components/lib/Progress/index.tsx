@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, CSSProperties } from 'react'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import { getClassName, ProgressThemeData, getUnit, transition, getRatioUnit } from '../utils'
@@ -10,7 +10,7 @@ interface IProgressInterProps {
 const ProgressInter = styled.div<IProgressInterProps>`
     position: relative;
     height: ${({ progressTheme }) => getUnit(progressTheme.height)};
-    background: #f5f5f5;
+    background:${({ progressTheme }) => progressTheme.progressColor.toString()};
     border-radius: ${({ progressTheme, theme }) => getUnit(progressTheme.borderRadius || theme.borderRadius)};
     overflow: hidden;
     ${transition(0.5)};
@@ -27,7 +27,7 @@ const ProgressGb = styled.div<IProgressGbProps>`
         if (status) {
             return css`background: ${successPercentColor || progressTheme.successColor || theme.successColor};`
         } else {
-            return css`background: ${percentColor || progressTheme.progressColor || theme.primarySwatch};`
+            return css`background: ${(percentColor || progressTheme.percentColor || theme.primarySwatch).toString()};`
         }
     }};
     height: 100%;
@@ -65,6 +65,7 @@ const ProgressText = styled.div`
 export interface IProgressProps {
     className?: string
     percent: number
+    style?: CSSProperties
     successPercent?: number
     text?: string | JSX.Element
     percentColor?: string
@@ -94,7 +95,7 @@ export default class Progress extends Component<IProgressProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { className, percent, successPercent, text, successPercentColor, percentColor, theme } = this.props
+        const { className, percent, successPercent, text, successPercentColor, percentColor, theme, style } = this.props
         const { status } = this.state
         const val = percent > 100 ? 100 : percent < 0 ? 0 : percent
         const succerss = (successPercent || 0) > 100 ? 100 : (successPercent || 0) < 0 ? 0 : (successPercent || 0)
@@ -102,7 +103,7 @@ export default class Progress extends Component<IProgressProps, IState> {
             <Consumer>
                 {
                     (init) => (
-                        <div className={getClassName('flex', className)}>
+                        <div className={getClassName('flex', className)} style={style}>
                             <div className="flex_1 flex_justify">
                                 <ProgressInter
                                     progressTheme={theme || init.theme.progressTheme}

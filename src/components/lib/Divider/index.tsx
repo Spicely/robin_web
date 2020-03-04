@@ -4,6 +4,8 @@ import { getUnit } from '../utils'
 
 type IType = 'horizontal' | 'vertical'
 
+type IBorderType = 'solid' | 'dashed'
+
 export interface IDividerProps {
     className?: string
     width?: string
@@ -11,6 +13,7 @@ export interface IDividerProps {
     color?: string
     type?: IType
     style?: CSSProperties
+    borderType?: IBorderType
 }
 
 interface IDiviProps {
@@ -18,17 +21,25 @@ interface IDiviProps {
     vType?: IType
     vWidth?: string | number
     vHeight?: string | number
+    borderType: IBorderType
 }
 
 const Divi = styled.div<IDiviProps>`
-    ${({ vType, vWidth, vHeight }) => {
+    ${({ vType, vWidth, vHeight, vColor, theme, borderType }) => {
         if (vType === 'horizontal') {
-            return css`width: ${getUnit(vWidth, '100%')};height: ${getUnit(vHeight, 1)};`
+            return css`
+                width: ${getUnit(vWidth, '100%')};
+                height: ${getUnit(vHeight, 1)};
+                border-bottom: ${getUnit(vHeight, 1)} ${borderType} ${vColor || theme.dividerColor};
+                `
         } else {
-            return css`width:${getUnit(vWidth, 1)};height: ${getUnit(vHeight, '100%')};`
+            return css`
+                width: ${getUnit(vWidth, 1)};
+                height: ${getUnit(vHeight, '100%')};
+                border-left: ${getUnit(vWidth, 1)} ${borderType} ${vColor || theme.dividerColor};
+            `
         }
     }}
-    background: ${({ vColor, theme }) => vColor || theme.dividerColor};
 `
 
 export default class Divider extends Component<IDividerProps, any> {
@@ -38,14 +49,16 @@ export default class Divider extends Component<IDividerProps, any> {
     }
 
     public render(): JSX.Element {
-        const { className, width, height, color, type } = this.props
+        const { className, width, height, color, type, borderType, style } = this.props
         return (
             <Divi
                 className={className}
                 vType={type}
+                borderType={borderType || 'solid'}
                 vWidth={width}
                 vHeight={height}
                 vColor={color}
+                style={style}
             />
         )
     }

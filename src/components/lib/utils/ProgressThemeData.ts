@@ -7,6 +7,7 @@ interface IProgressThemeDataProps {
     width?: number | string
     borderRadius?: number
     successColor?: Color
+    percentColor?: Color
 }
 
 export default class ProgressThemeData {
@@ -14,6 +15,7 @@ export default class ProgressThemeData {
     constructor(data?: IProgressThemeDataProps) {
         if (data) {
             if (data.progressColor) this.progressColor = data.progressColor
+            if (data.percentColor) this.percentColor = data.percentColor
             if (data.successColor) this.successColor = data.successColor
             if (!isNil(data.height)) this.height = data.height
             if (!isNil(data.width)) this.width = data.width
@@ -21,13 +23,15 @@ export default class ProgressThemeData {
         }
     }
 
-    public progressColor?: Color
+    public progressColor: Color = Color.fromRGB(245, 245, 245)
+
+    public percentColor?: Color
 
     public successColor?: Color
 
     public borderRadius?: number
 
-    public height: number | string = 5
+    public height: number | string = 8
 
     public width?: number | string
 }

@@ -18,13 +18,25 @@ export default class Index extends Component<any, any> {
                     <Home />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="机构观点"
-                    icon={<Icon icon="ios-apps" />}
+                    title="商城"
+                    icon={<Icon icon="shop" />}
+                >
+                    <Home />
+                </TabBar.Item>
+                <TabBar.Item
+                    title="新闻"
+                    icon={<Icon icon="msg" />}
                 >
                     <OrganList />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="投顾团队"
+                    title="购物车"
+                    icon={<Icon icon="shopping" />}
+                >
+                    <TeamList />
+                </TabBar.Item>
+                <TabBar.Item
+                    title="我的"
                     icon={<Icon icon="ios-person" />}
                 >
                     <TeamList />

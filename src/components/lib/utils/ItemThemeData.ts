@@ -1,6 +1,8 @@
 import Color from './Color'
 import Padding from './Padding'
 import IconThemeData from './IconThemeData'
+import InputThemeData from './InputThemeData'
+import Border from './Border'
 
 interface IItemThemeDataProps {
     itemColor?: Color
@@ -11,6 +13,7 @@ interface IItemThemeDataProps {
     rightColor?: Color
     iconTheme?: IconThemeData
     dividerColor?: Color
+    inputTheme?: InputThemeData
 }
 
 export default class ItemThemeData {
@@ -25,6 +28,10 @@ export default class ItemThemeData {
             if (data.rightColor) this.rightColor = data.rightColor
             if (data.iconTheme) this.iconTheme = data.iconTheme
             if (data.dividerColor) this.dividerColor = data.dividerColor
+            if (data.inputTheme) this.inputTheme = data.inputTheme
+            if (data.minHeight) {
+                this.inputTheme.height = data.minHeight
+            }
         }
     }
 
@@ -42,7 +49,15 @@ export default class ItemThemeData {
 
     public dividerColor?: Color
 
+    public inputTheme: InputThemeData = new InputThemeData({
+        fontSize: 14,
+        border: Border.all({ width: 0 }),
+        width: '100%',
+        height: this.minHeight
+    })
+
     public iconTheme: IconThemeData = new IconThemeData({
-        color: Color.fromRGB(51, 51, 51)
+        color: Color.fromRGB(204, 204, 204),
+        size: 18
     })
 }

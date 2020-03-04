@@ -1,6 +1,6 @@
 import React, { Component, MouseEvent, CSSProperties } from 'react'
 import styled, { css } from 'styled-components'
-import { omit, isFunction } from 'lodash'
+import { omit, isFunction, isNil } from 'lodash'
 import { Consumer } from '../ThemeProvider'
 import Icon from '../Icon'
 import { IStyledProps, transition, ButtonThemeData, getRatioUnit, getUnit } from '../utils'
@@ -32,6 +32,11 @@ interface IBtnStyleProps extends IStyledProps {
 
 const Btn = styled.button<IBtnStyleProps>`
     height: ${({ buttonTheme }) => getUnit(buttonTheme.height)};
+    ${({ buttonTheme }) => {
+        if (!isNil(buttonTheme.width)) {
+            return css`width: ${getUnit(buttonTheme.width)};`
+        }
+    }};
     transition: all .1s cubic-bezier(0.65, 0.05, 0.36, 1);
     ${({ buttonTheme, theme }) => css`${buttonTheme.borderRadius || theme.borderRadius}`};
     background: initial;
@@ -134,6 +139,10 @@ const Btn = styled.button<IBtnStyleProps>`
     
 `
 
+const BtnLabel = styled.span<IBtnStyleProps>`
+    font-size: ${({ buttonTheme, theme }) => getUnit(buttonTheme.fontSize, theme.fontSize)};
+`
+
 export default class Button extends Component<IButtonProps, IState> {
 
     public static defaultProps = {
@@ -170,7 +179,12 @@ export default class Button extends Component<IButtonProps, IState> {
                                         theme={theme ? theme.iconTheme : value.theme.buttonTheme.iconTheme}
                                         rotate
                                     /> : ''}
-                                    <span className="flex_center">{children}</span>
+                                    <BtnLabel
+                                        className="flex_center"
+                                        buttonTheme={theme || value.theme.buttonTheme}
+                                    >
+                                        {children}
+                                    </BtnLabel>
                                 </span>
                             </div>
                         </Btn>

@@ -1,12 +1,20 @@
 import React, { Component } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
-import { MobileLayout, NavBar, Form, Toast, CountDown } from 'components'
+import { MobileLayout, NavBar, Form, Toast, CountDown, Button } from 'components'
 import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 import { getUnit } from 'src/components/lib/utils'
 import { http } from '../../utils'
 import { connect, DispatchProp } from 'react-redux'
 import { SET_TOKEN } from 'src/store/reducers/token'
+import styled from 'styled-components'
+
+const TitleText = styled.div`
+    height: ${getUnit(80)}; 
+    font-size: ${getUnit(20)}; 
+    padding: 0 ${getUnit(20)};
+    color: rgb(16, 16, 16);
+`
 
 interface IState { }
 
@@ -19,8 +27,8 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
         const items: IFormItem[] = [{
             component: 'ItemInput',
             props: {
-                title: '用户名',
-                placeholder: '请输入用户名',
+                title: '手机号',
+                placeholder: '请输入手机号',
                 type: 'tel',
                 maxLength: 11
             },
@@ -28,33 +36,38 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
         }, {
             component: 'ItemInput',
             props: {
-                title: '密码',
+                title: '密  码',
                 placeholder: '请输入密码',
                 type: 'password',
             },
+            extend: <CountDown
+                seconds={60}
+                initText="获取验证码"
+                render={(val: number) => val + 's后重新获取'}
+                onClick={this.getCode}
+            />,
             field: 'pwd'
-        }, {
-            component: 'Label',
-            render: () => (
-                <Link to="/register">
-                    <div
-                        style={{ color: '#0693e3', textAlign: 'right', paddingRight: getUnit(20) }}
-                    >
-                        新用户注册
-                    </div>
-                </Link>
-            )
         }, {
             component: 'Button',
             props: {
-                children: '登录',
+                children: '确定',
                 mold: 'primary',
                 async: true,
                 style: {
-                    margin: `0 ${getUnit(30)} 0 ${getUnit(30)}`
+                    margin: `${getUnit(30)} ${getUnit(10)} 0 ${getUnit(10)}`,
+                    borderRadius: getUnit(30),
+                    height: getUnit(40)
                 },
                 onClick: this.handleLogin
             }
+        }, {
+            component: 'Label',
+            render: () => (
+                <div className="flex" style={{ margin: `0 ${getUnit(10)} 0 ${getUnit(15)}` }}>
+                    <span style={{ color: 'rgb(159, 159, 159)', fontSize: getUnit(10) }}>确定即同意</span>
+                    <span style={{ color: 'rgb(30, 30, 30)', fontSize: getUnit(10) }}>《用户协议》和《隐私权政策》</span>
+                </div>
+            )
         }]
         return items
     }
@@ -64,15 +77,30 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
             <MobileLayout
                 appBar={
                     <NavBar
-                        title="登录"
+                        right={
+                            <Link to="/register">注册</Link>
+                        }
+                        divider={false}
                         titleCenter
+                        onBack={this.handleBack}
                     />
                 }
             >
-                <Form getItems={this.getItenm} />
+                <TitleText
+                    className="flex_justify"
+                >
+                    登录后继续操作
+                </TitleText>
+                <Form getItems={this.getItenm} style={{ padding: `0 ${getUnit(10)}` }} />
             </MobileLayout>
         )
     }
+
+    private handleBack = () => {
+        const { history } = this.props
+        history.goBack()
+    }
+
 
     private getCode = async () => {
         if (this.fn) {

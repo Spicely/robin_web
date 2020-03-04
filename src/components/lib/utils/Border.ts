@@ -30,4 +30,6 @@ export default class Border {
     public static all(data: IBorderAll): Border {
         return `border:${getUnit((isNumber(data.width) ? data.width : 1))} ${data.style ? data.style.toString() : BorderStyle.none.toString()} ${data.color ? data.color.toString() : Color.fromRGBO(0, 0, 0, 0).toString()};`
     }
+
+    public static none: Border = 'border: none'
 }

@@ -70,6 +70,7 @@ const ItemTitile = styled.div<IItemInitProps>`
 
 const ItemRight = styled.div<IItemInitProps>`
     color: ${({ itemTheme }) => itemTheme.rightColor.toString()};
+    height: 100%;
     font-size: ${getUnit(10)};
 `
 

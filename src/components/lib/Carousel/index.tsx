@@ -1,9 +1,9 @@
-import React, { Component, CSSProperties } from 'react'
-import { isNumber, isFunction, isNil } from 'lodash'
+import React, { Component, CSSProperties, Children } from 'react'
+import { isNumber, isFunction, isNil, isObject } from 'lodash'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import Image from '../Image'
-import { getClassName, CarouselThemeData, getUnit, transition, getRatioUnit, Color } from '../utils'
+import { getClassName, CarouselThemeData, getUnit, transition, getRatioUnit, Color, IValue } from '../utils'
 
 export interface ICarouselValueProps {
     url: string
@@ -173,7 +173,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     private animateNode: Element | null = null
 
     public render(): JSX.Element {
-        const { className, dotPosition, dotClassName, dots, effect, style, autoplay, value, dotType, dotColor, baseUrl, theme } = this.props
+        const { className, dotPosition, dotClassName, dots, effect, style, autoplay, value, dotType, dotColor, baseUrl, theme, children } = this.props
         const { selectIndex, left, top, animate } = this.state
         const cssStyle: CSSProperties = {}
         const dotStyle: CSSProperties = {}
@@ -187,6 +187,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
             cssStyle.transform = `translate3d(0, -${selectIndex * top}px, 0)`
             cssStyle.transition = animate ? '' : 'none'
         }
+        const childs = children || value
         return (
             <Consumer>
                 {
@@ -198,7 +199,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                             ref={(e) => this.carouselNode = e}
                         >
                             {
-                                value.map((child, index) => {
+                                Children.map(childs, (child?: IValue, index?: any) => {
                                     return (
                                         <CarouselViewItem
                                             className="flex_center"
@@ -211,7 +212,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                             key={index}
                                         >
                                             {
-                                                <CarouselViewItemImg src={baseUrl + child.url} />
+                                                isObject(child) ? child._owner ? child : <CarouselViewItemImg src={baseUrl + child.url} /> : child
                                             }
                                         </CarouselViewItem>
                                     )
@@ -245,14 +246,14 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                         <div className="flex_center">
                                             <span className={(dotPosition === 'bottom' || dotPosition === 'top' || dotPosition === 'bottomRight' || dotPosition === 'bottomLeft') ? 'flex' : ''}>
                                                 {
-                                                    value.map((child, index) => {
+                                                    Children.map(childs, (child, index) => {
                                                         return (
                                                             <CarouselDotItem
                                                                 carouselTheme={theme || init.theme.carouselTheme}
                                                                 dotType={dotType}
                                                                 dotPos={dotPosition}
                                                                 dotColor={dotColor}
-                                                                active={selectIndex % value.length === index}
+                                                                active={selectIndex % (value.length || Children.count(children)) === index}
                                                                 className={dotClassName}
                                                                 key={index}
                                                                 onClick={this.handleTabIndex.bind(this, index)}

@@ -1,6 +1,7 @@
 import { isNumber } from 'lodash'
 import Color from './Color'
 import NavBarThemeData from './NavBarThemeData'
+import Padding from './Padding'
 
 interface IDialogThemeDataProps {
     dialogColor?: Color
@@ -8,6 +9,7 @@ interface IDialogThemeDataProps {
     borderRadius?: number
     width?: number | string
     height?: number | string
+    padding?: Padding
 }
 
 export default class DialogThemeData {
@@ -19,6 +21,7 @@ export default class DialogThemeData {
             if (isNumber(data.borderRadius)) this.borderRadius = data.borderRadius
             if (data.height) this.height = data.height
             if (data.width) this.width = data.width
+            if (data.padding) this.padding = data.padding
         }
     }
 
@@ -26,11 +29,13 @@ export default class DialogThemeData {
 
     public width: number | string = 600
 
-    public height: number | string = 100
+    public height: number | string = 400
 
     public borderRadius?: number
 
     public navBarTheme: NavBarThemeData = new NavBarThemeData({
         navBarColor: Color.fromRGB(255, 255, 255)
     })
+
+    public padding: Padding = Padding.symmetric({ horizontal: 20, vertical: 10 })
 }

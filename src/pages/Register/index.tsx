@@ -1,14 +1,30 @@
 import React, { Component } from 'react'
-import { RouteComponentProps } from 'react-router'
-import { MobileLayout, NavBar, Form, Toast, CountDown } from 'components'
+import { Link, RouteComponentProps } from 'react-router-dom'
+import { MobileLayout, NavBar, Form, Toast, CountDown, Button } from 'components'
 import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 import { getUnit } from 'src/components/lib/utils'
 import { http } from '../../utils'
+import { connect, DispatchProp } from 'react-redux'
+import { SET_TOKEN } from 'src/store/reducers/token'
+import styled from 'styled-components'
+
+const TitleText = styled.div`
+    height: ${getUnit(20)}; 
+    font-size: ${getUnit(20)}; 
+    padding: 0 ${getUnit(20)};
+    color: rgb(16, 16, 16);
+`
+
+const BarTitle = styled.div`
+    font-weight: 400;
+    font-size: ${getUnit(16)};
+    color: rgb(16, 16, 16);
+`
 
 interface IState { }
 
-export default class Register extends Component<RouteComponentProps, IState> {
+class Register extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private fn?: IFormFun
 
@@ -17,46 +33,59 @@ export default class Register extends Component<RouteComponentProps, IState> {
         const items: IFormItem[] = [{
             component: 'ItemInput',
             props: {
-                title: '电话号码',
-                placeholder: '请输入电话号码',
+                title: '手机号',
+                placeholder: '请输入手机号',
                 type: 'tel',
                 maxLength: 11
             },
             field: 'tel'
         }, {
             component: 'ItemInput',
-            extend: <CountDown
-                initText="获取验证码"
-                seconds={60}
-                render={(val) => <div style={{ color: '#888888' }}>{val}s后重新获取</div>}
-                onClick={this.getCode}
-            />,
             props: {
-                title: '验证码',
-                placeholder: '请输入验证码',
-                type: 'tel',
-                maxLength: 4
-            },
-            field: 'code'
-        }, {
-            component: 'ItemInput',
-            props: {
-                title: '密码',
+                title: '密  码',
                 placeholder: '请输入密码',
                 type: 'password',
             },
+            extend: <CountDown
+                seconds={60}
+                initText="获取验证码"
+                render={(val: number) => val + 's后重新获取'}
+                onClick={this.getCode}
+            />,
             field: 'pwd'
+        }, {
+            component: 'ItemInput',
+            props: {
+                title: '邀请码',
+                placeholder: '请输入邀请码',
+                type: 'tel',
+                maxLength: 6
+            },
+            field: 'eq'
         }, {
             component: 'Button',
             props: {
-                children: '注册',
+                children: '确定',
                 mold: 'primary',
                 async: true,
                 style: {
-                    margin: `${getUnit(10)} ${getUnit(30)} 0 ${getUnit(30)} `
+                    margin: `${getUnit(30)} ${getUnit(10)} 0 ${getUnit(10)}`,
+                    borderRadius: getUnit(30),
+                    height: getUnit(40)
                 },
-                onClick: this.handleRegister
+                onClick: this.handleLogin
             }
+        }, {
+            component: 'Label',
+            render: () => (
+                <div className="flex" style={{ margin: `0 ${getUnit(10)} 0 ${getUnit(15)}` }}>
+                    <div className="flex_1">
+                        <span style={{ color: 'rgb(159, 159, 159)', fontSize: getUnit(10) }}>确定即同意</span>
+                        <span style={{ color: 'rgb(30, 30, 30)', fontSize: getUnit(10) }}>《用户协议》和《隐私权政策》</span>
+                    </div>
+                    <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(12) }}>账号密码登录</div>
+                </div>
+            )
         }]
         return items
     }
@@ -66,13 +95,20 @@ export default class Register extends Component<RouteComponentProps, IState> {
             <MobileLayout
                 appBar={
                     <NavBar
-                        onBack={this.handleBack}
-                        title="注册"
+                        title={
+                            <BarTitle>注册</BarTitle>
+                        }
+                        divider={false}
                         titleCenter
+                        onBack={this.handleBack}
                     />
                 }
             >
-                <Form getItems={this.getItenm} />
+                <TitleText
+                    className="flex_justify"
+                >
+                </TitleText>
+                <Form getItems={this.getItenm} style={{ padding: `0 ${getUnit(10)}` }} />
             </MobileLayout>
         )
     }
@@ -105,7 +141,7 @@ export default class Register extends Component<RouteComponentProps, IState> {
         }
     }
 
-    private handleRegister = async () => {
+    private handleLogin = async () => {
         try {
             if (this.fn) {
                 const form = this.fn.getFieldValue()
@@ -115,24 +151,20 @@ export default class Register extends Component<RouteComponentProps, IState> {
                     })
                     return
                 }
-                if (!form.code) {
+                if (!form.pwd) {
                     Toast.info({
                         content: '请输入验证码',
                     })
                     return
                 }
-                if (!form.pwd || form.pwd.length < 6) {
-                    Toast.info({
-                        content: '请输入长度不小于6位的密码',
-                    })
-                    return
-                }
-                const data = await http('user/register', form)
-                const { history } = this.props
+                const data = await http('user/login', form)
+                const { history, dispatch } = this.props
+                localStorage.setItem('token', data.msg)
+                dispatch({ type: SET_TOKEN, data: data.msg })
                 Toast.info({
-                    content: data.msg,
+                    content: '登录成功',
                 })
-                history.goBack()
+                history.replace('/')
             }
         } catch (data) {
             Toast.info({
@@ -141,3 +173,9 @@ export default class Register extends Component<RouteComponentProps, IState> {
         }
     }
 }
+
+export default connect(
+    ({ token }: any) => ({
+        token
+    })
+)(Register as any)

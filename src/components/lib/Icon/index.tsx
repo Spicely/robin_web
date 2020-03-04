@@ -1,10 +1,10 @@
 import React, { Component, MouseEvent, CSSProperties, HtmlHTMLAttributes, Fragment } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes, css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import { omit } from 'lodash'
-import { IStyledProps, transition, IconThemeData, ThemeData } from '../utils'
+import { IStyledProps, transition, IconThemeData, getUnit } from '../utils'
 
-export type iconType = 'logo-google' | 'ios-refresh' | 'md-refresh' | 'ios-document' | 'md-document' | 'md-more' | 'md-arrow-down' | 'ios-image' | 'ios-more' | 'ios-paper-plane' | 'ios-arrow-forward' | 'md-close-circle' | 'ios-arrow-down' | 'md-thumbs-up' | 'md-thumbs-down' | 'ios-home' | 'md-home' | 'ios-arrow-dropdown' | 'md-arrow-dropdown' | 'md-volume-mute' | 'ios-volume-high' | 'menu-open' | 'menu-close' | 'ios-close-circle-outline' | 'ios-close' | 'md-close' | 'md-checkmark' | 'ios-checkmark' | 'md-add' | 'ios-add' | 'loading' | 'ios-menu' | 'ios-settings' | 'md-settings' | 'ios-keypad' | 'md-create' | 'ios-arrow-back' | 'md-arrow-back' | 'md-search' | 'ios-search' | 'md-exit' | 'ios-exit' | 'shop' | 'double-arrow-left' | 'double-arrow-right' | 'shopping' | 'md-person' | 'ios-person' | 'shop-setting' | 'md-gift' | 'ios-gift' | 'purse' | 'md-trending-up' | 'ios-trending-up' | 'small-routine' | 'md-apps' | 'ios-apps' | 'md-remove' | 'ios-remove' | 'md-close-circle-outline' | 'md-expand' | 'ios-expand' | 'md-contract' | 'ios-contract' | 'msg' | 'file-box' | 'notifice' | 'md-lock' | 'ios-lock' | 'md-folder' | 'ios-folder' | 'security' | 'ios-filing' | 'md-filing' | 'md-alarm' | 'ios-alarm' | 'md-help' | 'ios-help' | 'md-help-circle' | 'ios-help-circle' | 'md-help-circle-outline' | 'ios-help-circle-outline' | 'md-pin' | 'ios-pin' | 'md-cart' | 'ios-cart'
+export type iconType = 'ios-backspace' | 'md-backspace' | 'logo-google' | 'ios-refresh' | 'md-refresh' | 'ios-document' | 'md-document' | 'md-more' | 'md-arrow-down' | 'md-image' | 'ios-image' | 'ios-more' | 'ios-paper-plane' | 'ios-arrow-forward' | 'md-close-circle' | 'ios-arrow-down' | 'md-thumbs-up' | 'md-thumbs-down' | 'ios-home' | 'md-home' | 'ios-arrow-dropdown' | 'md-arrow-dropdown' | 'md-volume-mute' | 'ios-volume-high' | 'menu-open' | 'menu-close' | 'ios-close-circle-outline' | 'ios-close' | 'md-close' | 'md-checkmark' | 'ios-checkmark' | 'md-add' | 'ios-add' | 'loading' | 'ios-menu' | 'ios-settings' | 'md-settings' | 'ios-keypad' | 'md-create' | 'ios-arrow-back' | 'md-arrow-back' | 'md-search' | 'ios-search' | 'md-exit' | 'ios-exit' | 'shop' | 'double-arrow-left' | 'double-arrow-right' | 'shopping' | 'md-person' | 'ios-person' | 'shop-setting' | 'md-gift' | 'ios-gift' | 'purse' | 'md-trending-up' | 'ios-trending-up' | 'small-routine' | 'md-apps' | 'ios-apps' | 'md-remove' | 'ios-remove' | 'md-close-circle-outline' | 'md-expand' | 'ios-expand' | 'md-contract' | 'ios-contract' | 'msg' | 'file-box' | 'notifice' | 'md-lock' | 'ios-lock' | 'md-folder' | 'ios-folder' | 'security' | 'ios-filing' | 'md-filing' | 'md-alarm' | 'ios-alarm' | 'md-help' | 'ios-help' | 'md-help-circle' | 'ios-help-circle' | 'md-help-circle-outline' | 'ios-help-circle-outline' | 'md-pin' | 'ios-pin' | 'md-cart' | 'ios-cart'
 
 export interface IIconProps extends HtmlHTMLAttributes<any> {
     icon?: iconType
@@ -30,6 +30,8 @@ const paths: any = {
     'ios-home': import('./ios/home').then((data) => data.default),
     'md-exit': import('./md/exit').then((data) => data.default),
     'ios-exit': import('./ios/exit').then((data) => data.default),
+    'md-backspace': import('./md/backspace').then((data) => data.default),
+    'ios-backspace': import('./ios/backspace').then((data) => data.default),
     'md-arrow-down': import('./md/arrow-down').then((data) => data.default),
     'ios-arrow-down': import('./ios/arrow-down').then((data) => data.default),
     'md-contract': import('./md/contract').then((data) => data.default),
@@ -93,8 +95,10 @@ const paths: any = {
     'md-cart': import('./md/cart').then((data) => data.default),
     'ios-cart': import('./ios/cart').then((data) => data.default),
     'md-thumbs-up': import('./md/thumbs-up').then((data) => data.default),
+    'ios-refresh': import('./ios/refresh').then((data) => data.default),
     'md-refresh': import('./md/refresh').then((data) => data.default),
     'ios-paper-plane': import('./ios/paper-plane').then((data) => data.default),
+    'md-image': import('./md/image').then((data) => data.default),
     'ios-image': import('./ios/image').then((data) => data.default),
     'menu-open': import('./global/menu-open').then((data) => data.default),
     'menu-close': import('./global/menu-close').then((data) => data.default),
@@ -146,23 +150,23 @@ const rotate = keyframes`
 const shake = keyframes`
     10%,
     90% {
-        transform: translate3d(${ -1 * ThemeData.ratio + ThemeData.unit}, 0, 0);
+        transform: translate3d(${getUnit(-1)}, 0, 0);
     }
 
     20%,
     80% {
-        transform: translate3d(${2 * ThemeData.ratio + ThemeData.unit}, 0, 0);
+        transform: translate3d(${getUnit(2)}, 0, 0);
     }
 
     30%,
     50%,
     70% {
-        transform: translate3d(${-4 * ThemeData.ratio + ThemeData.unit}, 0, 0);
+        transform: translate3d(${getUnit(-4)}, 0, 0);
     }
 
     40%,
     60% {
-        transform: translate3d(${4 * ThemeData.ratio + ThemeData.unit}, 0, 0);
+        transform: translate3d(${getUnit(4)}, 0, 0);
     }
 `
 
@@ -172,17 +176,25 @@ interface IsrtleProps extends IStyledProps {
 const Svg = styled.svg<IsrtleProps>`
     display: inline-block;
     color: inherit;
-    fill: ${({ iconTheme }) => iconTheme.color.toString()};
+    fill: ${({ iconTheme, fill }) => (fill || iconTheme.color).toString()};
     font-style: normal;
     line-height: 0;
-    font-size:${({ iconTheme }) => iconTheme.size * ThemeData.ratio + ThemeData.unit};
-    width: ${({ iconTheme }) => iconTheme.size * ThemeData.ratio + ThemeData.unit};
-    height: ${({ iconTheme }) => iconTheme.size * ThemeData.ratio + ThemeData.unit};
+    font-size:${({ iconTheme }) => getUnit(iconTheme.size)};
+    width: ${({ iconTheme }) => getUnit(iconTheme.size)};
+    height: ${({ iconTheme }) => getUnit(iconTheme.size)};
     text-align: center;
     text-transform: none;
-    vertical-align: ${() => -3 * ThemeData.ratio + ThemeData.unit};
+    vertical-align: ${() => getUnit(-3)};
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    &:hover {
+        ${({ iconTheme }) => {
+        if (iconTheme.hoverColor) {
+            return css`fill: ${iconTheme.hoverColor.toString()};`
+        }
+    }}
+
+    }
     
     ${transition(0.5)};
 
@@ -267,10 +279,10 @@ export default class Icon extends Component<IIconProps, IState> {
                         >
                             {icon === 'ios-cart' ? (
                                 <Fragment>
-                                    <ellipse transform="rotate(-1.057 159.995 423.97) scale(.99997)" cx="160" cy="424" rx="24" ry="24"/>
-                                    <ellipse transform="matrix(.02382 -.9997 .9997 .02382 -48.51 798.282)" cx="384.5" cy="424" rx="24" ry="24"/>
+                                    <ellipse transform="rotate(-1.057 159.995 423.97) scale(.99997)" cx="160" cy="424" rx="24" ry="24" />
+                                    <ellipse transform="matrix(.02382 -.9997 .9997 .02382 -48.51 798.282)" cx="384.5" cy="424" rx="24" ry="24" />
                                 </Fragment>
-                            ): null}
+                            ) : null}
                             <path d={path} />
                         </Svg>
                     )

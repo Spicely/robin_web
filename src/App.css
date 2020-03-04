@@ -1,8 +1,12 @@
 #root {
-  height: 100vh;
-  width: 100vw;
+    height: 100vh;
+    width: 100vw;
 }
 
 .gl img {
-  width: 100% !important;
+    width: 100% !important;
+}
+
+.animated-router-container{
+    height: 100%;
 }
