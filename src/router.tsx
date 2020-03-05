@@ -23,7 +23,7 @@ class RouterItem extends Component<any, any> {
                             //         return <Redirect from="/" exact to="/login" key={index} />
                             //     }
                             // }
-                            return <Route path={item.path} exact component={loadable(item.component)} key={index} />
+                            return <Route path={item.path} exact component={item.component} key={index} />
 
                         })
                     }

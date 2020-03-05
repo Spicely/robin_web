@@ -1,5 +1,10 @@
 import React from 'react'
 import Loadable from 'react-loadable'
+import Index from '../pages/Index'
+import Register from '../pages/Register'
+import Wallet from '../pages/Wallet'
+import AddressList from '../pages/AddressList'
+
 function Loading(props: any) {
     if (props.error) {
         return <div />
@@ -14,31 +19,22 @@ function Loading(props: any) {
 
 export interface IRoutes {
     path: string
-    component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>
+    component: any
 }
 
 export const routes: IRoutes[] = [{
-    component: import('../pages/Index'),
+    component: Index,
     path: '/'
 }, {
-    component: import('../pages/Query'),
-    path: '/query/:id/:title'
-},{
-    component: import('../pages/News'),
-    path: '/news/:id'
-}, {
-    component: import('../pages/Register'),
+    component: Register,
     path: '/register'
 }, {
-    component: import('../pages/OrganInfo'),
-    path: '/organInfo/:id'
+    component: Wallet,
+    path: '/wallet'
 }, {
-    component: import('../pages/Team'),
-    path: '/team/:id'
-}, {
-    component: import('../pages/TeamInfo'),
-    path: '/teamInfo/:id'
-},]
+    component: AddressList,
+    path: '/addressList'
+}]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {
     return Loadable({

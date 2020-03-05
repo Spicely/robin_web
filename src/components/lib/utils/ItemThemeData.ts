@@ -45,7 +45,7 @@ export default class ItemThemeData {
 
     public minHeight: number | string = 50
 
-    public padding: Padding = Padding.symmetric({ vertical: 0, horizontal: 10 })
+    public padding: Padding = Padding.only({ left: 10 })
 
     public dividerColor?: Color
 

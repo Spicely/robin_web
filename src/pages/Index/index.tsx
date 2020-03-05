@@ -3,6 +3,7 @@ import { TabBar, Icon } from 'components'
 import Home from '../Home'
 import OrganList from '../OrganList'
 import TeamList from '../TeamList'
+import My from '../My'
 
 export default class Index extends Component<any, any> {
 
@@ -10,6 +11,7 @@ export default class Index extends Component<any, any> {
         return (
             <TabBar
                 mode="menu"
+                selected={4}
             >
                 <TabBar.Item
                     title="首页"
@@ -39,7 +41,7 @@ export default class Index extends Component<any, any> {
                     title="我的"
                     icon={<Icon icon="ios-person" />}
                 >
-                    <TeamList />
+                    <My />
                 </TabBar.Item>
             </TabBar>
         )

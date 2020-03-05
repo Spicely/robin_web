@@ -518,6 +518,7 @@ export default class Form extends Component<IFormProps, IState> {
                             <View
                                 {...vProps}
                                 key={field}
+                                flexType="value"
                                 value={
                                     <Input
                                         theme={itemInputTheme}

@@ -1,5 +1,6 @@
 import React, { Component, CSSProperties } from 'react'
-import { isBoolean, isFunction, isNil } from 'lodash'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
+import { isBoolean, isFunction, isNil, isString } from 'lodash'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import Icon from '../Icon'
@@ -14,13 +15,14 @@ export interface IItemProps {
     className?: string
     style?: CSSProperties
     title?: string | JSX.Element | JSX.ElementClass
-    link?: boolean
+    link?: boolean | string
     value?: string | JSX.Element | JSX.ElementClass
     extend?: string | JSX.Element | JSX.ElementClass
     icon?: string | JSX.Element | JSX.ElementClass
     onPress?: () => void
     lineType?: ILineType
     theme?: ItemThemeData
+    flexType?: 'title' | 'value'
 }
 
 interface IItemInitProps {
@@ -54,8 +56,8 @@ const ItemView = styled.div<IItemViewProps>`
         bottom: 0;
         transform: scaleY(0.5);
         ${({ lineType, itemTheme, theme }) => {
-             return css`border-bottom: ${getUnit(1)} ${lineType} ${itemTheme.dividerColor || theme.dividerColor};`
-        }}
+        return css`border-bottom: ${getUnit(1)} ${lineType} ${itemTheme.dividerColor || theme.dividerColor};`
+    }}
     }
     :last-child::after {
         border-bottom: 0;
@@ -76,18 +78,20 @@ const ItemRight = styled.div<IItemInitProps>`
 
 const ItemLink = styled.div<IItemInitProps>`
     margin-left: ${getUnit(6)};
+    width: ${getUnit(24)};
 `
 
 interface IState {
     active: boolean
 }
 
-export default class Item extends Component<IItemProps, IState> {
+class Item extends Component<any, IState> {
 
     public static defaultProps = {
         activeClass: 'active',
         title: '',
-        lineType: 'solid'
+        lineType: 'solid',
+        flexType: 'title'
     }
 
     public state = {
@@ -99,7 +103,7 @@ export default class Item extends Component<IItemProps, IState> {
     private moveNum: number = 0
 
     public render(): JSX.Element {
-        const { activeClassName, lineType, className, extend, title, value, link, titleClassName, labelClassName, style, theme } = this.props
+        const { activeClassName, lineType, className, extend, title, value, link, titleClassName, labelClassName, style, theme, flexType } = this.props
         const { active } = this.state
         const activeClass = active ? activeClassName : ''
         return (
@@ -119,13 +123,13 @@ export default class Item extends Component<IItemProps, IState> {
                         >
                             <div className="flex">
                                 <ItemTitile
-                                    className={getClassName('flex_justify', titleClassName)}
+                                    className={getClassName(`${flexType === 'title' ? 'flex_1 ' : ''}flex_justify`, titleClassName)}
                                     itemTheme={theme || init.theme.itemTheme}
                                 >
                                     {title}
                                 </ItemTitile>
                                 <ItemRight
-                                    className={getClassName('flex_1 flex_justify', labelClassName)}
+                                    className={getClassName(`${flexType === 'value' ? 'flex_1 ' : ''}flex_justify`, labelClassName)}
                                     itemTheme={theme || init.theme.itemTheme}
                                 >
                                     {value}
@@ -141,21 +145,14 @@ export default class Item extends Component<IItemProps, IState> {
     }
     private getLinkNode(theme: ItemThemeData): JSX.Element | void {
         const { link, icon } = this.props
-        if (link) {
-            return (
-                <ItemLink
-                    className={getClassName('flex_justify')}
-                    itemTheme={theme}
-                >
-                    {icon || (
-                        <Icon
-                            icon="ios-arrow-forward"
-                            theme={theme.iconTheme}
-                        />
-                    )}
-                </ItemLink>
-            )
-        }
+        return (
+            <ItemLink
+                className={getClassName('flex_center')}
+                itemTheme={theme}
+            >
+                {link ? (icon || <Icon icon="ios-arrow-forward" theme={theme.iconTheme} />) : null}
+            </ItemLink>
+        )
     }
 
     private closeAnimation = () => {
@@ -191,9 +188,15 @@ export default class Item extends Component<IItemProps, IState> {
     }
 
     private handlePress = () => {
-        const { onPress } = this.props
+        const { onPress, link, history } = this.props
+        if (isString(link)) {
+            history.push(link)
+            return
+        }
         if (isFunction(onPress)) {
             onPress()
         }
     }
 }
+
+export default withRouter(Item)

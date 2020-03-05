@@ -42,12 +42,9 @@ class Home extends Component<any, IState> {
     }
 
     public render(): JSX.Element {
-        const { data, coo, visible, err } = this.state
         return (
             <MobileLayout
-                style={{
-                    background: 'rgb(248, 248, 248)'
-                }}
+                backgroundColor="rgb(248, 248, 248)"
             >
                 <Carousel
                     theme={carouselTheme}

@@ -1,6 +1,6 @@
 import React, { Component, createContext } from 'react'
 import { ThemeProvider as StyledThemeProvider, createGlobalStyle } from 'styled-components'
-import { Color, ThemeData, getRatioUnit } from '../utils'
+import { Color, ThemeData, getUnit } from '../utils'
 
 const globalTheme = new ThemeData()
 
@@ -41,7 +41,7 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
 
     * {
         box-sizing: border-box;
-        font-size: ${() => getRatioUnit(12)};
+        font-size: ${({theme}) => getUnit(theme.fontSize)};
     }
 
     svg {
@@ -50,8 +50,8 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
 
     @media screen and (min-width: 750px) {
         ::-webkit-scrollbar {
-            width: ${() => getRatioUnit(4)};
-            height: ${() => getRatioUnit(4)};
+            width: ${() => getUnit(4)};
+            height: ${() => getUnit(4)};
         }
 
         ::-webkit-scrollbar-button {
@@ -64,8 +64,8 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
         }
 
         ::-webkit-scrollbar-track {
-            width: ${() => getRatioUnit(6)};
-            height: ${() => getRatioUnit(6)};
+            width: ${() => getUnit(6)};
+            height: ${() => getUnit(6)};
         }
     }
 
@@ -118,7 +118,7 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
         &::after {
             content: "";
             position: absolute;
-            height: ${() => getRatioUnit(1)};
+            height: ${() => getUnit(1)};
             width: 100%;
             background: ${({ theme }) => theme.dividerColor.toString()};
             transform: scaleY(0.5);
@@ -134,7 +134,7 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
             content: "";
             position: absolute;
             height: 100%;
-            width: ${() => getRatioUnit(1)};
+            width: ${() => getUnit(1)};
             background: ${({ theme }) => theme.dividerColor.toString()};
             transform: scaleX(0.5);
             top: 0;
@@ -148,7 +148,7 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
         &::after {
             content: "";
             position: absolute;
-            height: ${() => getRatioUnit(1)};
+            height: ${() => getUnit(1)};
             width: 100%;
             background: ${({ theme }) => theme.dividerColor.toString()};
             transform: scaleY(0.5);
