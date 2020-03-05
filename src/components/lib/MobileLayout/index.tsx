@@ -1,4 +1,5 @@
-import React, { Component, CSSProperties } from 'react'
+import React, { Component, CSSProperties, Children } from 'react'
+import { isFunction } from 'lodash'
 import styled, { css } from 'styled-components'
 import ScrollView from '../ScrollView'
 import { getClassName, getUnit } from '../utils'
@@ -27,16 +28,22 @@ interface IMobileLayoutProps {
     scrollX?: boolean
     onEndReachedThreshold?: number
     backgroundColor?: string
+    emptyElement?: string | JSX.Element
+    children?: JSX.Element | JSX.Element[] | string
 }
 
 interface IState {
-
+    status: boolean
 }
 
 export default class MobileLayout extends Component<IMobileLayoutProps, IState> {
 
+    public state: IState = {
+        status: false
+    }
+
     public render(): JSX.Element {
-        const { className, appBar, children, height, style, footer, onGetData, scrollY, scrollX, onEndReachedThreshold, backgroundColor } = this.props
+        const { className, appBar, height, style, footer, onGetData, scrollY, scrollX, onEndReachedThreshold, backgroundColor } = this.props
         return (
             <MobileLayoutView
                 viewHeight={height}
@@ -52,11 +59,34 @@ export default class MobileLayout extends Component<IMobileLayoutProps, IState> 
                     scrollX={scrollX}
                     onEndReachedThreshold={onEndReachedThreshold}
                 >
-                    {children}
+                    {this.getNode()}
                 </ScrollView>
                 {footer}
             </MobileLayoutView>
         )
+    }
+
+    public UNSAFE_componentWillReceiveProps(nextProps: IMobileLayoutProps) {
+        const { children } = this.props
+        if (Children.count(nextProps.children) === 0 && Children.count(children) === 0) {
+            this.setState({
+                status: true
+            })
+        } else {
+            this.setState({
+                status: false
+            })
+        }
+    }
+
+    private getNode = () => {
+        const { children, emptyElement, onGetData } = this.props
+        const { status } = this.state
+        if (!Children.count(children) && !isFunction(onGetData)) {
+            return emptyElement
+        } else {
+            return status ? emptyElement : children
+        }
     }
 
 }

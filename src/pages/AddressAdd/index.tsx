@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Button, Item, Radio, Image } from 'components'
+import { Toast, MobileLayout, NavBar, Button, Item, Radio, Image, Form } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { ButtonThemeData, BorderRadius, Color, getUnit, ItemThemeData } from 'src/components/lib/utils'
+import { IFormFun, IFormItem } from 'src/components/lib/Form'
 
 interface IState {
 }
@@ -17,13 +18,15 @@ const itemTheme = new ItemThemeData({
     minHeight: 60
 })
 
-export default class AddressList extends Component<RouteComponentProps<any>, IState> {
+export default class AddressAdd extends Component<RouteComponentProps<any>, IState> {
 
     public state: IState = {
 
     }
 
     private page = 1
+
+    private fn?: IFormFun
 
     public render(): JSX.Element {
         return (
@@ -42,32 +45,14 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
                         <Button
                             theme={buttonTheme}
                             mold="primary"
-                            onClick={this.handleAddAddress}
                         >
-                            新增地址
+                            保存
                         </Button>
                     </div>
                 }
             >
                 <div style={{ padding: getUnit(10) }}>
-                    <Item
-                        theme={itemTheme}
-                        title={
-                            <Radio
-                                type="square"
-                                iconStyle={{ borderRadius: '50%' }}
-                            >
-                                <div>
-                                    <div style={{ fontSize: getUnit(13) }}>张三，13000000000</div>
-                                    <div style={{ fontSize: getUnit(12), color: 'rgb(158, 158, 158)' }}>浙江省杭州市西湖区文三路 01号通信大厦 7 楼 501</div>
-                                </div>
-                            </Radio>
-                        }
-                        icon={
-                            <Image src={require('../../assets/v2_q5sqq0.png')} style={{ width: getUnit(15), height: getUnit(15), marginRight: getUnit(10) }} />
-                        }
-                        link
-                    />
+                    <Form getItems={this.getItems}/>
                 </div>
             </MobileLayout>
         )
@@ -75,6 +60,35 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
 
     public componentDidMount() {
         this.getData()
+    }
+
+    private getItems = (fn: IFormFun) => {
+        this.fn = fn
+        const items: IFormItem[] = [{
+            component: 'ItemInput',
+            props: {
+                title: '收货人',
+                placeholder: '填写姓名',
+            },
+            field: 'name'
+        }, {
+            component: 'ItemInput',
+            props: {
+                title: '联系电话',
+                placeholder: '填写手机号',
+                type: 'tel',
+                maxLength: 11,
+            },
+            field: 'tel'
+        },{
+            component: 'ItemInput',
+            props: {
+                title: '详细地址',
+                placeholder: '请填写详细地址',
+            },
+            field: 'address'
+        }]
+        return items
     }
 
     private handleFirst = (success: () => void) => {
@@ -102,11 +116,6 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
         //         content: data.msg || '服务器繁忙,请稍后再试',
         //     })
         // })
-    }
-
-    private handleAddAddress = () => {
-        const { history} = this.props
-        history.push('/addressAdd')
     }
 
 

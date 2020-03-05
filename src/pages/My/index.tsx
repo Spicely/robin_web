@@ -44,9 +44,7 @@ class My extends Component<any, IState> {
     public render(): JSX.Element {
         return (
             <MobileLayout
-                style={{
-                    background: 'rgb(248, 248, 248)'
-                }}
+                backgroundColor="rgb(248, 248, 248)"
             >
                 <HeaderBox>
                     <div className="flex" style={{ marginTop: getUnit(40) }}>
@@ -125,7 +123,7 @@ class My extends Component<any, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>我的订单</div>
                             </div>
                         }
-                        link
+                        link="/userOrder"
                     />
                     <Gird.Item
                         title={
@@ -143,7 +141,7 @@ class My extends Component<any, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>我的客户</div>
                             </div>
                         }
-                        link
+                        link="/customer"
                     />
                     <Gird.Item
                         title={

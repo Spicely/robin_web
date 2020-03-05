@@ -17,7 +17,7 @@ const itemTheme = new ItemThemeData({
     minHeight: 60
 })
 
-export default class AddressList extends Component<RouteComponentProps<any>, IState> {
+export default class Customer extends Component<RouteComponentProps<any>, IState> {
 
     public state: IState = {
 
@@ -32,41 +32,36 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
                 appBar={
                     <NavBar
                         onBack={this.handleBack}
-                        title="编辑地址"
+                        title="我的客户"
                         titleCenter
                         fixed
                     />
-                }
-                footer={
-                    <div className="flex_center" style={{ marginBottom: getUnit(10) }}>
-                        <Button
-                            theme={buttonTheme}
-                            mold="primary"
-                            onClick={this.handleAddAddress}
-                        >
-                            新增地址
-                        </Button>
-                    </div>
                 }
             >
                 <div style={{ padding: getUnit(10) }}>
                     <Item
                         theme={itemTheme}
                         title={
-                            <Radio
-                                type="square"
-                                iconStyle={{ borderRadius: '50%' }}
-                            >
+                            <div className="flex">
                                 <div>
-                                    <div style={{ fontSize: getUnit(13) }}>张三，13000000000</div>
-                                    <div style={{ fontSize: getUnit(12), color: 'rgb(158, 158, 158)' }}>浙江省杭州市西湖区文三路 01号通信大厦 7 楼 501</div>
+                                    <div style={{ fontSize: getUnit(13) }} >
+                                        刘三
+                                    </div>
+                                    <div style={{ fontSize: getUnit(14) }}>￥10000</div>
                                 </div>
-                            </Radio>
+                                <div
+                                    className="flex_1"
+                                    style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}
+                                >
+                                    2020-03-21 06:23:21
+                                    </div>
+                                <div>
+                                    <div style={{ textAlign: 'right', color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>13888888888</div>
+                                    <div style={{ textAlign: 'right', color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>邀请码：ahrimane</div>
+                                </div>
+                            </div>
                         }
-                        icon={
-                            <Image src={require('../../assets/v2_q5sqq0.png')} style={{ width: getUnit(15), height: getUnit(15), marginRight: getUnit(10) }} />
-                        }
-                        link
+                        link={null}
                     />
                 </div>
             </MobileLayout>
@@ -105,7 +100,7 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
     }
 
     private handleAddAddress = () => {
-        const { history} = this.props
+        const { history } = this.props
         history.push('/addressAdd')
     }
 

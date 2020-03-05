@@ -22,7 +22,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private fn?: IFormFun
 
-    private getItenm = (fn: IFormFun) => {
+    private getItems = (fn: IFormFun) => {
         this.fn = fn
         const items: IFormItem[] = [{
             component: 'ItemInput',
@@ -91,7 +91,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                 >
                     登录后继续操作
                 </TitleText>
-                <Form getItems={this.getItenm} style={{ padding: `0 ${getUnit(10)}` }} />
+                <Form getItems={this.getItems} style={{ padding: `0 ${getUnit(10)}` }} />
             </MobileLayout>
         )
     }
@@ -100,7 +100,6 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
         const { history } = this.props
         history.goBack()
     }
-
 
     private getCode = async () => {
         if (this.fn) {

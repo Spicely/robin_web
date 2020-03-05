@@ -50,6 +50,7 @@ class Home extends Component<any, IState> {
                     theme={carouselTheme}
                     dotType="circular"
                     dotColor="rgb(51, 51, 51)"
+                    autoplay
                 >
                     <Image src={require('../../assets/1.png')} style={{ width: '100%' }} />
                     <Image src={require('../../assets/2.png')} style={{ width: '100%' }} />

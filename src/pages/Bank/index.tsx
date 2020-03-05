@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Item, Image } from 'components'
+import { Toast, MobileLayout, NavBar, Item, Image, Button } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
-import { getUnit } from 'src/components/lib/utils'
+import { getUnit, ButtonThemeData, BorderRadius, Color } from 'src/components/lib/utils'
 import styled from 'styled-components'
 
 const PriceText = styled.div`
@@ -11,10 +11,16 @@ const PriceText = styled.div`
     color: rgb(0, 0, 0);
 `
 
+const buttonTheme = new ButtonThemeData({
+    width: '80%',
+    borderRadius: BorderRadius.all(20),
+    buttonColor: Color.fromRGB(0, 0, 0)
+})
+
 interface IState {
 }
 
-export default class Wallet extends Component<RouteComponentProps<any>, IState> {
+export default class Bank extends Component<RouteComponentProps<any>, IState> {
 
     public state: IState = {}
 
@@ -25,13 +31,32 @@ export default class Wallet extends Component<RouteComponentProps<any>, IState> 
                 appBar={
                     <NavBar
                         onBack={this.handleBack}
-                        title="钱包"
+                        title="银行卡"
                         titleCenter
                         fixed
                     />
                 }
+                onGetData={()=> {}}
+                footer={
+                    <div className="flex_center" style={{ marginBottom: getUnit(10) }}>
+                        <Button
+                            theme={buttonTheme}
+                            mold="primary"
+                        >
+                            添加银行卡
+                        </Button>
+                    </div>
+                }
+                emptyElement={
+                    <div style={{ marginTop: getUnit(100) }}>
+                        <div className="flex_center">
+                            <Image src={require('../../assets/v2_q6kef5.png')} style={{ height: getUnit(77), width: getUnit(77) }} />
+                        </div>
+                        <div className="flex_center" style={{ color: 'rgba(163, 163, 163, 1)', fontSize: getUnit(12), lineHeight: getUnit(40) }}>暂无银行卡</div>
+                    </div>
+                }
             >
-                <div style={{ padding: getUnit(10) }}>
+                {/* <div style={{ padding: getUnit(10) }}>
                     <Item
                         style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
                         title={
@@ -72,9 +97,9 @@ export default class Wallet extends Component<RouteComponentProps<any>, IState> 
                             </div>
                         }
                         value={<PriceText>¥10000</PriceText>}
-                        link="/bank"
+                        link
                     />
-                </div>
+                </div> */}
             </MobileLayout>
         )
     }

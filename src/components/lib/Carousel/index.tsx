@@ -218,7 +218,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                     )
                                 })
                             }
-                            {autoplay && effect !== 'fade' && value.map((child, index) => {
+                            {autoplay && effect !== 'fade' && Children.map(childs, (child?: IValue, index?: any) => {
                                 if (index === 0) {
                                     return (
                                         <CarouselViewItem
@@ -229,7 +229,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                             ref={(e) => this.animateNode = e}
                                         >
                                             {
-                                                <CarouselViewItemImg src={baseUrl + child.url} />
+                                                isObject(child) ? child._owner ? child : <CarouselViewItemImg src={baseUrl + child.url} /> : child
                                             }
                                         </CarouselViewItem>
                                     )
@@ -329,12 +329,12 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     }
 
     private interval(autoPlay: boolean) {
-        const { time, effect } = this.props
+        const { time, effect, children } = this.props
         if (autoPlay) {
             this.timer = setInterval(() => {
                 const { value } = this.props
                 const { selectIndex } = this.state
-                const length = value.length
+                const length = (value.length || Children.count(children))
                 const status = effect !== 'fade' ? selectIndex === length : selectIndex === length - 1
                 this.handleTabIndex(status ? 0 : selectIndex + 1)
             }, time)
@@ -342,9 +342,9 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     }
 
     private handleAnimate = () => {
-        const { effect, value } = this.props
+        const { effect, value, children } = this.props
         const { selectIndex } = this.state
-        if (selectIndex === value.length && effect !== 'fade') {
+        if (selectIndex === (value.length || Children.count(children)) && effect !== 'fade') {
             this.setState({
                 selectIndex: 0,
                 animate: false
@@ -359,12 +359,12 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     }
 
     private handleTabIndex(index: number) {
-        const { onChnage, value } = this.props
+        const { onChnage, value, children } = this.props
         this.setState({
             selectIndex: index
         })
         if (isFunction(onChnage)) {
-            onChnage(index % value.length)
+            onChnage(index % (value.length || Children.count(children)))
         }
     }
 }

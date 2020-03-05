@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { TabBar, Icon } from 'components'
 import Home from '../Home'
-import OrganList from '../OrganList'
+import Mall from '../Mall'
 import TeamList from '../TeamList'
 import My from '../My'
 
@@ -11,7 +11,7 @@ export default class Index extends Component<any, any> {
         return (
             <TabBar
                 mode="menu"
-                selected={4}
+                selected={1}
             >
                 <TabBar.Item
                     title="首页"
@@ -23,13 +23,13 @@ export default class Index extends Component<any, any> {
                     title="商城"
                     icon={<Icon icon="shop" />}
                 >
-                    <Home />
+                    <Mall />
                 </TabBar.Item>
                 <TabBar.Item
                     title="新闻"
                     icon={<Icon icon="msg" />}
                 >
-                    <OrganList />
+                    <Mall />
                 </TabBar.Item>
                 <TabBar.Item
                     title="购物车"

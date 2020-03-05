@@ -1,6 +1,6 @@
 import React, { Component, CSSProperties } from 'react'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { isBoolean, isFunction, isNil, isString } from 'lodash'
+import { withRouter } from 'react-router-dom'
+import { isBoolean, isFunction, isNil, isString, isNull } from 'lodash'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import Icon from '../Icon'
@@ -15,7 +15,7 @@ export interface IItemProps {
     className?: string
     style?: CSSProperties
     title?: string | JSX.Element | JSX.ElementClass
-    link?: boolean | string
+    link?: boolean | string | null
     value?: string | JSX.Element | JSX.ElementClass
     extend?: string | JSX.Element | JSX.ElementClass
     icon?: string | JSX.Element | JSX.ElementClass
@@ -145,6 +145,9 @@ class Item extends Component<any, IState> {
     }
     private getLinkNode(theme: ItemThemeData): JSX.Element | void {
         const { link, icon } = this.props
+        if (isNull(link)) {
+            return <div style={{ width: getUnit(10) }} />
+        }
         return (
             <ItemLink
                 className={getClassName('flex_center')}
