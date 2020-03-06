@@ -42,6 +42,7 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
                         <Button
                             theme={buttonTheme}
                             mold="primary"
+                            onClick={this.handleAddBank}
                         >
                             添加银行卡
                         </Button>
@@ -122,6 +123,11 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
         //         content: data.msg || '服务器繁忙,请稍后再试',
         //     })
         // }
+    }
+
+    private handleAddBank = () => {
+        const { history } = this.props
+        history.push('/addBank')
     }
 
     private handleBack = () => {

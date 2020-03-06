@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { TabBar, Icon } from 'components'
 import Home from '../Home'
 import Mall from '../Mall'
-import TeamList from '../TeamList'
+import Shop from '../Shop'
 import My from '../My'
 
 export default class Index extends Component<any, any> {
@@ -35,7 +35,7 @@ export default class Index extends Component<any, any> {
                     title="购物车"
                     icon={<Icon icon="shopping" />}
                 >
-                    <TeamList />
+                    <Shop />
                 </TabBar.Item>
                 <TabBar.Item
                     title="我的"

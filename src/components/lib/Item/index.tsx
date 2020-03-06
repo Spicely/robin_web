@@ -1,5 +1,5 @@
 import React, { Component, CSSProperties } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { isBoolean, isFunction, isNil, isString, isNull } from 'lodash'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
@@ -85,7 +85,7 @@ interface IState {
     active: boolean
 }
 
-class Item extends Component<any, IState> {
+class Item extends Component<RouteComponentProps<any> & IItemProps, IState> {
 
     public static defaultProps = {
         activeClass: 'active',
@@ -202,4 +202,4 @@ class Item extends Component<any, IState> {
     }
 }
 
-export default withRouter(Item)
+export default withRouter<any, any>(Item)
