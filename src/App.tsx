@@ -6,6 +6,7 @@ import { store, persistor } from './store'
 import { ThemeData, NavBarThemeData, Color, ButtonThemeData, IconThemeData } from './components/lib/utils'
 import Router from './router'
 import './App.css'
+import http from './utils/axios'
 
 class App extends React.Component {
 
@@ -43,6 +44,8 @@ class App extends React.Component {
 			this.registrationId = event.registrationId
 		}, false)
 		document.addEventListener('deviceready', this.onDeviceReady, false)
+
+		this.getUserInfo()
 	}
 
 	private onDeviceReady = () => {
@@ -55,6 +58,16 @@ class App extends React.Component {
 			}
 		} catch (exception) {
 			console.log(exception);
+		}
+	}
+
+	private getUserInfo =async () => {
+		try {
+	
+			// await http('wxapp/login/userInfo', )
+			
+		} catch (e) {
+			
 		}
 	}
 

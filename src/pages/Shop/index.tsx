@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
-import { http, imgUrl } from 'src/utils'
-import { Toast, MobileLayout, Button, Image, ScrollView } from 'components'
+import { http } from 'src/utils'
+import { Toast, MobileLayout, Button, Image } from 'components'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
+import { IInitState } from 'src/store/state'
 import { getUnit, ButtonThemeData, BorderRadius } from 'src/components/lib/utils'
+
 
 interface IState { }
 
@@ -67,4 +70,10 @@ class Shop extends Component<RouteComponentProps<any>, IState> {
 
 }
 
-export default withRouter(Shop)
+
+
+export default connect(
+    ({ homeData }: IInitState) => ({
+        homeData
+    })
+)(withRouter(Shop))

@@ -32,13 +32,13 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                 type: 'tel',
                 maxLength: 11
             },
-            field: 'tel'
+            field: 'phone'
         }, {
             component: 'ItemInput',
             props: {
                 title: '密  码',
                 placeholder: '请输入密码',
-                type: 'password',
+                type: 'code',
             },
             extend: <CountDown
                 seconds={60}
@@ -46,7 +46,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                 render={(val: number) => val + 's后重新获取'}
                 onClick={this.getCode}
             />,
-            field: 'pwd'
+            field: 'code'
         }, {
             component: 'Button',
             props: {
@@ -106,13 +106,13 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
             const close = Toast.loading()
             try {
                 const form = this.fn.getFieldValue()
-                if (!verify.isMobile(form.tel)) {
+                if (!verify.isMobile(form.phone)) {
                     Toast.info({
                         content: '请输入正确的电话号码',
                     })
                     return false
                 }
-                await http('sms_api/send', { tel: form.tel })
+                await http('wxapp/login/sendPhoneCode', { tel: form.phone })
                 close()
                 return true
             } catch (e) {
@@ -128,22 +128,22 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
         try {
             if (this.fn) {
                 const form = this.fn.getFieldValue()
-                if (!verify.isMobile(form.tel)) {
+                if (!verify.isMobile(form.phone)) {
                     Toast.info({
                         content: '请输入正确的电话号码',
                     })
                     return
                 }
-                if (!form.pwd) {
+                if (!form.code) {
                     Toast.info({
                         content: '请输入验证码',
                     })
                     return
                 }
-                const data = await http('user/login', form)
-                const { history, dispatch } = this.props
-                localStorage.setItem('token', data.msg)
-                dispatch({ type: SET_TOKEN, data: data.msg })
+                const data = await http('wxapp/login/userLogin', form)
+                const { history } = this.props
+                // localStorage.setItem('token', data.msg)
+                // dispatch({ type: SET_TOKEN, data: data.msg })
                 Toast.info({
                     content: '登录成功',
                 })

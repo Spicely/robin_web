@@ -11,7 +11,6 @@ export default class Index extends Component<any, any> {
         return (
             <TabBar
                 mode="menu"
-                selected={1}
             >
                 <TabBar.Item
                     title="首页"

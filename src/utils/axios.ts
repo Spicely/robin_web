@@ -7,8 +7,8 @@ interface IValue {
     [name: string]: any
 }
 
-export const baseUrl = 'http://app.whccu.com/api/'
-export const imgUrl = 'http://app.whccu.com/uploads/'
+export const baseUrl = 'http://a.k-ww.com/'
+export const imgUrl = 'http://a.k-ww.com/'
 
 export interface IRresItem<T = any> {
     msg: string
@@ -61,7 +61,7 @@ export const deviaDecrypt = (data: string) => {
 instance.interceptors.response.use(async function (res: any) {
     // const devia = deviaDecrypt(res.data.devia)
     // res.data = JSON.parse(decrypt(res.data.value, res.data.secret, devia))
-    if (res.status === 200 && (res.data.code == '1' || res.data.code == 2)) {
+    if (res.status === 200 && (res.data.status === 1 || res.data.status == 2)) {
         return res.data
     } else {
         return Promise.reject(res.data)

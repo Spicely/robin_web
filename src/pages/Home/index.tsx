@@ -2,14 +2,21 @@ import React, { Component } from 'react'
 import { Image, MobileLayout, Toast, Carousel, Item, Icon, Button } from 'components'
 import { http, imgUrl } from '../../utils'
 import { CarouselThemeData, getUnit, ItemThemeData, ButtonThemeData, BorderRadius } from 'src/components/lib/utils'
-import { withRouter } from 'react-router-dom'
+import { withRouter, RouteComponentProps, Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { SET_HOME_DATA } from 'src/store/actions'
+import { IInitState, IGlobal } from 'src/store/state'
+import { connect, DispatchProp } from 'react-redux'
 
 interface IState {
     data: any[]
     coo: any[]
     visible: boolean
     err: null | any
+}
+
+interface IProps extends RouteComponentProps {
+    homeData: IGlobal.IHomeData
 }
 
 const ItemView = styled.div`
@@ -32,7 +39,7 @@ const buttonTheme = new ButtonThemeData({
     borderRadius: BorderRadius.all(5)
 })
 
-class Home extends Component<any, IState> {
+class Home extends Component<IProps & DispatchProp, IState> {
 
     public state: IState = {
         data: [],
@@ -42,6 +49,7 @@ class Home extends Component<any, IState> {
     }
 
     public render(): JSX.Element {
+        const { homeData } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -80,31 +88,39 @@ class Home extends Component<any, IState> {
                          </div>
                     }
                 />
-                <ItemView className="flex">
-                    <Image src={require('../../assets/3.png')} style={{ width: getUnit(80), height: getUnit(80) }} />
-                    <div className="flex_1" style={{ marginLeft: getUnit(10) }}>
-                        <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20) }}>史丹利化肥套装限时购</div>
-                        <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额2000件</div>
-                        <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>08:08</div>
-                        <div style={{ fontSize: getUnit(16), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥10000</div>
-                    </div>
-                    <div className="flex_column">
-                        <div className="flex_1" />
-                        <Button
-                            mold="primary"
-                            theme={buttonTheme}
-                        >
-                            <div style={{ fontSize: getUnit(11) }}>爆卖2548件</div>
-                            <div style={{ fontSize: getUnit(13) }}>马上抢</div>
-                        </Button>
-                    </div>
-                </ItemView>
+                {
+                    homeData.goods_data.map((i, index: number) => {
+                        return (
+                            <Link key={index} to={`/detail/${i.goods_id}`}>
+                                <ItemView className="flex" >
+                                    <Image src={imgUrl + i.image_url} style={{ width: getUnit(80), height: getUnit(80) }} />
+                                    <div className="flex_1" style={{ marginLeft: getUnit(10) }}>
+                                        <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20) }}>{i.goods_name}</div>
+                                        <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额{i.goods_number}件</div>
+                                        <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>08:08</div>
+                                        <div style={{ fontSize: getUnit(16), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.platform_price}</div>
+                                    </div>
+                                    <div className="flex_column">
+                                        <div className="flex_1" />
+                                        <Button
+                                            mold="primary"
+                                            theme={buttonTheme}
+                                        >
+                                            <div style={{ fontSize: getUnit(11) }}>爆卖2548件</div>
+                                            <div style={{ fontSize: getUnit(13) }}>马上抢</div>
+                                        </Button>
+                                    </div>
+                                </ItemView>
+                            </Link>
+                        )
+                    })
+                }
             </MobileLayout>
         )
     }
 
     public componentDidMount() {
-        // this.getData()
+        this.getData()
     }
 
     private handleView = (id: string) => {
@@ -119,22 +135,11 @@ class Home extends Component<any, IState> {
         }
     }
 
-    private handleQ1Close = () => {
-        this.setState({
-            visible: false
-        })
-    }
-
     private getData = async () => {
         try {
-            // const des = await http('news/is_user')
-            // const data = await http('news/index')
-            // const coo = await http('news/cooperation')
-            // this.setState({
-            //     data: data.msg,
-            //     coo: coo.msg,
-            //     err: isObject(des.msg) ? des.msg : null
-            // })
+            const data = await http('wxapp/goods/goodsList')
+            const { dispatch } = this.props
+            dispatch({ type: SET_HOME_DATA, data: data.data })
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
@@ -143,4 +148,8 @@ class Home extends Component<any, IState> {
     }
 }
 
-export default withRouter(Home)
+export default connect(
+    ({ homeData }: IInitState) => ({
+        homeData
+    })
+)(withRouter(Home))

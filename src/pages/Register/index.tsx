@@ -38,7 +38,7 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                 type: 'tel',
                 maxLength: 11
             },
-            field: 'tel'
+            field: 'phone'
         }, {
             component: 'ItemInput',
             props: {
@@ -52,7 +52,7 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                 render={(val: number) => val + 's后重新获取'}
                 onClick={this.getCode}
             />,
-            field: 'pwd'
+            field: 'code'
         }, {
             component: 'ItemInput',
             props: {
@@ -61,7 +61,7 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                 type: 'tel',
                 maxLength: 6
             },
-            field: 'eq'
+            field: 'remcd'
         }, {
             component: 'Button',
             props: {
@@ -83,7 +83,7 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                         <span style={{ color: 'rgb(159, 159, 159)', fontSize: getUnit(10) }}>确定即同意</span>
                         <span style={{ color: 'rgb(30, 30, 30)', fontSize: getUnit(10) }}>《用户协议》和《隐私权政策》</span>
                     </div>
-                    <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(12) }}>账号密码登录</div>
+                    <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(12) }} onClick={this.handleBack}>账号密码登录</div>
                 </div>
             )
         }]
@@ -123,13 +123,13 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
             const close = Toast.loading()
             try {
                 const form = this.fn.getFieldValue()
-                if (!verify.isMobile(form.tel)) {
+                if (!verify.isMobile(form.phone)) {
                     Toast.info({
                         content: '请输入正确的电话号码',
                     })
                     return false
                 }
-                await http('sms_api/send', { tel: form.tel })
+                await http('wxapp/login/sendPhoneCode', { tel: form.phone })
                 close()
                 return true
             } catch (e) {
@@ -145,26 +145,32 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
         try {
             if (this.fn) {
                 const form = this.fn.getFieldValue()
-                if (!verify.isMobile(form.tel)) {
+                if (!verify.isMobile(form.phone)) {
                     Toast.info({
                         content: '请输入正确的电话号码',
                     })
                     return
                 }
-                if (!form.pwd) {
+                if (!form.code) {
                     Toast.info({
-                        content: '请输入验证码',
+                        content: '请输入短信验证码',
                     })
                     return
                 }
-                const data = await http('user/login', form)
+                if (!form.remcd) {
+                    Toast.info({
+                        content: '请输入邀请码',
+                    })
+                    return
+                }
+                const data = await http('wxapp/login/register', form)
                 const { history, dispatch } = this.props
                 localStorage.setItem('token', data.msg)
                 dispatch({ type: SET_TOKEN, data: data.msg })
                 Toast.info({
-                    content: '登录成功',
+                    content: '注册成功',
                 })
-                history.replace('/')
+                history.goBack()
             }
         } catch (data) {
             Toast.info({

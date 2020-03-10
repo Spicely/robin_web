@@ -29,7 +29,7 @@ interface IMobileLayoutProps {
     onEndReachedThreshold?: number
     backgroundColor?: string
     emptyElement?: string | JSX.Element
-    children?: JSX.Element | JSX.Element[] | string
+    children?: any
 }
 
 interface IState {

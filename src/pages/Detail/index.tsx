@@ -3,14 +3,12 @@ import { Divider } from 'antd'
 import { Image, MobileLayout, Toast, Carousel, NavBar, Icon, Item, Gird } from 'components'
 import { http, imgUrl } from '../../utils'
 import { CarouselThemeData, getUnit, IconThemeData } from 'src/components/lib/utils'
-import { withRouter } from 'react-router-dom'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
+import { IGoodsData } from 'src/store/state'
 
 interface IState {
-    data: any[]
-    coo: any[]
-    visible: boolean
-    err: null | any
+    data: IGoodsData
 }
 
 const carouselTheme = new CarouselThemeData({
@@ -49,16 +47,21 @@ const ShopHtml = styled.div`
     margin-top: ${getUnit(10)};
 `
 
-class Detail extends Component<any, IState> {
+class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
 
     public state: IState = {
-        data: [],
-        coo: [],
-        visible: false,
-        err: null
+        data: {
+            goods_id: 0,
+            goods_name: '',
+            goods_price: 0,
+            platform_price: 0,
+            goods_number: 0,
+            image_url: '',
+        },
     }
 
     public render(): JSX.Element {
+        const { data } = this.state
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -88,12 +91,12 @@ class Detail extends Component<any, IState> {
                         <div>
                             <div className="flex">
                                 <div style={{ color: 'rgba(87, 183, 43, 1)', fontSize: getUnit(16), position: 'relative', top: getUnit(12) }}>¥</div>
-                                <ShopItemPirce>10000</ShopItemPirce>
+                                <ShopItemPirce>{data.goods_price}</ShopItemPirce>
                                 <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
                                     <div className="flex_justify" style={{ background: 'rgb(32, 32, 32)', color: '#fff', height: getUnit(18), fontSize: getUnit(11) }}>特价</div>
                                 </div>
                             </div>
-                            <ShopItemTitle>全水溶蔬菜复合肥农用通用型肥料家用盆栽种菜有机花肥化肥氮磷钾全水溶蔬菜复合肥农用通用型肥料家用盆栽种菜有机花肥化肥氮磷钾全水溶蔬菜复合肥农用通用型肥料家用盆栽种菜有机花肥化肥氮磷钾全水溶蔬菜复合肥农用通用型肥料家用盆栽种菜有机花肥化肥氮磷钾</ShopItemTitle>
+                            <ShopItemTitle>{data.goods_name}</ShopItemTitle>
                         </div>
                     }
                 />
@@ -145,7 +148,7 @@ class Detail extends Component<any, IState> {
     }
 
     public componentDidMount() {
-        // this.getData()
+        this.getData()
     }
 
     private handleBack = () => {
@@ -155,14 +158,15 @@ class Detail extends Component<any, IState> {
 
     private getData = async () => {
         try {
-            // const des = await http('news/is_user')
-            // const data = await http('news/index')
-            // const coo = await http('news/cooperation')
-            // this.setState({
-            //     data: data.msg,
-            //     coo: coo.msg,
-            //     err: isObject(des.msg) ? des.msg : null
-            // })
+            const close = Toast.loading()
+            const { params } = this.props.match
+            const res = await http('wxapp/goods/goodsShow', {
+                gid: params.id
+            })
+            this.setState({
+                data: res.data
+            })
+            close()
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',

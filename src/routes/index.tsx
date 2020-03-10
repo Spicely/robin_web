@@ -47,7 +47,7 @@ export const routes: IRoutes[] = [{
     path: '/addressAdd'
 }, {
     component: Detail,
-    path: '/detail'
+    path: '/detail/:id'
 }, {
     component: Pay,
     path: '/pay'
