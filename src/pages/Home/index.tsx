@@ -16,7 +16,7 @@ interface IState {
 }
 
 interface IProps extends RouteComponentProps {
-    homeData: IGlobal.IHomeData
+    homeData: IGlobal.HomeData
 }
 
 const ItemView = styled.div`

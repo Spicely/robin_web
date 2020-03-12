@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import ReactSelect from 'react-select'
+import ReactSelect from 'react-select/async'
+import Axios from 'axios'
 import { isFunction, isNil, isUndefined, isString } from 'lodash'
 import { getClassName, SelectThemeData, getUnit, transition, Color } from '../utils'
 import { Consumer } from '../ThemeProvider'
@@ -23,6 +24,8 @@ export interface ISelectProps {
     isSearchable?: boolean
     isMulti?: boolean
     isDisabled?: boolean
+    url?: string
+    loadOptions?: Promise<ISelectOptionsProps[]>
     noOptionsMessage?: string | JSX.Element
     theme?: SelectThemeData
 }
@@ -123,7 +126,7 @@ interface IState {
     value: any
 }
 
-export default class Select extends Component<ISelectProps, IState> {
+export default class AsyncSelect extends Component<ISelectProps, IState> {
     constructor(props: ISelectProps) {
         super(props)
         this.state.value = isNil(props.value) ? undefined : props.options.find((i) => i.value === props.value)
@@ -134,7 +137,7 @@ export default class Select extends Component<ISelectProps, IState> {
         placeholder: '请选择数据',
         isSearchable: false,
         isMulti: false,
-        isDisabled: false
+        isDisabled: false,
     }
 
     public state: IState = {
@@ -142,7 +145,7 @@ export default class Select extends Component<ISelectProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { className, options, placeholder, isSearchable, isMulti, isDisabled, theme } = this.props
+        const { className, options, placeholder, isSearchable, isMulti, isDisabled, theme, loadOptions, url } = this.props
         const { value } = this.state
         return (
             <Consumer>
@@ -150,12 +153,15 @@ export default class Select extends Component<ISelectProps, IState> {
                     (val) => (
                         <SelectView
                             value={value}
+                            options={options}
                             selectTheme={theme || val.theme.selectTheme}
                             className={className}
                             classNamePrefix="select"
-                            options={options}
+                            cacheOptions
+                            defaultOptions
                             onChange={this.handleChange}
                             isSearchable={isSearchable}
+                            loadOptions={loadOptions ? loadOptions : url ? this.getOptions : loadOptions}
                             placeholder={placeholder}
                             isMulti={isMulti}
                             isDisabled={isDisabled}
@@ -174,6 +180,16 @@ export default class Select extends Component<ISelectProps, IState> {
             </Consumer>
 
         )
+    }
+
+    private getOptions = () => {
+        const { url } = this.props
+        return Axios.post(url || '', {}, {
+            timeout: 25000,
+            withCredentials: true,
+        }).then((res) => {
+            return res.data.data
+        })
     }
 
     public UNSAFE_componentWillReceiveProps(nextProps: ISelectProps) {

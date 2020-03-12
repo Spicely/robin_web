@@ -123,7 +123,6 @@ export interface IUploadProps {
     className?: string
     uploadViewClassName?: string
     icon?: iconType | JSX.Element
-    iconColor?: string
     title?: string | JSX.Element
     label?: string | JSX.Element
     action?: string
@@ -173,7 +172,7 @@ export default class Upload extends Component<IUploadProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { className, children, icon, title, label, iconColor, multiple, uploadViewClassName, renderItem, style, fileTypes, theme } = this.props
+        const { className, children, icon, title, label, multiple, uploadViewClassName, renderItem, style, fileTypes, theme } = this.props
         const { fileList } = this.state
         return (
             <ThemeConsumer>
@@ -183,7 +182,6 @@ export default class Upload extends Component<IUploadProps, IState> {
                             {
                                 (value) => {
                                     const iconProps = icon || (value.uploadDraggerProps && value.uploadDraggerProps.icon)
-                                    const iconColorProps = iconColor || (value.uploadDraggerProps && value.uploadDraggerProps.iconColor)
                                     const titleProps = title || (value.uploadDraggerProps && value.uploadDraggerProps.title)
                                     const labelProps = label || (value.uploadDraggerProps && value.uploadDraggerProps.label)
                                     return (

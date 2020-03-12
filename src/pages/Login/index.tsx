@@ -75,6 +75,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
     public render(): JSX.Element {
         return (
             <MobileLayout
+                backgroundColor="#fff"
                 appBar={
                     <NavBar
                         right={
@@ -141,9 +142,9 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     return
                 }
                 const data = await http('wxapp/login/userLogin', form)
-                const { history } = this.props
-                // localStorage.setItem('token', data.msg)
-                // dispatch({ type: SET_TOKEN, data: data.msg })
+                const { history, dispatch } = this.props
+                localStorage.setItem('token', data.data)
+                dispatch({ type: SET_TOKEN, data: data.data })
                 Toast.info({
                     content: '登录成功',
                 })

@@ -107,8 +107,6 @@ const GridLabel = styled.div<IStyleNext>`
     }};   
 `
 
-const prefixClass = 'grid'
-
 export default class Grid extends Component<IGridProps, any> {
 
     public static defaultProps: IGridProps = {

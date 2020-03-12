@@ -2,14 +2,20 @@ import React, { Component } from 'react'
 import { Image, MobileLayout, Toast, Icon, Divider, Gird } from 'components'
 import { http, imgUrl } from '../../utils'
 import { getUnit, IconThemeData, Color } from 'src/components/lib/utils'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
+import { IInitState, IGlobal } from 'src/store/state'
 
 interface IState {
     data: any[]
     coo: any[]
     visible: boolean
     err: null | any
+}
+
+interface IProps extends RouteComponentProps {
+    userInfo: IGlobal.UserInfo
 }
 
 const HeaderBox = styled.div`
@@ -32,7 +38,7 @@ const forwardIconTheme = new IconThemeData({
     color: Color.fromRGB(200, 200, 200)
 })
 
-class My extends Component<any, IState> {
+class My extends Component<IProps, IState> {
 
     public state: IState = {
         data: [],
@@ -42,6 +48,7 @@ class My extends Component<any, IState> {
     }
 
     public render(): JSX.Element {
+        const { userInfo } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -52,7 +59,7 @@ class My extends Component<any, IState> {
                             src={require('../../assets/v2_q5sp1k.png')}
                             style={{ width: getUnit(52), height: getUnit(52) }}
                         />
-                        <div className="flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), marginLeft: getUnit(5) }}>WEISSMAN</div>
+                        <div className="flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), marginLeft: getUnit(5) }}>{userInfo.user_name}</div>
                         <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
                             <div
                                 className="flex"
@@ -91,22 +98,21 @@ class My extends Component<any, IState> {
                                         <div style={{ fontSize: getUnit(14), marginLeft: getUnit(5) }}>钱包</div>
                                     </div>
                                 </div>
-
                                 <div className="flex_1">
-                                    <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥10000</div>
+                                    <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.price}</div>
                                     <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>余额</div>
                                 </div>
                             </div>
                         </Link>
                         <Divider type="vertical" />
                         <div className="flex_1">
-                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥10000</div>
-                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>余额</div>
+                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.cny}</div>
+                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>货款通兑</div>
                         </div>
                         <Divider type="vertical" />
                         <div className="flex_1">
                             <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥10000</div>
-                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>余额</div>
+                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>利润通兑</div>
                         </div>
                         <div className="flex_justify">
                             <Icon icon="ios-arrow-forward" theme={forwardIconTheme} />
@@ -124,6 +130,7 @@ class My extends Component<any, IState> {
                             </div>
                         }
                         link="/userOrder"
+                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -133,6 +140,7 @@ class My extends Component<any, IState> {
                             </div>
                         }
                         link="/addressList"
+                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -142,6 +150,7 @@ class My extends Component<any, IState> {
                             </div>
                         }
                         link="/customer"
+                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -151,6 +160,7 @@ class My extends Component<any, IState> {
                             </div>
                         }
                         link
+                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -160,6 +170,7 @@ class My extends Component<any, IState> {
                             </div>
                         }
                         link
+                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -169,6 +180,7 @@ class My extends Component<any, IState> {
                             </div>
                         }
                         link
+                        onPress={this.handleToView}
                     />
                 </Gird>
             </MobileLayout>
@@ -179,15 +191,10 @@ class My extends Component<any, IState> {
         // this.getData()
     }
 
-    private handleView = (id: string) => {
-        const { err } = this.state
-        const { history } = this.props
-        if (err !== null) {
-            this.setState({
-                visible: true
-            })
-        } else {
-            history.push(`/news/${id}`)
+    private handleToView = (url?: string) => {
+        if (url) {
+            const { history } = this.props
+            history.push(url)
         }
     }
 
@@ -215,4 +222,8 @@ class My extends Component<any, IState> {
     }
 }
 
-export default withRouter(My)
+export default connect(
+    ({ userInfo }: IInitState) => ({
+        userInfo
+    })
+)(withRouter(My))

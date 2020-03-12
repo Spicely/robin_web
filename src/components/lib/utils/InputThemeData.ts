@@ -31,7 +31,7 @@ export default class InputThemeData {
         }
     }
 
-    public fontSize: number = 12
+    public fontSize?: number
 
     public color: Color = Color.fromRGB(18, 18, 18)
 

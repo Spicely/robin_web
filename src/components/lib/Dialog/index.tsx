@@ -95,12 +95,12 @@ const DialogContent = styled.div<IDialogContentProps>`
     max-width: 90%;
     max-height: 90%;
     ${({ dialogTheme }) => {
-        if(dialogTheme.minHeight){
+        if (dialogTheme.minHeight) {
             return css`min-height: ${() => getUnit(dialogTheme.minHeight)};`
         }
     }};
     ${({ dialogTheme }) => {
-        if(dialogTheme.minWidth){
+        if (dialogTheme.minWidth) {
             return css`min-width: ${() => getUnit(dialogTheme.minWidth)};`
         }
     }};
@@ -232,26 +232,26 @@ export default class Dialog extends Component<IDialogProps, IState> {
                                     >
                                         {children}
                                     </DialogBox>
-                                    {isNull(footer) ? null : 
-                                    <NavBar
-                                        className="mk_divider_top"
-                                        theme={theme ? theme.navBarTheme : value.theme.dialogTheme.navBarTheme}
-                                        divider={false}
-                                        left={null}
-                                        right={
-                                            <div className="flex">
-                                                {
-                                                    isUndefined(footer) ?
-                                                        (
-                                                            <Fragment>
-                                                                <Button onClick={this.handleClose} style={{ marginRight: '10px' }}>取消</Button>
-                                                                <Button mold="primary" async={async} onClick={onOk}>确定</Button>
-                                                            </Fragment>
-                                                        ) : footer
-                                                }
-                                            </div>
-                                        }
-                                    />}
+                                    {isNull(footer) ? null :
+                                        <NavBar
+                                            className="mk_divider_top"
+                                            theme={theme ? theme.navBarTheme : value.theme.dialogTheme.navBarTheme}
+                                            divider={false}
+                                            left={null}
+                                            right={
+                                                <div className="flex">
+                                                    {
+                                                        isUndefined(footer) ?
+                                                            (
+                                                                <Fragment>
+                                                                    <Button onClick={this.handleClose} style={{ marginRight: '10px' }}>取消</Button>
+                                                                    <Button mold="primary" async={async} onClick={onOk}>确定</Button>
+                                                                </Fragment>
+                                                            ) : footer
+                                                    }
+                                                </div>
+                                            }
+                                        />}
                                 </DialogContent>
                             </Div>
                         )

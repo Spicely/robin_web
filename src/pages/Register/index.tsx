@@ -93,6 +93,7 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
     public render(): JSX.Element {
         return (
             <MobileLayout
+                backgroundColor="#fff"
                 appBar={
                     <NavBar
                         title={

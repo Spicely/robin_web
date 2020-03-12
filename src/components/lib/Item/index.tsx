@@ -19,7 +19,7 @@ export interface IItemProps {
     value?: string | JSX.Element | JSX.ElementClass
     extend?: string | JSX.Element | JSX.ElementClass
     icon?: string | JSX.Element | JSX.ElementClass
-    onPress?: () => void
+    onPress?: (link?: string) => void
     lineType?: ILineType
     theme?: ItemThemeData
     flexType?: 'title' | 'value'
@@ -85,7 +85,7 @@ interface IState {
     active: boolean
 }
 
-class Item extends Component<RouteComponentProps<any> & IItemProps, IState> {
+export default class Item extends Component<IItemProps, IState> {
 
     public static defaultProps = {
         activeClass: 'active',
@@ -191,9 +191,9 @@ class Item extends Component<RouteComponentProps<any> & IItemProps, IState> {
     }
 
     private handlePress = () => {
-        const { onPress, link, history } = this.props
-        if (isString(link)) {
-            history.push(link)
+        const { onPress, link } = this.props
+        if (isString(link) && isFunction(onPress)) {
+            onPress(link)
             return
         }
         if (isFunction(onPress)) {
@@ -202,4 +202,3 @@ class Item extends Component<RouteComponentProps<any> & IItemProps, IState> {
     }
 }
 
-export default withRouter<any, any>(Item)

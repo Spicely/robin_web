@@ -73,7 +73,7 @@ export default class Map extends Component<IMapProps, IState> {
 
     private events: any[] = []
 
-    public componentWillMount() {
+    public UNSAFE_componentWillMount() {
 
     }
 

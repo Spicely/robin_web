@@ -2,7 +2,7 @@ import { AnyAction } from 'redux'
 import { SET_HOME_DATA } from '../../actions'
 import { IGlobal} from '../../state'
 
-const initData: IGlobal.IHomeData = {
+const initData: IGlobal.HomeData = {
     goods_data: []
 }
 

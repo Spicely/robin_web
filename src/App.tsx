@@ -3,10 +3,10 @@ import { Provider } from 'react-redux'
 import { ThemeProvider } from 'components'
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import { store, persistor } from './store'
-import { ThemeData, NavBarThemeData, Color, ButtonThemeData, IconThemeData } from './components/lib/utils'
+import { ThemeData, NavBarThemeData, Color, ButtonThemeData, IconThemeData, InputThemeData } from './components/lib/utils'
 import Router from './router'
 import './App.css'
-import http from './utils/axios'
+import 'antd-mobile/dist/antd-mobile.css'
 
 class App extends React.Component {
 
@@ -28,7 +28,7 @@ class App extends React.Component {
 								height: 45,
 							}),
 							primarySwatch: Color.fromRGB(87, 183, 43),
-							fontSize: 14
+							fontSize: 14,
 						})}
 					>
 						<Router />
@@ -44,8 +44,6 @@ class App extends React.Component {
 			this.registrationId = event.registrationId
 		}, false)
 		document.addEventListener('deviceready', this.onDeviceReady, false)
-
-		this.getUserInfo()
 	}
 
 	private onDeviceReady = () => {
@@ -58,16 +56,6 @@ class App extends React.Component {
 			}
 		} catch (exception) {
 			console.log(exception);
-		}
-	}
-
-	private getUserInfo =async () => {
-		try {
-	
-			// await http('wxapp/login/userInfo', )
-			
-		} catch (e) {
-			
 		}
 	}
 

@@ -3,8 +3,14 @@ import { http } from 'src/utils'
 import { Toast, MobileLayout, NavBar, Button, Item, Radio, Image } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { ButtonThemeData, BorderRadius, Color, getUnit, ItemThemeData } from 'src/components/lib/utils'
+import { connect } from 'react-redux'
+import { IInitState, IGlobal } from 'src/store/state'
 
 interface IState {
+}
+
+interface IProps extends RouteComponentProps<any> {
+    userAddressList: IGlobal.UserAddressList[]
 }
 
 const buttonTheme = new ButtonThemeData({
@@ -17,15 +23,14 @@ const itemTheme = new ItemThemeData({
     minHeight: 60
 })
 
-export default class AddressList extends Component<RouteComponentProps<any>, IState> {
+class AddressList extends Component<IProps, IState> {
 
     public state: IState = {
 
     }
 
-    private page = 1
-
     public render(): JSX.Element {
+        const { userAddressList } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -36,6 +41,14 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
                         titleCenter
                         fixed
                     />
+                }
+                emptyElement={
+                    <div style={{ marginTop: getUnit(100) }}>
+                        <div className="flex_center">
+                            <Image src={require('../../assets/v2_q5w0tr.png')} style={{ height: getUnit(77), width: getUnit(77) }} />
+                        </div>
+                        <div className="flex_center" style={{ color: 'rgba(163, 163, 163, 1)', fontSize: getUnit(15), lineHeight: getUnit(40) }}>没有数据</div>
+                    </div>
                 }
                 footer={
                     <div className="flex_center" style={{ marginBottom: getUnit(10) }}>
@@ -50,24 +63,31 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
                 }
             >
                 <div style={{ padding: getUnit(10) }}>
-                    <Item
-                        theme={itemTheme}
-                        title={
-                            <Radio
-                                type="square"
-                                iconStyle={{ borderRadius: '50%' }}
-                            >
-                                <div>
-                                    <div style={{ fontSize: getUnit(13) }}>张三，13000000000</div>
-                                    <div style={{ fontSize: getUnit(12), color: 'rgb(158, 158, 158)' }}>浙江省杭州市西湖区文三路 01号通信大厦 7 楼 501</div>
-                                </div>
-                            </Radio>
-                        }
-                        icon={
-                            <Image src={require('../../assets/v2_q5sqq0.png')} style={{ width: getUnit(15), height: getUnit(15), marginRight: getUnit(10) }} />
-                        }
-                        link
-                    />
+                    {
+                        userAddressList.map((i, index: number) => {
+                            return (
+                                <Item
+                                    key={index}
+                                    theme={itemTheme}
+                                    title={
+                                        <Radio
+                                            type="square"
+                                            iconStyle={{ borderRadius: '50%' }}
+                                        >
+                                            <div>
+                                                <div style={{ fontSize: getUnit(13) }}>张三，13000000000</div>
+                                                <div style={{ fontSize: getUnit(12), color: 'rgb(158, 158, 158)' }}>浙江省杭州市西湖区文三路 01号通信大厦 7 楼 501</div>
+                                            </div>
+                                        </Radio>
+                                    }
+                                    icon={
+                                        <Image src={require('../../assets/v2_q5sqq0.png')} style={{ width: getUnit(15), height: getUnit(15), marginRight: getUnit(10) }} />
+                                    }
+                                    link
+                                />
+                            )
+                        })
+                    }
                 </div>
             </MobileLayout>
         )
@@ -105,20 +125,16 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
     }
 
     private handleAddAddress = () => {
-        const { history} = this.props
+        const { history } = this.props
         history.push('/addressAdd')
     }
 
 
     private getData = async () => {
         try {
-            const { match } = this.props
-            const data = await http('news/get_order_info', {
-                order_id: match.params.id
-            })
-            this.setState({
-                ...data.msg
-            })
+            const close = Toast.loading()
+            const data = await http('wxapp/goods/getCartData')
+            close()
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
@@ -130,5 +146,10 @@ export default class AddressList extends Component<RouteComponentProps<any>, ISt
         const { history } = this.props
         history.goBack()
     }
-
 }
+
+export default connect(
+    ({ userAddressList }: IInitState) => ({
+        userAddressList
+    })
+)(AddressList as any)

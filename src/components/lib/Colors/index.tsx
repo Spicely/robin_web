@@ -165,21 +165,9 @@ export default class Colors extends Component<IColorsProps, IState> {
             onChange: this.handleChange,
             color
         }
-
-        // tslint:disable-next-line: switch-default
         switch (type) {
-            case 'github': {
-                if (!width) {
-                    props.width = 212
-                }
-                // tslint:disable-next-line: align
-            } break
-            case 'twitter': {
-                if (!height) {
-                    props.width = 212
-                }
-                // tslint:disable-next-line: align
-            } break
+            case 'github': if (!width) props.width = 212; break;
+            case 'twitter': if (!height) props.width = 212; break;
         }
         switch (type) {
             case 'swatches': return <SwatchesPicker {...props} />
