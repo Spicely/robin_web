@@ -44,7 +44,7 @@ export const routes: IRoutes[] = [{
     path: '/addressList'
 }, {
     component: AddressAdd,
-    path: '/addressAdd'
+    path: '/addressAdd/:id?'
 }, {
     component: Detail,
     path: '/detail/:id'

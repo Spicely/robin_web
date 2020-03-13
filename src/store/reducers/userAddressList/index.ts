@@ -2,7 +2,7 @@ import { AnyAction } from 'redux'
 import { SET_USERADDRESSLIST_DATA } from '../../actions'
 import { IGlobal} from '../../state'
 
-const initData: IGlobal.UserAddressList = []
+const initData: IGlobal.UserAddressList[] = []
 
 export default function userAddressList(state = initData, action: AnyAction) {
     switch (action.type) {

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Picker } from 'antd-mobile'
 import { http } from 'src/utils'
 import { Toast, MobileLayout, NavBar, Button, Item, Radio, Image, Form, district, Divider } from 'components'
@@ -16,10 +16,6 @@ const buttonTheme = new ButtonThemeData({
     buttonColor: Color.fromRGB(0, 0, 0)
 })
 
-const itemTheme = new ItemThemeData({
-    minHeight: 60
-})
-
 export default class AddressAdd extends Component<RouteComponentProps<any>, IState> {
 
     public state: IState = {
@@ -29,13 +25,14 @@ export default class AddressAdd extends Component<RouteComponentProps<any>, ISta
     private fn?: IFormFun
 
     public render(): JSX.Element {
+        const { params } = this.props.match
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
                 appBar={
                     <NavBar
                         onBack={this.handleBack}
-                        title="编辑地址"
+                        title={params.id ? '编辑地址' : '新增地址'}
                         titleCenter
                         fixed
                     />
@@ -58,6 +55,36 @@ export default class AddressAdd extends Component<RouteComponentProps<any>, ISta
                 </div>
             </MobileLayout>
         )
+    }
+
+    public componentDidMount() {
+        const { params } = this.props.match
+        if (params.id) {
+            this.getData(params.id)
+        }
+    }
+
+    private getData = async (id: string) => {
+        try {
+            const close = Toast.loading()
+            const res = await http('wxapp/goods/getAddressDetail', {
+                address_id: id
+            })
+            console.log(res)
+            const address = this.handlePickerLabel([res.address_data.address_province, res.address_data.address_city, res.address_data.address_area])
+            console.log(address)
+            this.fn && this.fn.setFieldValue({
+                name: res.address_data.address_name,
+                phone: res.address_data.address_phone,
+                info: res.address_data.address_info,
+                address
+            })
+            close()
+        } catch (data) {
+            Toast.info({
+                content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
     }
 
     private getItems = (fn: IFormFun) => {
@@ -95,7 +122,7 @@ export default class AddressAdd extends Component<RouteComponentProps<any>, ISta
                             title="所在区域"
                             flexType="value"
                             value={
-                                <div style={{ marginLeft: getUnit(10) }}>{val.length? val.map((i: any) => i.label).join('-'): '选择省/市/区'}</div>
+                                <div style={{ marginLeft: getUnit(10) }}>{val.length ? val.map((i: any) => i.label).join('-') : '选择省/市/区'}</div>
                             }
                         />
                     </div>
@@ -111,6 +138,39 @@ export default class AddressAdd extends Component<RouteComponentProps<any>, ISta
             field: 'info'
         }]
         return items
+    }
+
+    private handlePickerLabel = (v: any) => {
+        const newVal: any[] = []
+        district.forEach((i) => {
+            if (i.label === v[0]) {
+                newVal.push({
+                    label: i.label,
+                    value: v[0]
+                })
+                if (i.children) {
+                    i.children.forEach((t: any) => {
+                        if (t.label === v[1]) {
+                            newVal.push({
+                                label: t.label,
+                                value: v[1]
+                            })
+                            if (t.children) {
+                                t.children.forEach((f: any) => {
+                                    if (f.label === v[2]) {
+                                        newVal.push({
+                                            label: f.label,
+                                            value: v[2]
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        })
+        return newVal
     }
 
     private handlePickerValue = (v: any) => {
@@ -181,16 +241,25 @@ export default class AddressAdd extends Component<RouteComponentProps<any>, ISta
                     })
                     return
                 }
-                console.log(data)
                 const close = Toast.loading()
-                const res = await http('wxapp/goods/addAddress', {
+                let url = 'wxapp/goods/addAddress'
+                const { params } = this.props.match
+                if (params.id) {
+                    url = 'wxapp/goods/editAddress'
+                }
+                const res = await http(url, {
                     ...data,
                     province: data.address[0].label,
                     city: data.address[1].label,
                     area: data.address[2].label,
+                    adid: params.id,
                 })
-                console.log(res)
                 close()
+                Toast.info({
+                    content: res.msg
+                })
+                const { history } = this.props
+                history.goBack()
             }
 
         } catch (data) {

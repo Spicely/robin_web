@@ -33,7 +33,16 @@ export namespace IGlobal {
     }
 
     export interface UserAddressList {
-
+        address_id: number
+        address_name: string
+        address_phone: string
+        address_province: string
+        address_city: string
+        address_area: string
+        address_info: string
+        address_default: number
+        user_id: number
+        created_time: number
     }
 }
 
