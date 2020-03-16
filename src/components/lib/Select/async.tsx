@@ -19,7 +19,6 @@ export interface ISelectProps {
     className?: string
     options: ISelectOptionsProps[]
     onChange?: (value: string | number) => void
-    value?: string | number
     placeholder?: string
     isSearchable?: boolean
     isMulti?: boolean
@@ -129,7 +128,7 @@ interface IState {
 export default class AsyncSelect extends Component<ISelectProps, IState> {
     constructor(props: ISelectProps) {
         super(props)
-        this.state.value = isNil(props.value) ? undefined : props.options.find((i) => i.value === props.value)
+        // this.state.value = isNil(props.value) ? undefined : props.options.find((i) => i.value === props.value)
     }
 
     public static defaultProps: ISelectProps = {
@@ -146,13 +145,11 @@ export default class AsyncSelect extends Component<ISelectProps, IState> {
 
     public render(): JSX.Element {
         const { className, options, placeholder, isSearchable, isMulti, isDisabled, theme, loadOptions, url } = this.props
-        const { value } = this.state
         return (
             <Consumer>
                 {
                     (val) => (
                         <SelectView
-                            value={value}
                             options={options}
                             selectTheme={theme || val.theme.selectTheme}
                             className={className}
@@ -192,16 +189,16 @@ export default class AsyncSelect extends Component<ISelectProps, IState> {
         })
     }
 
-    public UNSAFE_componentWillReceiveProps(nextProps: ISelectProps) {
-        const { value } = this.state
-        const { options } = this.props
-        if (nextProps.value !== value) {
-            const data = options.find((i) => i.value === nextProps.value)
-            this.setState({
-                value: data || null
-            })
-        }
-    }
+    // public UNSAFE_componentWillReceiveProps(nextProps: ISelectProps) {
+    //     const { value } = this.state
+    //     const { options } = this.props
+    //     if (nextProps.value !== value) {
+    //         const data = options.find((i) => i.value === nextProps.value)
+    //         this.setState({
+    //             value: data || null
+    //         })
+    //     }
+    // }
 
     private handleChange = (data: any) => {
         const { onChange } = this.props

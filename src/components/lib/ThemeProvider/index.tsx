@@ -59,7 +59,7 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
         }
 
         ::-webkit-scrollbar-thumb {
-            border-radius: ${({ theme }) => theme.dividerColor.toString()};
+           ${({ theme }) => theme.borderRadius.toString()};
             background: ${({ theme }) => Color.setOpacity(theme.primarySwatch, 0.8).toString()};
         }
 

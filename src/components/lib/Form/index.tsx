@@ -761,7 +761,6 @@ export default class Form extends Component<IFormProps, IState> {
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
-                                    value={vals[field]}
                                     className={_porps.className}
                                     onChange={this.setRVal.bind(this, field, onChange)}
                                 />
@@ -983,7 +982,15 @@ export default class Form extends Component<IFormProps, IState> {
                 case 'CheckBox': vals[field] = []; break
                 case 'RangePicker': vals[field] = []; break
                 case 'Carousel': vals[field] = []; break
-                default: vals[field] = props.value ? props.value : ''
+                default: {
+                    if (isArray(props.value)) {
+                        vals[field] = []
+                    } else if (isBool(props.value)) {
+                        vals[field] = false
+                    } else {
+                        vals[field] = ''
+                    }
+                }
             }
         })
         this.setState({
