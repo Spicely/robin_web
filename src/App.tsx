@@ -27,7 +27,7 @@ class App extends React.Component {
 							buttonTheme: new ButtonThemeData({
 								height: 45,
 							}),
-							primarySwatch: Color.fromRGB(87, 183, 43),
+							primarySwatch: Color.fromRGB(69, 134, 254),
 							fontSize: 14,
 						})}
 					>

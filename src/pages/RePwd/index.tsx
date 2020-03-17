@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Link, RouteComponentProps } from 'react-router-dom'
-import { MobileLayout, NavBar, Form, Toast, CountDown, Image, TabBar } from 'components'
+import { RouteComponentProps } from 'react-router-dom'
+import { MobileLayout, NavBar, Form, Toast, CountDown, Image } from 'components'
 import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 import { getUnit } from 'src/components/lib/utils'
@@ -35,9 +35,7 @@ const Pwd = styled.div`
 
 interface IState { }
 
-class Login extends Component<RouteComponentProps & DispatchProp, IState> {
-
-    private fn?: IFormFun
+class RePwd extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private registerFn?: IFormFun
 
@@ -84,20 +82,9 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
             },
             field: 'pwd'
         }, {
-            component: 'CheckBox',
-            className: 'flex_center',
-            props: {
-                options: [{
-                    label: <div>我已阅读<span style={{ color: '#4F9BFF' }}>《隐私政策》</span>隐私信息将严格保密</div>,
-                    value: true
-                }],
-                iconColor: '#fff',
-                value: [true],
-            },
-        }, {
             component: 'Button',
             props: {
-                children: '立即注册',
+                children: '提交',
                 mold: 'primary',
                 async: true,
                 style: {
@@ -106,51 +93,6 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     height: getUnit(40)
                 },
                 onClick: this.handleRegister
-            }
-        }]
-        return items
-    }
-
-    private getItems = (fn: IFormFun) => {
-        this.fn = fn
-        const items: IFormItem[] = [{
-            component: 'ItemInput',
-            props: {
-                title: '手机号',
-                placeholder: '请输入手机号',
-                type: 'tel',
-                maxLength: 11
-            },
-            field: 'mobile'
-        }, {
-            component: 'ItemInput',
-            props: {
-                title: '密  码',
-                placeholder: '请输入密码',
-                type: 'password',
-            },
-            field: 'pwd'
-        }, {
-            component: 'Label',
-            render: () => (
-                <div className="flex" style={{ margin: `0 ${getUnit(10)} 0 ${getUnit(15)}` }}>
-                    <div className="flex_1" />
-                    <Link to="/rePwd"><Pwd>忘记密码</Pwd></Link>
-                </div>
-            )
-        }, {
-            component: 'Button',
-            props: {
-                children: '立即登录',
-                mold: 'primary',
-                async: true,
-                style: {
-                    margin: `${getUnit(30)} ${getUnit(10)} 0 ${getUnit(10)}`,
-                    borderRadius: getUnit(30),
-                    height: getUnit(40),
-                    background: 'linear-gradient(45deg,rgba(40,71,254,1) 0%,rgba(83,164,255,1) 100%)',
-                },
-                onClick: this.handleLogin
             }
         }]
         return items
@@ -176,16 +118,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                         <LogoTitle className="flex_center">芝麻分期</LogoTitle>
                     </div>
                 </ViewBox>
-                <TabBar
-                    itemClassName="flex_1"
-                >
-                    <TabBar.Item title="登录">
-                        <Form getItems={this.getItems} style={{ padding: `0 ${getUnit(10)}` }} />
-                    </TabBar.Item>
-                    <TabBar.Item title="注册">
-                        <Form getItems={this.getRegisterItems} style={{ padding: `0 ${getUnit(10)}` }} />
-                    </TabBar.Item>
-                </TabBar>
+                <Form getItems={this.getRegisterItems} style={{ padding: `0 ${getUnit(10)}` }} />
             </MobileLayout>
         )
     }
@@ -206,7 +139,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     })
                     return false
                 }
-                const data = await http('/user/sms/send', { mobile: form.mobile, status: 1 })
+                const data = await http('/user/sms/send', { mobile: form.mobile, status: 2 })
                 Toast.info({
                     content: data.msg,
                 })
@@ -221,36 +154,6 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
             }
         } else {
             return false
-        }
-    }
-
-    private handleLogin = async () => {
-        try {
-            if (this.fn) {
-                const form = this.fn.getFieldValue()
-                if (!verify.isMobile(form.mobile)) {
-                    Toast.info({
-                        content: '请输入正确的手机号',
-                    })
-                    return
-                }
-                if (!form.pwd) {
-                    Toast.info({
-                        content: '请输入密码',
-                    })
-                    return
-                }
-                const data = await http('/user/login', form)
-                const { history } = this.props
-                Toast.info({
-                    content: data.msg,
-                })
-                history.replace('/')
-            }
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
         }
     }
 
@@ -270,10 +173,12 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     })
                     return
                 }
-                const data = await http('/user/register', form)
+                const data = await http('/user/rePwd', form)
+                const { history } = this.props
                 Toast.info({
                     content: data.msg,
                 })
+                history.goBack()
             }
         } catch (data) {
             Toast.info({
@@ -287,4 +192,4 @@ export default connect(
     ({ token }: any) => ({
         token
     })
-)(Login as any)
+)(RePwd as any)

@@ -52,7 +52,7 @@ const Nav = styled.div<IStyleProps>`
     box-sizing: border-box;
     z-index: 8;
     ${({ fixed }) => {
-        if (fixed) return css`position: sticky; top: 0;`
+        if (fixed) return css`position: fixed; top: 0;`
     }}
 `
 

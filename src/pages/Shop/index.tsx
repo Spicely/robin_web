@@ -17,6 +17,10 @@ const shopBtnTheme = new ButtonThemeData({
     fontSize: 18
 })
 
+const Header = styled.div`
+    height: ${getUnit(55)};
+`
+
 
 class Shop extends Component<RouteComponentProps<any>, IState> {
 
@@ -25,19 +29,7 @@ class Shop extends Component<RouteComponentProps<any>, IState> {
 
     public render(): JSX.Element {
         return (
-            <MobileLayout
-                emptyElement={
-                    <div style={{ marginTop: getUnit(100) }}>
-                        <div className="flex_center">
-                            <Image src={require('../../assets/v2_q5w0tr.png')} style={{ height: getUnit(77), width: getUnit(77) }} />
-                        </div>
-                        <div className="flex_center" style={{ color: 'rgba(163, 163, 163, 1)', fontSize: getUnit(15), lineHeight: getUnit(40) }}>您的购物车有点寂寞</div>
-                        <div className="flex_center">
-                            <Button mold="primary" theme={shopBtnTheme}>去购物</Button>
-                        </div>
-                    </div>
-                }
-            >
+            <MobileLayout>
 
             </MobileLayout>
         )

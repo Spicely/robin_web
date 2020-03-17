@@ -1,7 +1,7 @@
 import React from 'react'
 import Loadable from 'react-loadable'
 import Index from '../pages/Index'
-import Register from '../pages/Register'
+import RePwd from '../pages/RePwd'
 import Wallet from '../pages/Wallet'
 import AddressList from '../pages/AddressList'
 import AddressAdd from '../pages/AddressAdd'
@@ -34,8 +34,8 @@ export const routes: IRoutes[] = [{
     component: Index,
     path: '/'
 }, {
-    component: Register,
-    path: '/register'
+    component: RePwd,
+    path: '/rePwd'
 }, {
     component: Wallet,
     path: '/wallet'

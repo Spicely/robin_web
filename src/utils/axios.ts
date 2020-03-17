@@ -7,8 +7,9 @@ interface IValue {
     [name: string]: any
 }
 
-export const baseUrl = 'http://a.k-ww.com/'
-export const imgUrl = 'http://a.k-ww.com/'
+const ADMIN_ID = '5e6ce86a71a4c94c7088ba5b' // 这个为用户ID
+export const baseUrl = 'http://localhost:7001'
+export const imgUrl = 'http://localhost:7001'
 
 export interface IRresItem<T = any> {
     msg: string
@@ -25,7 +26,7 @@ const instance = axois.create({
     baseURL: baseUrl,
     timeout: 25000,
     method: 'POST',
-    // withCredentials: true,
+    withCredentials: true,
 })
 
 export const encrypt = (data: IValue) => {
@@ -61,7 +62,7 @@ export const deviaDecrypt = (data: string) => {
 instance.interceptors.response.use(async function (res: any) {
     // const devia = deviaDecrypt(res.data.devia)
     // res.data = JSON.parse(decrypt(res.data.value, res.data.secret, devia))
-    if (res.status === 200 && (res.data.code === 1 || res.data.code == 2)) {
+    if (res.status === 200 && res.data.status === 200) {
         return res.data
     } else {
         return Promise.reject(res.data)
@@ -70,12 +71,11 @@ instance.interceptors.response.use(async function (res: any) {
 
 const http = function (url: string, params?: IValue, config?: AxiosRequestConfig): any {
     const headers = config ? config.headers : {}
-    const token = localStorage.getItem('token')
     return instance(`${url}`, {
         ...config,
         data: {
             ...params,
-            userId: token
+            adminId: ADMIN_ID
         },
         headers: {
             ...headers,

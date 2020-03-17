@@ -14,6 +14,7 @@ class Index extends Component<DispatchProp, any> {
         return (
             <TabBar
                 mode="menu"
+                selected={2}
             >
                 <TabBar.Item
                     title="首页"
@@ -22,26 +23,14 @@ class Index extends Component<DispatchProp, any> {
                     <Home />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="商城"
-                    icon={<Icon icon="shop" />}
-                >
-                    <Mall />
-                </TabBar.Item>
-                <TabBar.Item
-                    title="新闻"
-                    icon={<Icon icon="msg" />}
-                >
-                    <Mall />
-                </TabBar.Item>
-                <TabBar.Item
-                    title="购物车"
+                    title="贷款管理"
                     icon={<Icon icon="shopping" />}
                 >
                     <Shop />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="我的"
-                    icon={<Icon icon="ios-person" />}
+                    title="个人中心"
+                    icon={<Icon icon="md-person" />}
                 >
                     <My />
                 </TabBar.Item>

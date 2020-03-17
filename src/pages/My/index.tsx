@@ -25,12 +25,12 @@ const HeaderBox = styled.div`
     padding: ${getUnit(10)};
 `
 
-const HeaderItemBox = styled.div`
-    height: ${getUnit(64)};
-    border-radius: ${getUnit(5)};
-    background-color: #fff;
-    padding: ${getUnit(20)} ${getUnit(5)};
-    margin-top: ${getUnit(10)};
+const UserPhone = styled.div`
+    font-size: ${getUnit(20)};
+    font-family:PingFang SC;
+    font-weight: bold;
+    line-height: ${getUnit(28)};
+    /* color: rgba(255,255,255,1); */
 `
 
 const forwardIconTheme = new IconThemeData({
@@ -57,67 +57,15 @@ class My extends Component<IProps, IState> {
                     <div className="flex" style={{ marginTop: getUnit(40) }}>
                         <Image
                             src={require('../../assets/v2_q5sp1k.png')}
-                            style={{ width: getUnit(52), height: getUnit(52) }}
+                            style={{ width: getUnit(70), height: getUnit(70) }}
                         />
-                        <div className="flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), marginLeft: getUnit(5) }}>{userInfo.user_name}</div>
-                        <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
-                            <div
-                                className="flex"
-                                style={{
-                                    backgroundColor: 'rgb(0, 0, 0)',
-                                    height: getUnit(11),
-                                    width: getUnit(30),
-                                    borderRadius: getUnit(20)
-                                }}>
-                                <Image
-                                    src={require('../../assets/v2_q5sr7o.png')}
-                                    style={{
-                                        width: getUnit(9), height: getUnit(9),
-                                        marginLeft: getUnit(5),
-                                        marginTop: getUnit(1),
-                                        marginRight: getUnit(2)
-                                    }}
-                                />
-                                <div className="flex_justify" style={{ color: '#fff', fontSize: getUnit(9), marginTop: getUnit(2) }}> V1 </div>
+                        <div className="flex_justify">
+                            <div style={{marginLeft: getUnit(20)}}>
+                                <UserPhone>157****0813</UserPhone>
+                                <Image src={require('../../assets/yrz.png')} style={{ width: getUnit(56), height: getUnit(19), marginTop: getUnit(5) }} />
                             </div>
-
-                        </div>
-                        <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
-                            <Icon
-                                icon="ios-arrow-forward"
-                                theme={new IconThemeData({ size: 14, color: Color.fromRGB(0, 0, 0) })}
-                            />
                         </div>
                     </div>
-                    <HeaderItemBox className="flex">
-                        <Link to="/wallet" className="flex_1">
-                            <div className="flex">
-                                <div className="flex_justify">
-                                    <div className="flex">
-                                        <Image src={require('../../assets/v2_q6k4sd.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                        <div style={{ fontSize: getUnit(14), marginLeft: getUnit(5) }}>钱包</div>
-                                    </div>
-                                </div>
-                                <div className="flex_1">
-                                    <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.price}</div>
-                                    <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>余额</div>
-                                </div>
-                            </div>
-                        </Link>
-                        <Divider type="vertical" />
-                        <div className="flex_1">
-                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.cny}</div>
-                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>货款通兑</div>
-                        </div>
-                        <Divider type="vertical" />
-                        <div className="flex_1">
-                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥10000</div>
-                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>利润通兑</div>
-                        </div>
-                        <div className="flex_justify">
-                            <Icon icon="ios-arrow-forward" theme={forwardIconTheme} />
-                        </div>
-                    </HeaderItemBox>
                 </HeaderBox>
                 <Gird
                     style={{ margin: getUnit(10), marginTop: getUnit(20), borderRadius: getUnit(5), overflow: 'hidden' }}
