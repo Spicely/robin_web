@@ -17,7 +17,7 @@ interface IState {
 }
 
 interface IProps extends RouteComponentProps {
-    homeData: IGlobal.HomeData
+    appData: IGlobal.AppData
 }
 
 const LSlider = styled(Slider)`
@@ -116,13 +116,14 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
+        const { appData } = this.props
         return (
             <MobileLayout
                 backgroundColor="#fff"
             >
                 <Header>
                     <Pirce>
-                        50000
+                        {appData.maxPrice}
                     </Pirce>
                 </Header>
                 <Item
@@ -163,14 +164,13 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             <div style={{ padding: `0 ${getUnit(15)}` }}>
                                 <LSlider
                                     defaultValue={26}
-                                    min={0}
-                                    max={30}
+                                    min={appData.minPirce}
+                                    max={appData.maxPrice}
                                 />
-
                             </div>
                             <div className="flex" style={{ marginTop: getUnit(20) }}>
-                                <SliderLabel className="flex_1">￥1000</SliderLabel>
-                                <SliderLabel className="flex_1" style={{ textAlign: 'right' }}>￥50,0000</SliderLabel>
+                                <SliderLabel className="flex_1">￥{appData.minPirce}</SliderLabel>
+                                <SliderLabel className="flex_1" style={{ textAlign: 'right' }}>￥{appData.maxPrice}</SliderLabel>
                             </div>
                         </div>
                         <div className="flex_column">
@@ -235,7 +235,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
 }
 
 export default connect(
-    ({ homeData }: IInitState) => ({
-        homeData
+    ({ appData }: IInitState) => ({
+        appData
     })
 )(withRouter(Home))

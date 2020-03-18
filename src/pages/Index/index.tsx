@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { TabBar, Icon } from 'components'
 import Home from '../Home'
-import Mall from '../Mall'
 import Shop from '../Shop'
 import My from '../My'
 import http from 'src/utils/axios'
-import { SET_USERINFO_DATA } from 'src/store/actions'
+import { SET_APP_DATA } from 'src/store/actions'
 import { DispatchProp, connect } from 'react-redux'
 
 class Index extends Component<DispatchProp, any> {
@@ -14,7 +13,7 @@ class Index extends Component<DispatchProp, any> {
         return (
             <TabBar
                 mode="menu"
-                selected={2}
+                selected={0}
             >
                 <TabBar.Item
                     title="首页"
@@ -39,17 +38,17 @@ class Index extends Component<DispatchProp, any> {
     }
 
     public componentDidMount() {
-        this.getUserInfo()
+        this.getConfig()
     }
 
-    private getUserInfo = async () => {
+    private getConfig = async () => {
         try {
             const { dispatch } = this.props
-            const data = await http('wxapp/login/userInfo')
-            dispatch({ type: SET_USERINFO_DATA, data: data.data })
+            const data = await http('/user/getConfig')
+            dispatch({ type: SET_APP_DATA, data: data.data })
         } catch (e) {
             console.log(e)
-            console.log('----------用户没有登录-------------')
+            console.log('----------用户信息错误-------------')
         }
     }
 }

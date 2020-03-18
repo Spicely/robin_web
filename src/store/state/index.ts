@@ -32,6 +32,27 @@ export namespace IGlobal {
         price: string
     }
 
+    export interface AppData {
+        siteName: string
+        siteTitle: string
+        minPirce: number
+        maxPrice: number
+        initPrice: number
+        months: string
+        initMonth: string
+        serviceRate: string
+        auditFee: number
+        repaymentDay: number
+        autoRefuse: boolean
+        refuseDay: number
+        refuseWaitDay: number
+        smsSign: string
+        user: string
+        createdAt: number
+        updatedAt: number
+        id: string
+    }
+
     export interface UserAddressList {
         address_id: number
         address_name: string
@@ -50,4 +71,5 @@ export interface IInitState {
     homeData: IGlobal.HomeData
     userInfo: IGlobal.UserInfo
     userAddressList: IGlobal.UserAddressList
+    appData: IGlobal.AppData
 }
