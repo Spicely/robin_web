@@ -68,9 +68,9 @@ export default class Textarea extends Component<ITextareaProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { className, maxLength, showMaxLength, theme } = this.props
+        const { className, maxLength, showMaxLength, theme, style } = this.props
         const { val } = this.state
-        const props = omit(this.props, ['className', 'onChange', 'showMaxLength', 'theme'])
+        const props = omit(this.props, ['className', 'onChange', 'showMaxLength', 'theme', 'style'])
         return (
             <Consumer>
                 {
@@ -78,6 +78,7 @@ export default class Textarea extends Component<ITextareaProps, IState> {
                         <TextareaBox
                             className={className}
                             textareaTheme={theme || init.theme.textareaTheme}
+                            style={style}
                         >
                             <TextView
                                 {...props}

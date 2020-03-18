@@ -52,7 +52,7 @@ const Nav = styled.div<IStyleProps>`
     box-sizing: border-box;
     z-index: 8;
     ${({ fixed }) => {
-        if (fixed) return css`position: sticky; top: 0;`
+        if (fixed) return css`position: fixed; top: 0;`
     }}
 `
 
@@ -123,6 +123,7 @@ export default class NavBar extends Component<INavBarProps, any> {
                                                 icon={item.url}
                                                 color={item.color}
                                                 onClick={this.handleClick.bind(this, item.link, item.onClick)}
+                                                theme={theme ? theme.rightIconTheme : value.theme.navBarTheme.rightIconTheme}
                                             />
                                         </NavItem>
 
@@ -153,14 +154,15 @@ export default class NavBar extends Component<INavBarProps, any> {
                             >
                                 <div className="flex">
                                     {
-                                        !isNull(left) && (
-                                            <NavLeft
-                                                className={`flex_justify ${leftClassName || ''}`}
-                                                onClick={this.handleBack}
-                                            >
-                                                {left ? left : <Icon icon="ios-arrow-back" />}
-                                            </NavLeft>
-                                        )
+                                        <NavLeft
+                                            className={`flex_justify ${leftClassName || ''}`}
+                                            onClick={this.handleBack}
+                                        >
+                                            {left ? left : !isNull(left) ? <Icon
+                                                icon="ios-arrow-back"
+                                                theme={theme ? theme.iconTheme : value.theme.navBarTheme.iconTheme}
+                                            /> : null}
+                                        </NavLeft>
                                     }
                                     <NavTitle
                                         className={getClassName(`flex_1 ${titleCenter ? 'flex_center' : 'flex_justify'}`, titleClassName)}

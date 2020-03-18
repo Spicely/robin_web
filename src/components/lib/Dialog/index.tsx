@@ -1,9 +1,9 @@
 import React, { Component, Fragment, CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes, css } from 'styled-components'
 import { isFunction, isNull, isUndefined } from 'lodash'
 import { Consumer } from '../ThemeProvider'
-import { getClassName, IStyledProps, DialogThemeData, getRatioUnit, getUnit } from '../utils'
+import { getClassName, IStyledProps, DialogThemeData, getUnit } from '../utils'
 import Button from '../Button'
 import NavBar from '../NavBar'
 import Icon from '../Icon'
@@ -92,13 +92,23 @@ interface IDialogContentProps {
 
 const DialogContent = styled.div<IDialogContentProps>`
     width: ${({ dialogTheme }) => getUnit(dialogTheme.width)};
-    min-width: ${() => getRatioUnit(300)};
-    min-height: ${() => getRatioUnit(400)};
+    max-width: 90%;
+    max-height: 90%;
+    ${({ dialogTheme }) => {
+        if (dialogTheme.minHeight) {
+            return css`min-height: ${() => getUnit(dialogTheme.minHeight)};`
+        }
+    }};
+    ${({ dialogTheme }) => {
+        if (dialogTheme.minWidth) {
+            return css`min-width: ${() => getUnit(dialogTheme.minWidth)};`
+        }
+    }};
     height: ${({ dialogTheme }) => getUnit(dialogTheme.height)};
     background: ${({ dialogTheme }) => dialogTheme.dialogColor.toString()};
     ${({ dialogTheme, theme }) => dialogTheme.borderRadius || theme.borderRadius};
     overflow: hidden;
-    box-shadow: 0 0 ${() => getRatioUnit(10)} rgb(107, 107, 107);
+    box-shadow: 0 0 ${() => getUnit(10)} rgb(107, 107, 107);
 
     &.slipUp {
         transform: translate3d(0, 100vh, 0);
@@ -110,15 +120,16 @@ const DialogContent = styled.div<IDialogContentProps>`
     }
 `
 
-const DialogBox = styled.div<IStyledProps>`
-    min-height: ${() => getRatioUnit(300)};
+const DialogBox = styled.div<IDialogContentProps>`
+    min-height: ${() => getUnit(300)};
+    ${({ dialogTheme }) => dialogTheme.padding.toString()};
     position: relative;
     margin: 0;
     overflow: auto;
 `
 
 const NavTitle = styled.div<IStyledProps>`
-    font-size: ${() => getRatioUnit(14)};
+    font-size: ${() => getUnit(14)};
 `
 export default class Dialog extends Component<IDialogProps, IState> {
 
@@ -216,29 +227,31 @@ export default class Dialog extends Component<IDialogProps, IState> {
                                         right={<Icon icon="ios-close" style={{ cursor: 'pointer' }} onClick={this.handleClose} />}
                                     />
                                     <DialogBox
+                                        dialogTheme={theme || value.theme.dialogTheme}
                                         className="flex_1"
                                     >
                                         {children}
                                     </DialogBox>
-                                    <NavBar
-                                        className="mk_divider_top"
-                                        theme={theme ? theme.navBarTheme : value.theme.dialogTheme.navBarTheme}
-                                        divider={false}
-                                        left={null}
-                                        right={
-                                            <div className="flex">
-                                                {
-                                                    isNull(footer) ? null : isUndefined(footer) ?
-                                                        (
-                                                            <Fragment>
-                                                                <Button onClick={this.handleClose} style={{ marginRight: '10px' }}>取消</Button>
-                                                                <Button mold="primary" async={async} onClick={onOk}>确定</Button>
-                                                            </Fragment>
-                                                        ) : footer
-                                                }
-                                            </div>
-                                        }
-                                    />
+                                    {isNull(footer) ? null :
+                                        <NavBar
+                                            className="mk_divider_top"
+                                            theme={theme ? theme.navBarTheme : value.theme.dialogTheme.navBarTheme}
+                                            divider={false}
+                                            left={null}
+                                            right={
+                                                <div className="flex">
+                                                    {
+                                                        isUndefined(footer) ?
+                                                            (
+                                                                <Fragment>
+                                                                    <Button onClick={this.handleClose} style={{ marginRight: '10px' }}>取消</Button>
+                                                                    <Button mold="primary" async={async} onClick={onOk}>确定</Button>
+                                                                </Fragment>
+                                                            ) : footer
+                                                    }
+                                                </div>
+                                            }
+                                        />}
                                 </DialogContent>
                             </Div>
                         )

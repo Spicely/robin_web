@@ -19,6 +19,12 @@ import CardThemeData from './CardThemeData'
 import ItemThemeData from './ItemThemeData'
 import BorderRadius from './BorderRadius'
 import ToastThemeData from './ToastThemeData'
+import SelectThemeData from './SelectThemeData'
+import TreeThemeData from './TreeThemeData'
+import NoticeThemeData from './NoticeThemeData'
+import GridThemeData from './GridThemeData'
+import RangePickerThemeData from './RangePickerThemeData'
+import { TableThemeData } from '.'
 
 export type IUnit = 'px' | 'rem'
 
@@ -34,7 +40,6 @@ interface IThemeDataProps {
     borderRadius?: BorderRadius
     dialogColor?: number
     fontSize?: number
-    menuGroupHeight?: number
     inputTheme?: InputThemeData
     cardTheme?: CardThemeData
     menuTheme?: MenuThemeData
@@ -50,6 +55,12 @@ interface IThemeDataProps {
     disabledBorderColor?: Color
     itemTheme?: ItemThemeData
     toastTheme?: ToastThemeData
+    selectTheme?: SelectThemeData
+    treeTheme?: TreeThemeData
+    noticeTheme?: NoticeThemeData
+    gridTheme?: GridThemeData
+    rangePickerTheme?: RangePickerThemeData
+    tableTheme?: TableThemeData
 }
 
 export default class ThemeData {
@@ -63,7 +74,6 @@ export default class ThemeData {
             if (!isNil(data.fontSize)) this.fontSize = data.fontSize
             if (data.errorColor) this.errorColor = data.errorColor
             if (data.dividerColor) this.dividerColor = data.dividerColor
-            if (data.menuGroupHeight) this.menuGroupHeight = data.menuGroupHeight
             if (data.fontColor) this.fontColor = data.fontColor
             if (data.inputTheme) this.inputTheme = data.inputTheme
             if (data.menuTheme) this.menuTheme = data.menuTheme
@@ -82,6 +92,12 @@ export default class ThemeData {
             if (data.itemTheme) this.itemTheme = data.itemTheme
             if (data.disabledBorderColor) this.disabledBorderColor = data.disabledBorderColor
             if (data.toastTheme) this.toastTheme = data.toastTheme
+            if (data.selectTheme) this.selectTheme = data.selectTheme
+            if (data.treeTheme) this.treeTheme = data.treeTheme
+            if (data.noticeTheme) this.noticeTheme = data.noticeTheme
+            if (data.gridTheme) this.gridTheme = data.gridTheme
+            if (data.rangePickerTheme) this.rangePickerTheme = data.rangePickerTheme
+            if (data.tableTheme) this.tableTheme = data.tableTheme
         }
     }
 
@@ -141,7 +157,17 @@ export default class ThemeData {
 
     public toastTheme: ToastThemeData = new ToastThemeData()
 
-    public menuGroupHeight: number = 45
+    public selectTheme: SelectThemeData = new SelectThemeData()
+
+    public treeTheme: TreeThemeData = new TreeThemeData()
+
+    public noticeTheme: NoticeThemeData = new NoticeThemeData()
+
+    public gridTheme: GridThemeData = new GridThemeData()
+
+    public rangePickerTheme: RangePickerThemeData = new RangePickerThemeData()
+
+    public tableTheme: TableThemeData = new TableThemeData()
 
     public unit: IUnit = 'rem'
 

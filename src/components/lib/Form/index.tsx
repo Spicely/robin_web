@@ -1,38 +1,32 @@
-import React, { Component, ChangeEvent, CSSProperties } from 'react'
+import React, { Component, ChangeEvent, CSSProperties, Fragment } from 'react'
 import Loadable from 'react-loadable'
 import moment from 'moment'
-import { omit, isFunction, isUndefined, hash, isBool, isNil, isArray } from 'muka'
+import { get } from 'lodash'
+import { omit, isFunction, isUndefined, hash, isBool, isNil, isArray, isString } from 'muka'
 import { getClassName, getRatioUnit, InputThemeData, Border, getUnit } from '../utils'
 import { IButtonProps } from '../Button'
 import { RadioGroupProps } from 'antd/lib/radio'
 import { TimePickerProps } from 'antd/lib/time-picker'
 import Input, { IInputProps } from '../Input'
-import { ILUpload, ILUploadChangeParam } from '../LUpload'
+import { IUploadProps } from '../Upload'
 import { ILDatePicker } from '../DatePicker'
-import { IImagePickerProps } from '../ImagePicker'
 import { IMapProps } from '../Map'
 import { ITextareaProps } from '../Textarea'
 import { IColorsProps } from '../Colors'
 import { ICarouselProps } from '../Carousel'
 import { ISelectProps } from '../Select'
 import { ICheckBoxProps } from '../CheckBox'
-import { IUploadProps } from '../Upload'
 import { IEditorProps } from '../Editor'
 import { IItemProps } from '../Item'
 import { ColorResult } from 'react-color'
 import styled from 'styled-components'
 
-const inputThemeData = new InputThemeData({
-    border: Border.all({ width: 0 }),
-    width: '100%'
-})
-
-interface IFormUpload extends ILUpload {
+interface IFormUpload extends IUploadProps {
     label?: string | JSX.Element
 }
 
-type component = 'Colors' | 'Input' | 'Button' | 'Radio' | 'DatePicker' | 'LUpload' | 'RangePicker' | 'NULL' | 'Label' | 'RadioGroup' | 'Select' | 'ImagePicker' | 'Map' | 'Textarea' | 'Carousel' | 'Slider' | 'CheckBox' | 'Editor' | 'TimePicker' | 'Upload' | 'Item' | 'ItemInput'
-type props = RadioGroupProps | IInputProps | IButtonProps | ILDatePicker | IFormUpload | IImagePickerProps | IMapProps | ICarouselProps | ITextareaProps | IColorsProps | ISelectProps | ICheckBoxProps | IEditorProps | TimePickerProps | IUploadProps | IItemProps | undefined
+type component = 'Colors' | 'Input' | 'Button' | 'Radio' | 'DatePicker' | 'Upload' | 'RangePicker' | 'NULL' | 'Label' | 'RadioGroup' | 'Select' | 'AsyncSelect' | 'Map' | 'Textarea' | 'Carousel' | 'Slider' | 'CheckBox' | 'Editor' | 'TimePicker' | 'Upload' | 'Item' | 'ItemInput' | 'Dragger'
+type props = RadioGroupProps | IInputProps | IButtonProps | ILDatePicker | IFormUpload | IMapProps | ICarouselProps | ITextareaProps | IColorsProps | ISelectProps | ICheckBoxProps | IEditorProps | TimePickerProps | IItemProps | undefined
 
 export interface IFormItem {
     component: component
@@ -122,6 +116,10 @@ const FormItemLabel = styled.div`
 const ItemExtend = styled.div`
     padding: 0 ${getUnit(10)};
 `
+
+const itemInputTheme = new InputThemeData({
+    border: Border.none
+})
 export default class Form extends Component<IFormProps, IState> {
 
     public static defaultProps: IFormProps = {
@@ -152,7 +150,7 @@ export default class Form extends Component<IFormProps, IState> {
         const vals: any = {}
         const childs: IFormChild[] = []
         this.items = getItems(this.lref)
-        this.items.map((item: IFormItem, index: number) => {
+        this.items.forEach((item: IFormItem, index: number) => {
             const field = item.field || `${item.component}_${index}`
             const _porps: any = item.props || {}
             switch (item.component) {
@@ -163,9 +161,10 @@ export default class Form extends Component<IFormProps, IState> {
                 case 'Colors':
                     vals[field] = _porps.initColor || ''; break
                 case 'CheckBox': vals[field] = _porps.value || []; break
-                case 'LUpload': vals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : ''); break
+                case 'Input': vals[field] = isNil(_porps.value) ? '' : _porps.value; break
+                case 'Dragger': vals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : ''); break
                 case 'RadioGroup': vals[field] = isUndefined(_porps.value) ? '' : _porps.value; break
-                case 'ImagePicker': vals[field] = _porps.value || []; break
+                case 'Upload': vals[field] = _porps.value ? _porps.value : []; break
                 case 'Carousel': vals[field] = _porps.value || []; break
                 case 'Map': vals[field] = _porps.value || {}; break
                 default: vals[field] = _porps.value || ''
@@ -196,10 +195,17 @@ export default class Form extends Component<IFormProps, IState> {
         const items = getItems(this.lref)
         this.items = items
         const newChild: IFormChild[] = [...childs]
-        items.forEach((item: IFormItem, index: number) => {
+        let newVals: IValue = {}
+        const keys = Object.keys(vals)
+        items.map((i) => {
+            if (i.field && keys.includes(i.field)) {
+                newVals[i.field] = vals[i.field]
+            }
+            return i
+        }).forEach((item: IFormItem, index: number) => {
             // 如果组件不存在 则创建
+            const field = item.field || `${item.component}_${index}`
             if (!newChild[index]) {
-                const field = item.field || `${item.component}_${index}`
                 const _porps: IValue = item.props || {}
                 newChild[index] = {
                     type: item.component,
@@ -214,17 +220,17 @@ export default class Form extends Component<IFormProps, IState> {
                     extend: item.extend
                 }
                 switch (item.component) {
-                    case 'Radio': vals[field] = _porps.value; break
-                    case 'Slider': vals[field] = _porps.value || _porps.defaultValue || 0; break
-                    case 'Colors': vals[field] = _porps.initColor || ''; break
-                    case 'LUpload': vals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : ''); break
-                    case 'ImagePicker': vals[field] = _porps.value || []; break
-                    case 'Carousel': vals[field] = _porps.value || []; break
-                    case 'RadioGroup': vals[field] = isUndefined(_porps.value) ? '' : _porps.value; break
-                    case 'CheckBox': vals[field] = _porps.value || []; break
-                    case 'RangePicker': vals[field] = _porps.value || []; break
-                    case 'Map': vals[field] = _porps.value || {}; break
-                    default: vals[field] = _porps.value || ''
+                    case 'Radio': newVals[field] = _porps.value; break
+                    case 'Slider': newVals[field] = _porps.value || _porps.defaultValue || 0; break
+                    case 'Colors': newVals[field] = _porps.initColor || ''; break
+                    case 'Dragger': newVals[field] = _porps.fileList || (_porps.maxLength > 1 ? [] : ''); break
+                    case 'Upload': newVals[field] = _porps.value ? isString(_porps.value) ? [{ url: _porps.value }] : _porps.value : []; break
+                    case 'Carousel': newVals[field] = _porps.value || []; break
+                    case 'RadioGroup': newVals[field] = isUndefined(_porps.value) ? '' : _porps.value; break
+                    case 'CheckBox': newVals[field] = _porps.value || []; break
+                    case 'RangePicker': newVals[field] = _porps.value || []; break
+                    case 'Map': newVals[field] = _porps.value || {}; break
+                    default: newVals[field] = _porps.value || ''
                 }
                 return
             }
@@ -238,11 +244,23 @@ export default class Form extends Component<IFormProps, IState> {
                 newChild[index].visible = isBool(item.visible) ? item.visible : true
                 newChild[index].extend = item.extend
                 newChild[index].render = item.render
+                newChild[index].label = item.label
+            } else if (item.field !== newChild[index].field && item.field) {
+                newChild[index].props = {
+                    ...item.props,
+                    ...newChild[index].props,
+                }
+                newChild[index].field = item.field
+                newChild[index].additional = item.additional
+                newChild[index].visible = isBool(item.visible) ? item.visible : true
+                newChild[index].extend = item.extend
+                newChild[index].render = item.render
+                newChild[index].label = item.label
             }
         })
         this.setState({
             childs: newChild,
-            vals: { ...vals }
+            vals: { ...newVals }
         }, () => {
             this.getTypeChild()
         })
@@ -251,16 +269,20 @@ export default class Form extends Component<IFormProps, IState> {
     public render(): JSX.Element {
         const { className, showType, style } = this.props
         const { childs } = this.state
-        return (
-            <div className={getClassName(`l_form ${showType}`, className)} style={style}>
-                {childs.map((item: IFormChild, index: number) => {
-                    if (item.view && item.visible) {
-                        return this.setTypeCom(this.items[index].component, item.view, item.props, item.field, index, item.className, item.label, item.additional, item.render, item.extend)
-                    }
-                    return undefined
-                })}
-            </div>
-        )
+        try {
+            return (
+                <div className={getClassName(`l_form ${showType}`, className)} style={style}>
+                    {childs.map((item: IFormChild, index: number) => {
+                        if (item.view && item.visible) {
+                            return this.setTypeCom(this.items[index].component, item.view, item.props, item.field, index, item.className, item.label, item.additional, item.render, item.extend)
+                        }
+                        return undefined
+                    })}
+                </div>
+            )
+        } catch (e) {
+            return <Fragment />
+        }
     }
 
     public componentDidMount() {
@@ -269,35 +291,46 @@ export default class Form extends Component<IFormProps, IState> {
 
     private getTypeChild() {
         const { childs } = this.state
-        const newChilds = childs.map((item: IFormChild, index: number) => {
-            if (item.view) {
-                if (item.type !== this.items[index].component) {
+        let newChilds
+        try {
+            newChilds = childs.map((item: IFormChild, index: number) => {
+                if (item.view) {
+                    if (item.type !== this.items[index].component) {
+                        const Com = this.typeChild(this.items[index].component)
+                        if (Com) {
+                            item.view = Com
+                        }
+                    }
+                } else {
                     const Com = this.typeChild(this.items[index].component)
+                    const field = item.field || `${item.type}_${index}`
                     if (Com) {
-                        item.view = Com
+                        item = {
+                            ...item,
+                            view: Com,
+                            type: item.type,
+                            field,
+                            label: item.label,
+                            props: item.props || {},
+                            visible: isUndefined(item.visible) ? true : item.visible,
+                            render: item.render
+                        }
                     }
                 }
-            } else {
-                const Com = this.typeChild(this.items[index].component)
-                const field = item.field || `${item.type}_${index}`
-                if (Com) {
-                    item = {
-                        ...item,
-                        view: Com,
-                        type: item.type,
-                        field,
-                        label: item.label,
-                        props: item.props || {},
-                        visible: isUndefined(item.visible) ? true : item.visible,
-                        render: item.render
-                    }
-                }
-            }
-            return item
-        })
+                return item
+            })
+        } catch (e) {
+            newChilds = []
+        }
         this.setState({
             childs: newChilds
         })
+    }
+
+    public componentWillUnmount() {
+        this.setState = (state, callback) => {
+            return;
+        }
     }
 
     // tslint:disable-next-line: no-shadowed-variable
@@ -308,12 +341,12 @@ export default class Form extends Component<IFormProps, IState> {
             case 'Button': return loadableComponent(import('../Button'))
             case 'Radio': return loadableComponent(import('../Radio'))
             case 'DatePicker': return loadableComponent(import('../DatePicker'))
-            case 'LUpload': return loadableComponent(import('../LUpload'))
-            case 'Upload': return loadableComponent(import('../Upload/dragger'))
+            case 'Upload': return loadableComponent(import('../Upload'))
+            case 'Dragger': return loadableComponent(import('../Upload/dragger'))
             case 'Label': return loadableComponent(import('../Label'))
             case 'RadioGroup': return loadableComponent(import('../RadioGroup'))
             case 'Select': return loadableComponent(import('../Select'))
-            case 'ImagePicker': return loadableComponent(import('../ImagePicker'))
+            case 'AsyncSelect': return loadableComponent(import('../Select/async'))
             case 'Map': return loadableComponent(import('../Map'))
             case 'Textarea': return loadableComponent(import('../Textarea'))
             case 'Colors': return loadableComponent(import('../Colors'))
@@ -519,9 +552,10 @@ export default class Form extends Component<IFormProps, IState> {
                             <View
                                 {...vProps}
                                 key={field}
+                                flexType="value"
                                 value={
                                     <Input
-                                        theme={inputThemeData}
+                                        theme={itemInputTheme}
                                         placeholder={vProps.placeholder}
                                         type={vProps.type}
                                         value={vals[field]}
@@ -533,7 +567,7 @@ export default class Form extends Component<IFormProps, IState> {
                                 onChange={this.setRVal.bind(this, field, onChange)}
                             />
                         </div>
-                        <ItemExtend className="flex_justify">{extend}</ItemExtend>
+                        {extend && <ItemExtend className="flex_justify">{extend}</ItemExtend>}
                     </div>
                 )
             }
@@ -625,11 +659,11 @@ export default class Form extends Component<IFormProps, IState> {
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
                             {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
-                            <div className="flex_1 flex">
+                            <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
                                     key={field}
-                                    className={`flex_1 ${_porps.className || ''}`}
+                                    className={_porps.className}
                                     value={vals[field] ? vals[field].map((i: string) => moment(i)) : null}
                                     onChange={this.setDatePickerVal.bind(this, field, onChange)}
                                 />
@@ -639,37 +673,38 @@ export default class Form extends Component<IFormProps, IState> {
                     </FormItem>
                 )
             }
-            case 'ImagePicker': {
-                const vProps = omit(props, ['value', 'onChange'])
-                const _porps: any = props
-                return (
-                    <FormItem className={`flex_justify ${className || ''}`} key={field}>
-                        {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
-                        <div className="flex_1">
-                            <View
-                                value={vals[field]}
-                                onChange={this.steArrVal.bind(this, field, _porps.onChange)}
-                                {...vProps}
-                            />
-                        </div>
-                    </FormItem>
-                )
-            }
-            case 'LUpload': {
+            // case 'ImagePicker': {
+            //     const vProps = omit(props, ['value', 'onChange'])
+            //     const _porps: any = props
+            //     return (
+            //         <FormItem className={`flex_justify ${className || ''}`} key={field}>
+            //             {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+            //             <div className="flex_1">
+            //                 <View
+            //                     value={vals[field]}
+            //                     onChange={this.steArrVal.bind(this, field, _porps.onChange)}
+            //                     {...vProps}
+            //                 />
+            //             </div>
+            //         </FormItem>
+            //     )
+            // }
+            case 'Upload': {
                 const vProps = omit(props, ['fileList', 'onChange'])
                 const _porps: any = props
-                const onChange: any = _porps.onChange
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
-                        {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
-                        <div className="flex_1">
-                            {isFunction(render) ? render(vals[field]) : (
-                                <View
-                                    {...vProps}
-                                    fileList={vals[field]}
-                                    onChange={this.setUploadVal.bind(this, field, onChange)}
-                                />
-                            )}
+                        <div className="flex">
+                            {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                            <div className="flex_1">
+                                {isFunction(render) ? render(vals[field]) : (
+                                    <View
+                                        {...vProps}
+                                        fileList={vals[field]}
+                                        onChange={this.steArrVal.bind(this, field, _porps.onChange)}
+                                    />
+                                )}
+                            </div>
                         </div>
                     </FormItem>
                 )
@@ -706,7 +741,7 @@ export default class Form extends Component<IFormProps, IState> {
                                 <View
                                     {...vProps}
                                     value={vals[field]}
-                                    className={`flex_1 ${_porps.className || ''}`}
+                                    className={_porps.className}
                                     onChange={this.setRVal.bind(this, field, onChange)}
                                 />
                             </div>
@@ -715,7 +750,27 @@ export default class Form extends Component<IFormProps, IState> {
                     </FormItem>
                 )
             }
-            case 'Upload': {
+            case 'AsyncSelect': {
+                const vProps = omit(props, ['value', 'onChange'])
+                const _porps: any = props
+                const onChange: any = _porps.onChange
+                return (
+                    <FormItem className={`flex_justify ${className || ''}`} key={field}>
+                        <div className="flex">
+                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            <div className="flex_1 flex_justify">
+                                <View
+                                    {...vProps}
+                                    className={_porps.className}
+                                    onChange={this.setRVal.bind(this, field, onChange)}
+                                />
+                            </div>
+                        </div>
+                        {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
+                    </FormItem>
+                )
+            }
+            case 'Dragger': {
                 const vProps = omit(props, ['value'])
                 const _porps: any = props
                 // const onChange: any = _porps.onChange
@@ -754,7 +809,7 @@ export default class Form extends Component<IFormProps, IState> {
                                         </View>
                                     )
                                 }
-
+                                {extend}
                             </div>
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
@@ -765,7 +820,7 @@ export default class Form extends Component<IFormProps, IState> {
         }
     }
 
-    private setUploadVal(field: string, cb: (file: ILUploadChangeParam) => void, file: ILUploadChangeParam) {
+    private setUploadVal(field: string, cb: (file: any) => void, file: any) {
         const { vals } = this.state
         vals[field] = file.fileList
         if (isFunction(cb)) {
@@ -871,7 +926,7 @@ export default class Form extends Component<IFormProps, IState> {
     private getComVal(item: IFormChild, field: string) {
         const { vals } = this.state
         switch (item.type) {
-            case 'LUpload': {
+            case 'Dragger': {
                 const _props: any = item.props || {}
                 const baseUrl: string = _props.baseUrl || ''
                 if (_props.maxLength === 1) {
@@ -903,7 +958,7 @@ export default class Form extends Component<IFormProps, IState> {
         const val: IValue = {}
         childs.forEach((item: IFormChild, index: number) => {
             if (params) {
-                params.map((i: string) => {
+                params.forEach((i: string) => {
                     if (item.field === i) {
                         val[i] = this.getComVal(item, i)
                     }
@@ -917,18 +972,25 @@ export default class Form extends Component<IFormProps, IState> {
 
     private cleanFieldValue() {
         const { vals } = this.state
-        this.items.map((item: IFormItem, index: number) => {
+        this.items.forEach((item: IFormItem, index: number) => {
             const field = item.field || `${item.component}_${index}`
             // tslint:disable-next-line: no-shadowed-variable
             const props: any = item.props || {}
             switch (item.component) {
                 case 'Radio': vals[field] = props.value; break
-                case 'LUpload': vals[field] = []; break
+                case 'Upload': vals[field] = props.value ? props.value : []; break
                 case 'CheckBox': vals[field] = []; break
                 case 'RangePicker': vals[field] = []; break
                 case 'Carousel': vals[field] = []; break
-                case 'ImagePicker': vals[field] = props.value ? props.value : []; break
-                default: vals[field] = props.value ? props.value : ''
+                default: {
+                    if (isArray(props.value)) {
+                        vals[field] = []
+                    } else if (isBool(props.value)) {
+                        vals[field] = false
+                    } else {
+                        vals[field] = ''
+                    }
+                }
             }
         })
         this.setState({
@@ -938,11 +1000,11 @@ export default class Form extends Component<IFormProps, IState> {
 
     private setFieldValue(params: IValue) {
         const { vals } = this.state
-        this.items.map((item: IFormItem, index: number) => {
+        this.items.forEach((item: IFormItem, index: number) => {
             const field = item.field || `${item.component}_${index}`
-            if (!isNil(params[field])) {
+            if (!isNil(params[field] || get(params, field))) {
                 switch (item.component) {
-                    case 'LUpload': {
+                    case 'Upload': {
                         const _props: any = item.props || {}
                         const baseUrl = _props.baseUrl || ''
                         if (_props.maxLength === 1) {
@@ -950,11 +1012,11 @@ export default class Form extends Component<IFormProps, IState> {
                                 uid: '-1',
                                 name: 'xxx.png',
                                 status: 'done',
-                                url: baseUrl + params[field],
+                                url: baseUrl + (params[field] || get(params, field)),
                             }]
                         } else {
                             // tslint:disable-next-line: no-shadowed-variable
-                            vals[field] = params[field].map((i: string, index: number) => {
+                            vals[field] = (params[field] || get(params, field)).map((i: string, index: number) => {
                                 return {
                                     uid: `${index}`,
                                     name: `reload_${index}.png`,
@@ -966,7 +1028,7 @@ export default class Form extends Component<IFormProps, IState> {
                         // tslint:disable-next-line: align
                     } break
                     default: {
-                        vals[field] = params[field]
+                        vals[field] = params[field] || get(params, field)
                     }
                 }
             }

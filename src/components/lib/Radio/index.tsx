@@ -1,7 +1,7 @@
 import React, { CSSProperties, Component } from 'react'
 import styled, { css } from 'styled-components'
 import { isFunction, isBoolean } from 'lodash'
-import { RadioThemeData, transition,  getRatioUnit } from '../utils'
+import { RadioThemeData, transition, getRatioUnit } from '../utils'
 import Icon, { iconType } from '../Icon'
 import { Consumer } from '../ThemeProvider'
 
@@ -15,6 +15,7 @@ export interface IRadioProps {
     onChange?: (val: boolean) => void
     type?: IRadioType
     style?: CSSProperties
+    iconStyle?: CSSProperties
     icon?: iconType
     theme?: RadioThemeData
     children?: string | JSX.Element
@@ -147,7 +148,7 @@ export default class Radio extends Component<IRadioProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { className, children, checked, type, style, icon, theme } = this.props
+        const { className, children, checked, type, style, icon, theme, iconStyle } = this.props
         const { status } = this.state
         return (
             <Consumer>
@@ -164,37 +165,43 @@ export default class Radio extends Component<IRadioProps, IState> {
                         >
                             <div className="flex">
                                 {type === 'square' ? (
-                                    <RadioSquare
-                                        theme={value.theme}
-                                        radioTheme={theme || value.theme.radioTheme}
-                                        active={isBoolean(checked) ? checked : status}
-                                        className="flex_justify"
-                                    >
-                                        {
-                                            (isBoolean(checked) ? checked : status) ?
-                                                <Icon
-                                                    icon={icon || 'md-checkmark'}
-                                                    theme={theme ? theme.iconTheme : value.theme.radioTheme.iconTheme}
-                                                />
-                                                : null
-                                        }
-                                    </RadioSquare>
+                                    <div className="flex_justify">
+                                        <RadioSquare
+                                            theme={value.theme}
+                                            radioTheme={theme || value.theme.radioTheme}
+                                            active={isBoolean(checked) ? checked : status}
+                                            className="flex_justify"
+                                            style={iconStyle}
+                                        >
+                                            {
+                                                (isBoolean(checked) ? checked : status) ?
+                                                    <Icon
+                                                        icon={icon || 'md-checkmark'}
+                                                        theme={theme ? theme.iconTheme : value.theme.radioTheme.iconTheme}
+                                                    />
+                                                    : null
+                                            }
+                                        </RadioSquare>
+                                    </div>
                                 ) : null}
                                 {
                                     type === 'circular' ? (
-                                        <RadioCore
-                                            active={isBoolean(checked) ? checked : status}
-                                            radioTheme={theme || value.theme.radioTheme}
-                                            theme={value.theme}
-                                        >
-                                            <div className="flex_center" style={{ width: '100%', height: '100%' }}>
-                                                <RadioCoreCircle
-                                                    radioTheme={theme || value.theme.radioTheme}
-                                                    theme={value.theme}
-                                                    status={status}
-                                                />
-                                            </div>
-                                        </RadioCore>
+                                        <div className="flex_justify">
+                                            <RadioCore
+                                                active={isBoolean(checked) ? checked : status}
+                                                radioTheme={theme || value.theme.radioTheme}
+                                                theme={value.theme}
+                                                style={iconStyle}
+                                            >
+                                                <div className="flex_center" style={{ width: '100%', height: '100%' }}>
+                                                    <RadioCoreCircle
+                                                        radioTheme={theme || value.theme.radioTheme}
+                                                        theme={value.theme}
+                                                        status={status}
+                                                    />
+                                                </div>
+                                            </RadioCore>
+                                        </div>
                                     ) : null
                                 }
                                 <RadioLabel

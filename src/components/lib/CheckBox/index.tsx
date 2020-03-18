@@ -6,7 +6,7 @@ import { Consumer } from '../ThemeProvider'
 import { iconType } from '../Icon'
 
 interface ICheckBoxOptionsProps {
-    label: string
+    label: string | JSX.Element
     value: string | number | boolean
     className?: string
     icon?: iconType

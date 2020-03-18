@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
 import { TabBar, Icon } from 'components'
 import Home from '../Home'
-import OrganList from '../OrganList'
-import TeamList from '../TeamList'
+import Shop from '../Shop'
+import My from '../My'
+import http from 'src/utils/axios'
+import { SET_APP_DATA } from 'src/store/actions'
+import { DispatchProp, connect } from 'react-redux'
 
-export default class Index extends Component<any, any> {
+class Index extends Component<DispatchProp, any> {
 
     public render(): JSX.Element {
         return (
             <TabBar
                 mode="menu"
+                selected={0}
             >
                 <TabBar.Item
                     title="首页"
@@ -18,18 +22,35 @@ export default class Index extends Component<any, any> {
                     <Home />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="机构观点"
-                    icon={<Icon icon="ios-apps" />}
+                    title="贷款管理"
+                    icon={<Icon icon="shopping" />}
                 >
-                    <OrganList />
+                    <Shop />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="投顾团队"
-                    icon={<Icon icon="ios-person" />}
+                    title="个人中心"
+                    icon={<Icon icon="md-person" />}
                 >
-                    <TeamList />
+                    <My />
                 </TabBar.Item>
             </TabBar>
         )
     }
+
+    public componentDidMount() {
+        this.getConfig()
+    }
+
+    private getConfig = async () => {
+        try {
+            const { dispatch } = this.props
+            const data = await http('/user/getConfig')
+            dispatch({ type: SET_APP_DATA, data: data.data })
+        } catch (e) {
+            console.log(e)
+            console.log('----------用户信息错误-------------')
+        }
+    }
 }
+
+export default connect()(Index)

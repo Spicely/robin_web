@@ -1,9 +1,9 @@
-import React, { Component, CSSProperties } from 'react'
-import { isNumber, isFunction, isNil } from 'lodash'
+import React, { Component, CSSProperties, Children } from 'react'
+import { isNumber, isFunction, isNil, isObject } from 'lodash'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
 import Image from '../Image'
-import { getClassName, CarouselThemeData, getUnit, transition, getRatioUnit, Color } from '../utils'
+import { getClassName, CarouselThemeData, getUnit, transition, getRatioUnit, Color, IValue } from '../utils'
 
 export interface ICarouselValueProps {
     url: string
@@ -173,7 +173,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     private animateNode: Element | null = null
 
     public render(): JSX.Element {
-        const { className, dotPosition, dotClassName, dots, effect, style, autoplay, value, dotType, dotColor, baseUrl, theme } = this.props
+        const { className, dotPosition, dotClassName, dots, effect, style, autoplay, value, dotType, dotColor, baseUrl, theme, children } = this.props
         const { selectIndex, left, top, animate } = this.state
         const cssStyle: CSSProperties = {}
         const dotStyle: CSSProperties = {}
@@ -187,6 +187,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
             cssStyle.transform = `translate3d(0, -${selectIndex * top}px, 0)`
             cssStyle.transition = animate ? '' : 'none'
         }
+        const childs = children || value
         return (
             <Consumer>
                 {
@@ -198,7 +199,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                             ref={(e) => this.carouselNode = e}
                         >
                             {
-                                value.map((child, index) => {
+                                Children.map(childs, (child?: IValue, index?: any) => {
                                     return (
                                         <CarouselViewItem
                                             className="flex_center"
@@ -211,13 +212,13 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                             key={index}
                                         >
                                             {
-                                                <CarouselViewItemImg src={baseUrl + child.url} />
+                                                isObject(child) ? child._owner ? child : <CarouselViewItemImg src={baseUrl + child.url} /> : child
                                             }
                                         </CarouselViewItem>
                                     )
                                 })
                             }
-                            {autoplay && effect !== 'fade' && value.map((child, index) => {
+                            {autoplay && effect !== 'fade' && Children.map(childs, (child?: IValue, index?: any) => {
                                 if (index === 0) {
                                     return (
                                         <CarouselViewItem
@@ -228,7 +229,7 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                             ref={(e) => this.animateNode = e}
                                         >
                                             {
-                                                <CarouselViewItemImg src={baseUrl + child.url} />
+                                                isObject(child) ? child._owner ? child : <CarouselViewItemImg src={baseUrl + child.url} /> : child
                                             }
                                         </CarouselViewItem>
                                     )
@@ -245,14 +246,14 @@ export default class Carousel extends Component<ICarouselProps, IState> {
                                         <div className="flex_center">
                                             <span className={(dotPosition === 'bottom' || dotPosition === 'top' || dotPosition === 'bottomRight' || dotPosition === 'bottomLeft') ? 'flex' : ''}>
                                                 {
-                                                    value.map((child, index) => {
+                                                    Children.map(childs, (child, index) => {
                                                         return (
                                                             <CarouselDotItem
                                                                 carouselTheme={theme || init.theme.carouselTheme}
                                                                 dotType={dotType}
                                                                 dotPos={dotPosition}
                                                                 dotColor={dotColor}
-                                                                active={selectIndex % value.length === index}
+                                                                active={selectIndex % (value.length || Children.count(children)) === index}
                                                                 className={dotClassName}
                                                                 key={index}
                                                                 onClick={this.handleTabIndex.bind(this, index)}
@@ -328,12 +329,12 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     }
 
     private interval(autoPlay: boolean) {
-        const { time, effect } = this.props
+        const { time, effect, children } = this.props
         if (autoPlay) {
             this.timer = setInterval(() => {
                 const { value } = this.props
                 const { selectIndex } = this.state
-                const length = value.length
+                const length = (value.length || Children.count(children))
                 const status = effect !== 'fade' ? selectIndex === length : selectIndex === length - 1
                 this.handleTabIndex(status ? 0 : selectIndex + 1)
             }, time)
@@ -341,9 +342,9 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     }
 
     private handleAnimate = () => {
-        const { effect, value } = this.props
+        const { effect, value, children } = this.props
         const { selectIndex } = this.state
-        if (selectIndex === value.length && effect !== 'fade') {
+        if (selectIndex === (value.length || Children.count(children)) && effect !== 'fade') {
             this.setState({
                 selectIndex: 0,
                 animate: false
@@ -358,12 +359,12 @@ export default class Carousel extends Component<ICarouselProps, IState> {
     }
 
     private handleTabIndex(index: number) {
-        const { onChnage, value } = this.props
+        const { onChnage, value, children } = this.props
         this.setState({
             selectIndex: index
         })
         if (isFunction(onChnage)) {
-            onChnage(index % value.length)
+            onChnage(index % (value.length || Children.count(children)))
         }
     }
 }

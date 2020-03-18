@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
-import { NavBar, Image, MobileLayout, Toast, Dialog } from 'components'
-import { http, imgUrl } from '../../utils'
-import { getUnit, DialogThemeData, NavBarThemeData } from 'src/components/lib/utils'
-import { withRouter } from 'react-router-dom'
-import { isObject } from 'muka'
+import { Image, MobileLayout, Toast, Item, Icon, Button, CheckBox } from 'components'
+import { http } from '../../utils'
+import { Slider } from 'antd-mobile'
+import { getUnit, ItemThemeData, } from 'src/components/lib/utils'
+import { withRouter, RouteComponentProps, Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { SET_HOME_DATA } from 'src/store/actions'
+import { IInitState, IGlobal } from 'src/store/state'
+import { connect, DispatchProp } from 'react-redux'
 
 interface IState {
     data: any[]
@@ -12,12 +16,97 @@ interface IState {
     err: null | any
 }
 
-const queryTheme = new DialogThemeData({
-    width: '70%',
-    height: 245,
+interface IProps extends RouteComponentProps {
+    appData: IGlobal.AppData
+}
+
+const LSlider = styled(Slider)`
+    margin-top: ${getUnit(35)};
+    .am-slider-rail {
+        height: ${getUnit(5)};
+    }
+    .am-slider-track {
+        height: ${getUnit(5)};
+    }
+    .am-slider-handle {
+        width: ${getUnit(30)};
+        height: ${getUnit(30)};
+        margin-top: ${getUnit(-12)};
+        margin-left: ${getUnit(-15)};
+        background: url(${require('../../assets/slider.png')});
+        background-size: 100% 100%;
+        border: 0;
+    }
+`
+
+const LButton = styled(Button)`
+    margin-top: ${getUnit(30)};
+    width: 100%;
+    height: ${getUnit(45)};
+    background: linear-gradient(45deg,rgba(255,221,90,1) 0%,rgba(253,145,0,1) 100%);
+    border-radius: ${getUnit(5)};
+    color: #CD0200;
+    font-family: PingFang SC;
+    font-weight: 500;
+    border: 0;
+    span {
+        font-size: ${getUnit(16)};
+    }
+`
+const SliderLabel = styled.div`
+    font-size: ${getUnit(12)};
+    font-family: PingFang SC;
+    font-weight: bold;
+    line-height: ${getUnit(17)};
+    color: rgba(34,34,34,1);
+`
+
+const PriceBox = styled.div`
+    position: relative;
+`
+
+const PriceInfo = styled.div`
+    position: absolute;
+    top: ${getUnit(180)};
+    width: calc(100% - ${getUnit(80)});
+`
+const PriceT = styled.div`
+    height: ${getUnit(17)};
+    font-size: ${getUnit(12)};
+    font-family: PingFang SC;
+    font-weight: 400;
+    line-height: ${getUnit(17)};
+    color: rgba(155,161,175,1);
+`
+
+const PriceL = styled.div`
+    margin-top: ${getUnit(5)};
+    height: ${getUnit(25)};
+    font-size: ${getUnit(18)};
+    font-family: PingFang SC;
+    font-weight: bold;
+    line-height: ${getUnit(25)};
+    color: rgba(34,34,34,1);
+`
+
+const Header = styled.div`
+    height: ${getUnit(188)};
+    background: url(${require('../../assets/header.png')});
+    background-size: 100% 100%;
+`
+const Pirce = styled.div`
+    font-size: ${getUnit(40)};
+    font-weight: 600;
+    color: #fff;
+    top: ${getUnit(65)};
+    position: relative;
+    left: ${getUnit(40)};
+`
+const itmeTheme = new ItemThemeData({
+    minHeight: 40
 })
 
-class Home extends Component<any, IState> {
+class Home extends Component<IProps & DispatchProp, IState> {
 
     public state: IState = {
         data: [],
@@ -27,76 +116,97 @@ class Home extends Component<any, IState> {
     }
 
     public render(): JSX.Element {
-        const { data, coo, visible, err } = this.state
+        const { appData } = this.props
         return (
             <MobileLayout
-
-                appBar={
-                    <NavBar
-                        left={null}
-                        title={
-                            <div style={{color: '#fff'}}>涨乐乐</div>
-                        }
-                        titleCenter
-                        fixed
-                        theme={
-                            new NavBarThemeData({
-                                navBarColor: 'rgb(6,147,227,1)'
-                            })
-                        }
-                    />
-                }
+                backgroundColor="#fff"
             >
-                <div style={{
-                    padding: `0 ${getUnit(10)}`
-                }}>
-                    {
-                        data.map((i, k) => (
-                            <div key={k} onClick={this.handleView.bind(this, i.id)}>
-                                <Image
-                                    src={imgUrl + i.img}
-                                    style={{
-                                        height: getUnit(110),
-                                        width: '100%',
-                                        marginTop: getUnit(10),
-                                        borderRadius: getUnit(5)
-                                    }}
+                <Header>
+                    <Pirce>
+                        {appData.maxPrice}
+                    </Pirce>
+                </Header>
+                <Item
+                    theme={itmeTheme}
+                    lineType="none"
+                    title={
+                        <div
+                            className="flex_justify"
+                            style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)' }}
+                        >
+                            <div className="flex">
+                                <div className="flex_justify">
+                                    <Image src={require('../../assets/zx.png')} style={{ height: getUnit(16), width: getUnit(47) }} />
+                                </div>
+                                <div className="flex_1" style={{ marginLeft: getUnit(10) }}>张** | 157****0813  已成功贷款200000元！</div>
+                            </div>
+                        </div>
+                    }
+                />
+                <PriceBox className="flex_center">
+                    <Image src={require('../../assets/info.png')} style={{ width: '100%' }} />
+                    <PriceInfo>
+                        <div className="flex">
+                            <div className="flex_1">
+                                <PriceT className="flex_center">借款金额</PriceT>
+                                <PriceL className="flex_center">￥50,0000</PriceL>
+                            </div>
+                            <div className="flex_1">
+                                <PriceT className="flex_center">借款期限</PriceT>
+                                <PriceL className="flex_center">3个月</PriceL>
+                            </div>
+                            <div className="flex_1">
+                                <PriceT className="flex_center">利息（元）</PriceT>
+                                <PriceL className="flex_center">￥360.24</PriceL>
+                            </div>
+                        </div>
+                        <div className="flex_column">
+                            <div style={{ padding: `0 ${getUnit(15)}` }}>
+                                <LSlider
+                                    defaultValue={26}
+                                    min={appData.minPirce}
+                                    max={appData.maxPrice}
                                 />
                             </div>
-                        ))
-                    }
-                    {
-                        coo.map((i, k) => {
-                            return (
-                                <a key={k} href={i.url} style={{ width: '25%', marginTop: getUnit(10), display: 'inline-block' }}>
-                                    <Image src={imgUrl + i.image} />
-                                    <div className="flex_center" style={{ marginTop: getUnit(5) }}>{i.name}</div>
-                                </a>
-                            )
-                        })
-                    }
-                    {err !== null && (
-                        <Dialog
-                            title="无访问权限"
-                            visible={visible}
-                            theme={queryTheme}
-                            onClose={this.handleQ1Close}
-                            onOk={this.handleQ1Close}
-                        >
-                            <div style={{ padding: getUnit(20) }}>
-                                <div style={{ lineHeight: getUnit(45) }}>联系人: {err.name}</div>
-                                <div style={{ lineHeight: getUnit(45) }}>微信号: {err.wx_code}</div>
-                                <Image src={imgUrl + err.image} style={{ width: getUnit(140) }} />
+                            <div className="flex" style={{ marginTop: getUnit(20) }}>
+                                <SliderLabel className="flex_1">￥{appData.minPirce}</SliderLabel>
+                                <SliderLabel className="flex_1" style={{ textAlign: 'right' }}>￥{appData.maxPrice}</SliderLabel>
                             </div>
-                        </Dialog>
-                    )}
-                </div>
+                        </div>
+                        <div className="flex_column">
+                            <div style={{ padding: `0 ${getUnit(15)}` }}>
+                                <LSlider
+                                    defaultValue={26}
+                                    min={0}
+                                    max={30}
+                                />
+
+                            </div>
+                            <div className="flex" style={{ marginTop: getUnit(20) }}>
+                                <SliderLabel className="flex_1">3个月</SliderLabel>
+                                <SliderLabel className="flex_1" style={{ textAlign: 'right' }}>36个月</SliderLabel>
+                            </div>
+                        </div>
+                        <div style={{ padding: `0 ${getUnit(15)}` }}>
+                            <LButton>申请贷款</LButton>
+                        </div>
+                        <div style={{ padding: `0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
+                            <CheckBox
+                                options={[{
+                                    label: <div style={{ fontSize: getUnit(12) }}>我已阅读<span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span>隐私信息将严格保密</div>,
+                                    value: true
+                                }]}
+                                value={[true]}
+                            />
+                        </div>
+                    </PriceInfo>
+                </PriceBox>
             </MobileLayout>
         )
     }
 
     public componentDidMount() {
-        this.getData()
+        // this.getData()
     }
 
     private handleView = (id: string) => {
@@ -111,22 +221,11 @@ class Home extends Component<any, IState> {
         }
     }
 
-    private handleQ1Close = () => {
-        this.setState({
-            visible: false
-        })
-    }
-
     private getData = async () => {
         try {
-            const des = await http('news/is_user')
-            const data = await http('news/index')
-            const coo = await http('news/cooperation')
-            this.setState({
-                data: data.msg,
-                coo: coo.msg,
-                err: isObject(des.msg) ? des.msg : null
-            })
+            const data = await http('wxapp/goods/goodsList')
+            const { dispatch } = this.props
+            dispatch({ type: SET_HOME_DATA, data: data.data })
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
@@ -135,4 +234,8 @@ class Home extends Component<any, IState> {
     }
 }
 
-export default withRouter(Home)
+export default connect(
+    ({ appData }: IInitState) => ({
+        appData
+    })
+)(withRouter(Home))

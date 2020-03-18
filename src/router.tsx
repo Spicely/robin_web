@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { routes, IRoutes, loadable } from './routes'
-import { HashRouter, Route, Switch, Redirect } from 'react-router-dom'
+import { HashRouter, Route, Redirect } from 'react-router-dom'
 import Login from './pages/Login'
 import { connect } from 'react-redux'
-
+import AnimatedRouter from 'react-animated-router'
+import 'react-animated-router/animate.css'
 
 class RouterItem extends Component<any, any> {
 
@@ -11,22 +12,22 @@ class RouterItem extends Component<any, any> {
         const { token } = this.props
         return (
             <HashRouter>
-                <Switch>
+                <AnimatedRouter>
                     <Route path="/login" exact component={Login} />
                     {
                         routes.map((item: IRoutes, index: number) => {
-                            if (item.path === '/') {
-                                if (token) {
-                                    return <Route path={item.path} exact component={loadable(item.component)} key={index} />
-                                } else {
-                                    return <Redirect from="/" exact to="/login" key={index} />
-                                }
-                            }
-                            return <Route path={item.path} exact component={loadable(item.component)} key={index} />
+                            // if (item.path === '/') {
+                            //     if (token) {
+                            //         return <Route path={item.path} exact component={loadable(item.component)} key={index} />
+                            //     } else {
+                            //         return <Redirect from="/" exact to="/login" key={index} />
+                            //     }
+                            // }
+                            return <Route path={item.path} exact component={item.component} key={index} />
 
                         })
                     }
-                </Switch>
+                </AnimatedRouter>
             </HashRouter>
         )
     }

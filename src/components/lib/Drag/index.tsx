@@ -45,7 +45,7 @@ export default class Drag extends Component<IDragProps, any> {
         observer.subscribe('dragLeave', this.handleDragLeave)
     }
 
-    public componentWillMount() {
+    public UNSAFE_componentWillMount() {
         observer.unsubscribe('dragLeave', this.handleDragLeave)
         this.setState = () => {
             return

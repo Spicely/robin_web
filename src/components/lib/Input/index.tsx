@@ -45,7 +45,7 @@ const Int = styled.input<IStyleProps>`
     width: 100% ;
     color: inherit;
     position: relative;
-    font-size: ${({ inputTheme }) => getUnit(inputTheme.fontSize)};
+    font-size: ${({ inputTheme, theme }) => getUnit(inputTheme.fontSize || theme.fontSize)};
     ${transition(0.5)};
     -moz-appearance: textfield;
     border: none;
@@ -58,19 +58,19 @@ const Int = styled.input<IStyleProps>`
     }
 
     &::-webkit-input-placeholder {
-        font-size: ${({ inputTheme }) => getUnit(inputTheme.fontSize)};
+        font-size: ${({ inputTheme, theme }) => getUnit(inputTheme.fontSize || theme.fontSize)};
     }
 
     &:-moz-placeholder {
-        font-size: ${({ inputTheme }) => getUnit(inputTheme.fontSize)};
+        font-size: ${({ inputTheme, theme }) => getUnit(inputTheme.fontSize || theme.fontSize)};
     }
 
     &::-moz-placeholder {
-        font-size: ${({ inputTheme }) => getUnit(inputTheme.fontSize)};
+        font-size: ${({ inputTheme, theme }) => getUnit(inputTheme.fontSize || theme.fontSize)};
     }
 
     &:-ms-input-placeholder {
-        font-size: ${({ inputTheme }) => getUnit(inputTheme.fontSize)};
+        font-size: ${({ inputTheme, theme }) => getUnit(inputTheme.fontSize || theme.fontSize)};
     }
 
     &:disabled {

@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import { MenuGroup } from './MenuGroup'
 import { MenuItem } from './MenuItem'
 import { Consumer as ThemeConsumer } from '../ThemeProvider'
-import { transition, IStyledProps, MenuThemeData, ThemeData } from '../utils'
+import { transition, IStyledProps, MenuThemeData, getUnit } from '../utils'
 import { iconType } from '../Icon'
 import Color from '../utils/Color'
 export * from './MenuGroup'
@@ -58,13 +58,13 @@ interface IStylePorps extends IStyledProps {
 
 const Ul = styled.ul<IStylePorps>`
     background-color: ${({ menuTheme }) => menuTheme.menuColor.toString()};
-    width: ${({ menuTheme }) => menuTheme.width * ThemeData.ratio + ThemeData.unit};
-    height: ${({ menuTheme }) => menuTheme.height * ThemeData.ratio + ThemeData.unit};
+    width: ${({ menuTheme }) => getUnit(menuTheme.width)};
+    height: ${({ menuTheme }) => getUnit(menuTheme.height)};
     overflow: hidden;
     ${transition(0.2)};
     margin: 0;
     ${({ collapsed }) => {
-        if (collapsed) return css`width: ${52 * ThemeData.ratio + ThemeData.unit};`
+        if (collapsed) return css`width: ${getUnit(52)};`
     }}
 `
 
@@ -102,7 +102,7 @@ export default class Menu extends Component<IMenuProps, IState> {
                                     onPress: this.handlePress,
                                     collapsed: collapsed || false,
                                     fieldToUrl: fieldToUrl || false,
-                                    arrowIcon: arrowIcon || 'md-arrow-down',
+                                    arrowIcon: arrowIcon || 'ios-arrow-down',
                                     arrowIconColor: arrowIconColor || '#333',
                                     arrowIconPos: arrowIconPos || 'right',
                                     fontColor,

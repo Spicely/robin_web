@@ -1,5 +1,17 @@
 import React from 'react'
 import Loadable from 'react-loadable'
+import Index from '../pages/Index'
+import RePwd from '../pages/RePwd'
+import Wallet from '../pages/Wallet'
+import AddressList from '../pages/AddressList'
+import AddressAdd from '../pages/AddressAdd'
+import Detail from '../pages/Detail'
+import Pay from '../pages/Pay'
+import Team from '../pages/Team'
+import Authen from '../pages/Authen'
+import AuthenInfo from '../pages/Authen/info'
+import AuthenBank from '../pages/Authen/bank'
+
 function Loading(props: any) {
     if (props.error) {
         return <div />
@@ -14,31 +26,43 @@ function Loading(props: any) {
 
 export interface IRoutes {
     path: string
-    component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>
+    component: any
 }
 
 export const routes: IRoutes[] = [{
-    component: import('../pages/Index'),
+    component: Index,
     path: '/'
 }, {
-    component: import('../pages/Query'),
-    path: '/query/:id/:title'
-},{
-    component: import('../pages/News'),
-    path: '/news/:id'
+    component: RePwd,
+    path: '/rePwd'
 }, {
-    component: import('../pages/Register'),
-    path: '/register'
+    component: Wallet,
+    path: '/wallet'
 }, {
-    component: import('../pages/OrganInfo'),
-    path: '/organInfo/:id'
+    component: AddressList,
+    path: '/addressList'
 }, {
-    component: import('../pages/Team'),
-    path: '/team/:id'
+    component: AddressAdd,
+    path: '/addressAdd/:id?'
 }, {
-    component: import('../pages/TeamInfo'),
-    path: '/teamInfo/:id'
-},]
+    component: Detail,
+    path: '/detail/:id'
+}, {
+    component: Pay,
+    path: '/pay'
+}, {
+    component: Team,
+    path: '/team'
+}, {
+    component: Authen,
+    path: '/authen'
+}, {
+    component: AuthenInfo,
+    path: '/authenInfo'
+}, {
+    component: AuthenBank,
+    path: '/authenBank'
+}]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {
     return Loadable({

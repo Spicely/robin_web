@@ -7,6 +7,7 @@ interface INavBarThemeDataProps {
     height?: number | string
     width?: number | string
     iconTheme?: IconThemeData
+    rightIconTheme?: IconThemeData
     color?: Color
 }
 
@@ -18,6 +19,7 @@ export default class NavBarThemeData {
             if (!isNil(data.height)) this.height = data.height
             if (!isNil(data.width)) this.width = data.width
             if (data.iconTheme) this.iconTheme = data.iconTheme
+            if (data.rightIconTheme) this.rightIconTheme = data.rightIconTheme
             if (data.color) this.color = data.color
         }
     }
@@ -31,6 +33,10 @@ export default class NavBarThemeData {
     public width: string | number = '100%'
 
     public iconTheme: IconThemeData = new IconThemeData({
+        color: Color.fromRGB(255, 255, 255)
+    })
+
+    public rightIconTheme: IconThemeData = new IconThemeData({
         color: Color.fromRGB(255, 255, 255)
     })
 }

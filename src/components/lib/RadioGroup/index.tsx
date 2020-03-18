@@ -19,6 +19,7 @@ export interface IRadioGroupProps {
     itemStyle?: CSSProperties
     onChange?: (value: string | number | boolean, data: IValue) => void
     theme?: RadioThemeData
+    style?:CSSProperties
 }
 
 interface IState {
@@ -48,12 +49,12 @@ export default class RadioGroup extends Component<IRadioGroupProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { className, options, type, theme, itemStyle } = this.props
+        const { className, options, type, theme, itemStyle, style } = this.props
         const { value } = this.state
         return (
             <Consumer>
                 {(data) => (
-                    <div className={className}>
+                    <div className={className} style={style}>
                         {
                             options.map((i, index: number) => {
                                 return (

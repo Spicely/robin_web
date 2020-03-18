@@ -6,6 +6,13 @@ interface ISymmetric {
     vertical?: number | string
 }
 
+interface IOnlyProps {
+    top?: number | string
+    left?: number | string
+    right?: number | string
+    bottom?: number | string
+}
+
 export default class Padding {
 
     public static all(num: number | string): Padding {
@@ -23,6 +30,15 @@ export default class Padding {
             return `padding-top: ${getUnit(options.vertical)}; padding-bottom: ${getUnit(options.vertical)};`
         }
         return ``
+    }
+
+    public static only(options: IOnlyProps): Padding {
+        let str = ''
+        if (options.top) str += `padding-top: ${getUnit(options.top)};`
+        if (options.left) str += `padding-left: ${getUnit(options.left)};`
+        if (options.right) str += `padding-right: ${getUnit(options.right)};`
+        if (options.bottom) str += `padding-bottom: ${getUnit(options.bottom)};`
+        return str
     }
 
 }

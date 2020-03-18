@@ -3,13 +3,15 @@ import { Provider } from 'react-redux'
 import { ThemeProvider } from 'components'
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import { store, persistor } from './store'
-import { ThemeData, NavBarThemeData, Color, ButtonThemeData } from './components/lib/utils'
+import { ThemeData, NavBarThemeData, Color, ButtonThemeData, IconThemeData, InputThemeData, Border } from './components/lib/utils'
 import Router from './router'
 import './App.css'
+import 'antd-mobile/dist/antd-mobile.css'
 
 class App extends React.Component {
 
 	private registrationId = ""
+
 	public render() {
 		return (
 			<Provider store={store}>
@@ -17,12 +19,17 @@ class App extends React.Component {
 					<ThemeProvider
 						theme={new ThemeData({
 							navBarTheme: new NavBarThemeData({
-								navBarColor: Color.fromRGB(255, 255, 255)
+								navBarColor: Color.fromRGB(255, 255, 255),
+								iconTheme: new IconThemeData({
+									color: Color.fromRGB(255, 255, 255)
+								})
 							}),
 							buttonTheme: new ButtonThemeData({
 								height: 45,
+								border: Border.none
 							}),
-							fontSize: 14
+							primarySwatch: Color.fromRGB(69, 134, 254),
+							fontSize: 14,
 						})}
 					>
 						<Router />
