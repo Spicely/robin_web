@@ -39,7 +39,6 @@ export default class UserOrder extends Component<RouteComponentProps<any>, IStat
                         onBack={this.handleBack}
                         title="我的订单"
                         titleCenter
-                        fixed
                     />
                 }
             >

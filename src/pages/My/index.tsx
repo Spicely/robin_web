@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Image, MobileLayout, Toast, Icon, Divider, Gird } from 'components'
-import { http, imgUrl } from '../../utils'
+import { Image, MobileLayout, Toast, Icon, Button, Gird } from 'components'
+import { http } from '../../utils'
 import { getUnit, IconThemeData, Color } from 'src/components/lib/utils'
-import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
@@ -19,9 +19,9 @@ interface IProps extends RouteComponentProps {
 }
 
 const HeaderBox = styled.div`
-    height: ${getUnit(166)};
+    height: ${getUnit(120)};
     background: url(${require('../../assets/4.png')}) no-repeat;
-    background-size: 100% auto;
+    background-size: 100% 100%;
     padding: ${getUnit(10)};
 `
 
@@ -30,7 +30,24 @@ const UserPhone = styled.div`
     font-family:PingFang SC;
     font-weight: bold;
     line-height: ${getUnit(28)};
-    /* color: rgba(255,255,255,1); */
+    color: rgba(255,255,255,1);
+`
+
+const ExButton = styled(Button)`
+    width: ${getUnit(157)};
+    height: ${getUnit(35)};
+    background: rgba(225,228,235,1);
+    border-radius: ${getUnit(5)};
+    border: 0;
+    span {
+        color: #fff;
+    }
+`
+
+const PayBox = styled.div`
+    height: ${getUnit(88)};
+    background: rgba(249,250,255,1);
+    padding: 0 ${getUnit(40)};
 `
 
 const forwardIconTheme = new IconThemeData({
@@ -48,33 +65,30 @@ class My extends Component<IProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { userInfo } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
             >
                 <HeaderBox>
-                    <div className="flex" style={{ marginTop: getUnit(40) }}>
+                    <div className="flex" style={{ marginTop: getUnit(20) }}>
                         <Image
                             src={require('../../assets/v2_q5sp1k.png')}
                             style={{ width: getUnit(70), height: getUnit(70) }}
                         />
                         <div className="flex_justify">
-                            <div style={{marginLeft: getUnit(20)}}>
+                            <div style={{ marginLeft: getUnit(20) }}>
                                 <UserPhone>157****0813</UserPhone>
                                 <Image src={require('../../assets/yrz.png')} style={{ width: getUnit(56), height: getUnit(19), marginTop: getUnit(5) }} />
                             </div>
                         </div>
                     </div>
                 </HeaderBox>
-                <Gird
-                    style={{ margin: getUnit(10), marginTop: getUnit(20), borderRadius: getUnit(5), overflow: 'hidden' }}
-                >
+                <Gird>
                     <Gird.Item
                         title={
                             <div className="flex">
-                                <Image src={require('../../assets/v2_q5squ2.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>我的订单</div>
+                                <Image src={require('../../assets/user_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>关于我们</div>
                             </div>
                         }
                         link="/userOrder"
@@ -83,8 +97,8 @@ class My extends Component<IProps, IState> {
                     <Gird.Item
                         title={
                             <div className="flex">
-                                <Image src={require('../../assets/v2_q5sqq0.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>收货地址</div>
+                                <Image src={require('../../assets/kf_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>在线客服</div>
                             </div>
                         }
                         link="/addressList"
@@ -93,8 +107,8 @@ class My extends Component<IProps, IState> {
                     <Gird.Item
                         title={
                             <div className="flex">
-                                <Image src={require('../../assets/v2_q5srdj.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>我的客户</div>
+                                <Image src={require('../../assets/phone_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>服务电话</div>
                             </div>
                         }
                         link="/customer"
@@ -103,34 +117,18 @@ class My extends Component<IProps, IState> {
                     <Gird.Item
                         title={
                             <div className="flex">
-                                <Image src={require('../../assets/v2_q5srgr.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>邀请码</div>
+                                <Image src={require('../../assets/u.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>修改密码</div>
                             </div>
                         }
                         link
                         onPress={this.handleToView}
                     />
-                    <Gird.Item
-                        title={
-                            <div className="flex">
-                                <Image src={require('../../assets/v2_q5sruf.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>我的客服</div>
-                            </div>
-                        }
-                        link
-                        onPress={this.handleToView}
-                    />
-                    <Gird.Item
-                        title={
-                            <div className="flex">
-                                <Image src={require('../../assets/v2_q6lws6.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>系统版本V1.2</div>
-                            </div>
-                        }
-                        link
-                        onPress={this.handleToView}
-                    />
+                    <div className="flex_center" style={{ marginTop: getUnit(20) }}>
+                        <ExButton>退出登录</ExButton>
+                    </div>
                 </Gird>
+
             </MobileLayout>
         )
     }

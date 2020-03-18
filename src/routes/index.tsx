@@ -5,13 +5,12 @@ import RePwd from '../pages/RePwd'
 import Wallet from '../pages/Wallet'
 import AddressList from '../pages/AddressList'
 import AddressAdd from '../pages/AddressAdd'
-import Customer from '../pages/Customer'
 import Detail from '../pages/Detail'
 import Pay from '../pages/Pay'
-import UserOrder from '../pages/UserOrder'
-import Bank from '../pages/Bank'
-import AddBank from '../pages/Bank/add'
-import UserBind from '../pages/Bank/bind'
+import Team from '../pages/Team'
+import Authen from '../pages/Authen'
+import AuthenInfo from '../pages/Authen/info'
+import AuthenBank from '../pages/Authen/bank'
 
 function Loading(props: any) {
     if (props.error) {
@@ -51,21 +50,18 @@ export const routes: IRoutes[] = [{
 }, {
     component: Pay,
     path: '/pay'
-},{
-    component: UserOrder,
-    path: '/userOrder'
 }, {
-    component: Customer,
-    path: '/customer'
+    component: Team,
+    path: '/team'
 }, {
-    component: Bank,
-    path: '/bank'
+    component: Authen,
+    path: '/authen'
 }, {
-    component: AddBank,
-    path: '/addBank'
+    component: AuthenInfo,
+    path: '/authenInfo'
 }, {
-    component: UserBind,
-    path: '/userBind'
+    component: AuthenBank,
+    path: '/authenBank'
 }]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {

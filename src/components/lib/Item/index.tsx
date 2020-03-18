@@ -18,7 +18,7 @@ export interface IItemProps {
     link?: boolean | string | null
     value?: string | JSX.Element | JSX.ElementClass
     extend?: string | JSX.Element | JSX.ElementClass
-    icon?: string | JSX.Element | JSX.ElementClass
+    icon?: string | JSX.Element | JSX.ElementClass | null
     onPress?: (link?: string) => void
     lineType?: ILineType
     theme?: ItemThemeData
@@ -145,8 +145,11 @@ export default class Item extends Component<IItemProps, IState> {
     }
     private getLinkNode(theme: ItemThemeData): JSX.Element | void {
         const { link, icon } = this.props
+        if (isNull(icon)) {
+            return <div />
+        }
         if (isNull(link)) {
-            return <div style={{ width: getUnit(10) }} />
+            return <div />
         }
         return (
             <ItemLink
