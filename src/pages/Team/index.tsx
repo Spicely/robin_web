@@ -1,12 +1,19 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Image, Button } from 'components'
+import { Toast, MobileLayout, NavBar, Image, Button,Icon } from 'components'
 import { Steps } from 'antd-mobile'
 import { RouteComponentProps } from 'react-router-dom'
 import { getUnit, NavBarThemeData, IconThemeData, Color, ButtonThemeData, BorderRadius } from 'src/components/lib/utils'
 import styled from 'styled-components'
+import { IInitState, IGlobal } from 'src/store/state'
+import { connect, DispatchProp } from 'react-redux'
+import { SET_USERINFO_DATA } from 'src/store/actions'
 
 const Step = Steps.Step;
+
+interface IProps extends DispatchProp {
+    userInfo: IGlobal.UserInfo
+}
 
 const TText = styled.div`
     font-size: ${getUnit(16)};
@@ -40,13 +47,17 @@ const LSteps = styled(Steps)`
 `
 
 interface IState {
+    examineStatus: number
 }
 
-export default class Team extends Component<RouteComponentProps<any>, IState> {
+class Team extends Component<IProps & RouteComponentProps<any>, IState> {
 
-    public state: IState = {}
+    public state: IState = {
+        examineStatus: 1
+    }
 
     public render(): JSX.Element {
+        const {examineStatus} = this.state
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -74,28 +85,28 @@ export default class Team extends Component<RouteComponentProps<any>, IState> {
                     <TText className="flex_center">您的认证资料已提交！</TText>
                     <LText className="flex_center">我们会尽快审核您的资料，请耐心等待～</LText>
                     <div className="flex_center">
-                        <div style={{ width: getUnit(140), marginTop: getUnit(40) }}>
-                            <LSteps current={1}>
+                        <div style={{ width: getUnit(200), marginTop: getUnit(40) }}>
+                            <LSteps current={examineStatus+1}>
                                 <Step
-                                    title={<div style={{ fontSize: getUnit(14), color: '#000', fontWeight: 'initial' }}>认证资料已提交</div>}
+                                    title={<div style={{ fontSize: getUnit(18), color: '#000', fontWeight: 'bold' }}> 认证资料已提交</div>}
                                 // icon={<RIcon>1</RIcon>}
                                 />
                                 <Step
-                                    title={<div style={{ opacity: 0.5, fontSize: getUnit(14), color: '#000', fontWeight: 'initial' }}>基本信息</div>}
+                                    title={<div style={{ fontSize: getUnit(18), color: '#000', fontWeight: 'bold' }}>审核中请耐心等待</div>}
                                 // icon={<RIcon style={{ opacity: 0.5 }}>2</RIcon>}
                                 />
-                                <Step
-                                    title={<div style={{ opacity: 0.5, fontSize: getUnit(14), color: '#000', fontWeight: 'initial' }}>银行卡认证</div>}
-                                // icon={<RIcon style={{ opacity: 0.5 }}>3</RIcon>}
-                                />
+                                {examineStatus < 2 ? <Step title={<div style={{ opacity: 0.5, fontSize: getUnit(18), color: '#000', fontWeight: 'bold' }}>审核成功/失败</div>}/> 
+                                : examineStatus === 2 ? <Step title={<div style={{ fontSize: getUnit(18), color: '#000', fontWeight: 'bold' }}>审核成功</div>}/> 
+                                : <Step status="error" title={<div style={{ opacity: 0.5, fontSize: getUnit(18), color: 'red', fontWeight: 'bold' }}>审核失败</div>}/>}
                             </LSteps>
                         </div>
                     </div>
                     <div className="flex" style={{ padding: `0 ${getUnit(20)}`, marginTop: getUnit(60) }}>
                         <div className="flex_1 flex_center">
-                            <Button mold="primary" theme={backButton}>
-                                返回
-                            </Button>
+                            {examineStatus < 2 ? <Button mold="primary" theme={backButton} onClick={this.handleBack}>返回</Button> 
+                             : examineStatus === 2 ? <Button mold="primary" theme={backButton} onClick={this.handleBack}>申请贷款</Button> 
+                             : <Button mold="primary" theme={backButton} onClick={this.reRenzheng}>重新认证</Button>}
+                            
                         </div>
                     </div>
                 </div>
@@ -108,19 +119,24 @@ export default class Team extends Component<RouteComponentProps<any>, IState> {
     }
 
     private getData = async () => {
-        // try {
-        //     const { match } = this.props
-        //     const data = await http('news/get_mechanism_info', {
-        //         id: match.params.id
-        //     })
-        //     this.setState({
-        //         ...data.msg
-        //     })
-        // } catch (data) {
-        //     Toast.info({
-        //         content: data.msg || '服务器繁忙,请稍后再试',
-        //     })
-        // }
+        const close = Toast.loading()
+        try {
+            const { history, userInfo, dispatch } = this.props
+            const data = await http('user/getUser', {
+                userId: userInfo.id
+            })
+            console.log(data)
+            this.setState({
+                examineStatus: data.data.userInfo.examineStatus
+            })
+            dispatch({ type: SET_USERINFO_DATA, data: data.data })
+            close()
+        } catch (data) {
+            close()
+            Toast.info({
+                content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
     }
 
     private handleBack = () => {
@@ -128,4 +144,29 @@ export default class Team extends Component<RouteComponentProps<any>, IState> {
         history.goBack()
     }
 
+    private reRenzheng = async () => {
+        const close = Toast.loading()
+        try {
+            const { history, userInfo, dispatch } = this.props
+            const data = await http('user/reAuthen', {
+                userId: userInfo.id,
+                id: userInfo.userInfo?.id
+            })
+            userInfo.userInfo = undefined
+            dispatch({ type: SET_USERINFO_DATA, data: {...userInfo} })
+            close()
+            history.replace('/authen')
+        } catch (data) {
+            close()
+            Toast.info({
+                content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
+    }
+
 }
+export default connect(
+    ({ userInfo }: IInitState) => ({
+        userInfo
+    })
+)(Team)

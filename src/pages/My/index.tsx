@@ -97,6 +97,16 @@ class My extends Component<IProps, IState> {
                     <Gird.Item
                         title={
                             <div className="flex">
+                                <Image src={require('../../assets/v2_q6kef5.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>还款账单</div>
+                            </div>
+                        }
+                        link="/payRend"
+                        onPress={this.handleToView}
+                    />
+                    <Gird.Item
+                        title={
+                            <div className="flex">
                                 <Image src={require('../../assets/kf_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>在线客服</div>
                             </div>

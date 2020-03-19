@@ -11,6 +11,9 @@ import Team from '../pages/Team'
 import Authen from '../pages/Authen'
 import AuthenInfo from '../pages/Authen/info'
 import AuthenBank from '../pages/Authen/bank'
+import RequireRend from '../pages/RequireRend'
+import Protoco from '../pages/Protoco'
+import PayRend from '../pages/PayRend'
 
 function Loading(props: any) {
     if (props.error) {
@@ -47,10 +50,7 @@ export const routes: IRoutes[] = [{
 }, {
     component: Detail,
     path: '/detail/:id'
-}, {
-    component: Pay,
-    path: '/pay'
-}, {
+},{
     component: Team,
     path: '/team'
 }, {
@@ -62,6 +62,15 @@ export const routes: IRoutes[] = [{
 }, {
     component: AuthenBank,
     path: '/authenBank'
+}, {
+    component: RequireRend,
+    path: '/requireRend'
+}, {
+    component: Protoco,
+    path: '/protocol'
+}, {
+    component: PayRend,
+    path: '/payRend'
 }]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {

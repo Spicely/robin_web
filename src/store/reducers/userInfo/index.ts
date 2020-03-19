@@ -3,23 +3,14 @@ import { SET_USERINFO_DATA } from '../../actions'
 import { IGlobal } from '../../state'
 
 const initData: IGlobal.UserInfo = {
-    user_id: 0,
-    user_name: '',
-    user_nickname: '',
-    user_sex: 0,
-    user_image: 0,
-    user_phone: '',
-    wx_headimg: '',
-    wx_openid: '',
-    bd_headimg: '',
-    bd_openid: '',
-    code: '',
-    created_time: 0,
-    login_key: '',
-    last_login_time: 0,
-    remcd: '',
-    cny: '',
-    price: '',
+    status: false,
+    userInfo: undefined,
+    pirce: 0,
+    adminUser: '',
+    phone: '',
+    createdAt: 0,
+    updatedAt: 0,
+    id: '',
 }
 
 export default function userInfo(state = initData, action: AnyAction) {

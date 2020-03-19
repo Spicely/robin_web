@@ -1,23 +1,46 @@
-import React, { Component } from 'react'
-import { http } from 'src/utils'
+import React, { Component, ChangeEvent } from 'react'
+import { http, baseUrl, imgUrl } from 'src/utils'
 import { Toast, MobileLayout, NavBar, Button, Item, Input } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { Steps } from 'antd-mobile'
 import { ButtonThemeData, BorderRadius, getUnit } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
-import { SET_USERADDRESSLIST_DATA } from 'src/store/actions'
+import { SET_USERADDRESSLIST_DATA, SET_USERINFO_DATA } from 'src/store/actions'
+import { Upload, message } from 'antd'
+import Axios from 'axios'
 import styled from 'styled-components'
 
 const Step = Steps.Step;
 
 interface IState {
+    image1: string
+    image2: string
+    name: string
+    cardNumber: string
 }
 
 interface IProps extends RouteComponentProps<any> {
     userAddressList: IGlobal.UserAddressList[]
+    userInfo: IGlobal.UserInfo
+}
+function getBase64(img: any, callback: any) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
 }
 
+function beforeUpload(file: any) {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+        message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+        message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
+}
 const LSteps = styled(Steps)`
     .am-steps-item-tail {
         top: 0%;
@@ -121,11 +144,32 @@ const buttonThme = new ButtonThemeData({
 
 class AuthenOne extends Component<IProps & DispatchProp, IState> {
 
+    private vNode: any
+    private vNode2: any
+
     public state: IState = {
-
+        name: '',
+        cardNumber: '',
+        image1: '',
+        image2: '',
     }
-
+    // handleChange = (info: any) => {
+    //     if (info.file.status === 'uploading') {
+    //       this.setState({ loading: true });
+    //       return;
+    //     }
+    //     if (info.file.status === 'done') {
+    //       // Get this url from response in real world.
+    //       getBase64(info.file.originFileObj, imageUrl =>
+    //         this.setState({
+    //           imageUrl,
+    //           loading: false,
+    //         }),
+    //       );
+    //     }
+    // };
     public render(): JSX.Element {
+        const { cardNumber, name, image1, image2 } = this.state
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -168,68 +212,149 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
                         </div>
                         <div className="flex" style={{ marginTop: getUnit(20) }}>
                             <div className="flex_1" style={{ marginRight: getUnit(10) }}>
-                                <ImgBox style={{ backgroundImage: `url(${require('../../assets/c_2.png')})` }}>
-
-                                </ImgBox>
-                                <VButton mold="primary">拍摄正面照</VButton>
+                                {!image1 ? <ImgBox style={{ backgroundImage: `url(${require('../../assets/c_2.png')})` }}></ImgBox> :
+                                    <ImgBox style={{ backgroundImage: `url(${baseUrl + image1})` }}></ImgBox>}
+                                <VButton mold="primary" onClick={this.handlePick}>拍摄正面照</VButton>
                             </div>
                             <div className="flex_1">
-                                <ImgBox style={{ backgroundImage: `url(${require('../../assets/c_1.png')})` }}></ImgBox>
-                                <VButton mold="primary">拍摄背面照</VButton>
+                                {!image2 ? <ImgBox style={{ backgroundImage: `url(${require('../../assets/c_1.png')})` }}></ImgBox> :
+                                    <ImgBox style={{ backgroundImage: `url(${baseUrl + image2})` }}></ImgBox>}
+                                <VButton mold="primary" onClick={this.handlePick2}>拍摄背面照</VButton>
                             </div>
                         </div>
                         <Item
                             style={{ marginTop: getUnit(15) }}
                             title="本人姓名："
-                            value={<LInput placeholder="请填写本人真实姓名" />}
+                            value={<LInput value={name} placeholder="请填写本人真实姓名" onChange={this.namechange} onClose={this.handleClose1} />}
                             lineType="none"
                             icon={null}
                         />
                         <Item
                             style={{ marginTop: getUnit(10), marginBottom: getUnit(10) }}
                             title="身份证号："
-                            value={<LInput placeholder="请填写您的身份证号码" />}
+                            value={<LInput value={cardNumber} placeholder="请填写您的身份证号码" onChange={this.cardchange} onClose={this.handleClose2} />}
                             icon={null}
+
                         />
                     </div>
                     <div className="flex_center" style={{ marginTop: getUnit(40) }}>
                         <Button
                             mold="primary"
                             theme={buttonThme}
+                            onClick={this.next}
                         >
                             下一步，基本信息填写
                         </Button>
                     </div>
+                    <input style={{ display: 'none' }} onChange={this.handleFileChange} type="file" ref={(e) => this.vNode = e} />
+                    <input style={{ display: 'none' }} onChange={this.handleFileChange2} type="file" ref={(e) => this.vNode2 = e} />
                 </div>
             </MobileLayout >
         )
     }
 
-    public componentDidMount() {
-        // this.getData()
+    private cardchange = (val: ChangeEvent<HTMLInputElement>) => {  // 输入身份证号码
+        this.setState({
+            cardNumber: val.target.value
+        })
+    }
+    private namechange = (val: ChangeEvent<HTMLInputElement>) => {  // 输入姓名
+        this.setState({
+            name: val.target.value
+        })
+    }
+    private handlePick = () => {  // 上传图片
+        this.vNode.click()
+    }
+    private handlePick2 = () => {  // 上传身份证背面照
+        this.vNode2.click()
     }
 
-    private handleEdit = (id: number) => {
-        const { history } = this.props
-        history.push(`/addressAdd/${id}`)
+    private handleClose1 = () => {
+        this.setState({
+            name: ''
+        })
+    }
+    private handleClose2 = () => {
+        this.setState({
+            cardNumber: ''
+        })
     }
 
-    private handleAddAddress = () => {
-        const { history } = this.props
-        history.push('/addressAdd')
+    private handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const formData = new FormData()
+        if (e.currentTarget.files) {
+            const _file = e.currentTarget.files.item(0)
+            if (_file) {
+                const reader = new FileReader()
+                reader.readAsDataURL(_file)
+                reader.onload = async () => {
+                    formData.append('file', _file)
+                    const close = Toast.loading()
+                    try {
+                        const data = await Axios.post(baseUrl + '/upload/index', formData)
+                        console.log(data)
+                        this.setState({
+                            image1: data.data.data.url
+                        })
+                        close()
+                    } catch (e) {
+                        close()
+                        Toast.info({
+                            content: e.msg || '上传失败'
+                        })
+                    }
+                }
+            }
+        }
+    }
+    private handleFileChange2 = (e: ChangeEvent<HTMLInputElement>) => {
+        const formData = new FormData()
+        if (e.currentTarget.files) {
+            const _file = e.currentTarget.files.item(0)
+            if (_file) {
+                const reader = new FileReader()
+                reader.readAsDataURL(_file)
+                reader.onload = async () => {
+                    formData.append('file', _file)
+                    const close = Toast.loading()
+                    try {
+                        const data = await Axios.post(baseUrl + '/upload/index', formData)
+                        console.log(data)
+                        this.setState({
+                            image2: data.data.data.url
+                        })
+                        close()
+                    } catch (e) {
+                        close()
+                        Toast.info({
+                            content: e.msg || '上传失败'
+                        })
+                    }
+                }
+            }
+        }
     }
 
-
-    private getData = async () => {
-        try {
-            const { dispatch } = this.props
+    private next = async () => {  // 下一步
+        if (this.state.name && this.state.cardNumber && this.state.image1 && this.state.image2) {
             const close = Toast.loading()
-            const data = await http('wxapp/goods/getAddressData')
-            dispatch({ type: SET_USERADDRESSLIST_DATA, data: data.address_data })
-            close()
-        } catch (data) {
+            try {
+                const data = await http('/user/authenCard', { ...this.state, cardFront: this.state.image1, cardVerso: this.state.image2, userId: this.props.userInfo.id })
+                const { history, userInfo, dispatch } = this.props
+                userInfo.userInfo = data.data
+                dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+                close()
+                history.replace('/authenInfo')
+            } catch (e) {
+                close()
+                Toast.info({
+                    content: e.msg || '认证失败'
+                })
+            }
+        } else {
             Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
+                content: '请填写必要信息'
             })
         }
     }
@@ -241,7 +366,8 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
 }
 
 export default connect(
-    ({ userAddressList }: IInitState) => ({
-        userAddressList
+    ({ userAddressList, userInfo }: IInitState) => ({
+        userAddressList,
+        userInfo
     })
 )(AuthenOne as any)

@@ -18,6 +18,7 @@ interface IState {
 
 interface IProps extends RouteComponentProps {
     appData: IGlobal.AppData
+    userInfo: IGlobal.UserInfo
 }
 
 const LSlider = styled(Slider)`
@@ -116,7 +117,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
-        const { appData } = this.props
+        const { appData, userInfo } = this.props
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -188,7 +189,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             </div>
                         </div>
                         <div style={{ padding: `0 ${getUnit(15)}` }}>
-                            <LButton>申请贷款</LButton>
+                            <LButton onClick={this.handleRequireRend}>申请贷款</LButton>
                         </div>
                         <div style={{ padding: `0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
                             <CheckBox
@@ -221,6 +222,29 @@ class Home extends Component<IProps & DispatchProp, IState> {
         }
     }
 
+    private handleRequireRend = () => {
+        const {userInfo, history} = this.props
+        console.log(userInfo)
+        if(userInfo && userInfo.id){
+            let Info = userInfo.userInfo
+            if(Info && Info.status){
+                if(Info.status === 3){
+                    history.push('/requireRend')
+                }else if(Info.status === 2){
+                    history.push('/authenBank')
+                }else if(Info.status === 1){
+                    history.push('/authenInfo')
+                }else {
+                    history.push('/authen')
+                }
+            }else{
+                history.push('/authen')
+            }
+        }else{
+            history.push('/login')
+        }
+    }
+
     private getData = async () => {
         try {
             const data = await http('wxapp/goods/goodsList')
@@ -235,7 +259,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
 }
 
 export default connect(
-    ({ appData }: IInitState) => ({
-        appData
+    ({ appData, userInfo }: IInitState) => ({
+        appData, userInfo
     })
 )(withRouter(Home))

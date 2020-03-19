@@ -52,5 +52,4 @@ class Index extends Component<DispatchProp, any> {
         }
     }
 }
-
 export default connect()(Index)

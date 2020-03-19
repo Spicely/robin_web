@@ -75,12 +75,12 @@ export default class Wallet extends Component<RouteComponentProps<any>, IState> 
                     <LText className="flex_center">我们会尽快审核您的资料，请耐心等待～</LText>
                     <div className="flex" style={{ padding: `0 ${getUnit(20)}`, marginTop: getUnit(60) }}>
                         <div className="flex_1 flex_center">
-                            <Button mold="primary" theme={defButton}>
+                            <Button mold="primary" theme={defButton} onClick={this.lookStatus}>
                                 查看审核状态
                             </Button>
                         </div>
                         <div className="flex_1 flex_center">
-                            <Button mold="primary" theme={backButton}>
+                            <Button mold="primary" theme={backButton} onClick={this.handleBack}>
                                 返回首页
                             </Button>
                         </div>
@@ -93,7 +93,10 @@ export default class Wallet extends Component<RouteComponentProps<any>, IState> 
     public componentDidMount() {
         this.getData()
     }
-
+    private lookStatus = async () => {
+        const { history} = this.props
+        history.push('/team')
+    }
     private getData = async () => {
         // try {
         //     const { match } = this.props

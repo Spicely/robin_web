@@ -6,7 +6,7 @@ import { Steps, Picker } from 'antd-mobile'
 import { ButtonThemeData, BorderRadius, getUnit, IconThemeData, Color } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
-import { SET_USERADDRESSLIST_DATA } from 'src/store/actions'
+import { SET_USERADDRESSLIST_DATA, SET_USERINFO_DATA } from 'src/store/actions'
 import styled from 'styled-components'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 
@@ -16,7 +16,8 @@ interface IState {
 }
 
 interface IProps extends RouteComponentProps<any> {
-    userAddressList: IGlobal.UserAddressList[]
+    userAddressList: IGlobal.UserAddressList[],
+    userInfo: IGlobal.UserInfo
 }
 
 const LSteps = styled(Steps)`
@@ -558,6 +559,7 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
                         <Button
                             mold="primary"
                             theme={buttonThme}
+                            onClick={this.next}
                         >
                             下一步，银行卡认证
                         </Button>
@@ -567,6 +569,38 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
         )
     }
 
+    private next = async () => {   // 下一步
+        if (this.fn) {
+            const form = this.fn.getFieldValue()
+            const status = Object.keys(form).every((i: string) => form[i])
+            if (status) {
+                const close = Toast.loading()
+                const nana = form.nagai.map((item: any) => {
+                    return item.label
+                }).join('')
+                console.log(nana)
+                try {
+                    await http('user/authenInfo', { ...form, userId: this.props.userInfo.id, nagai: nana })
+                    const { history, userInfo, dispatch } = this.props
+                    if (userInfo.userInfo) {
+                        userInfo.userInfo.status = 2
+                    }
+                    dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+                    close()
+                    history.replace('/authenBank')
+                } catch (e) {
+                    close()
+                    Toast.info({
+                        content: e.msg || '认证失败'
+                    })
+                }
+            } else {
+                Toast.info({
+                    content: '请确保信息完整'
+                })
+            }
+        }
+    }
     private handlePickerValue = (field: string, data: any) => {
         this.fn && this.fn.setFieldValue({
             [field]: data[0]
@@ -642,7 +676,8 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
 }
 
 export default connect(
-    ({ userAddressList }: IInitState) => ({
-        userAddressList
+    ({ userAddressList, userInfo }: IInitState) => ({
+        userAddressList,
+        userInfo
     })
 )(AuthenOne as any)

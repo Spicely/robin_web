@@ -7,6 +7,7 @@ import { getUnit } from 'src/components/lib/utils'
 import { http } from '../../utils'
 import { connect, DispatchProp } from 'react-redux'
 import styled from 'styled-components'
+import { SET_USERINFO_DATA } from 'src/store/actions'
 
 
 const ViewBox = styled.div`
@@ -241,10 +242,11 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     return
                 }
                 const data = await http('/user/login', form)
-                const { history } = this.props
+                const { history, dispatch } = this.props
                 Toast.info({
                     content: data.msg,
                 })
+                dispatch({ type: SET_USERINFO_DATA, data: data.data })
                 history.replace('/')
             }
         } catch (data) {
