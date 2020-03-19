@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, Button,NavBar, Image, Item, Icon, CheckBox } from 'components'
+import { Toast, MobileLayout, Button, NavBar, Image, Item, Icon, CheckBox } from 'components'
 import { Slider } from 'antd-mobile'
 import { RouteComponentProps, withRouter, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
-import { getUnit,NavBarThemeData,Color,IconThemeData} from 'src/components/lib/utils'
+import { getUnit, NavBarThemeData, Color, IconThemeData } from 'src/components/lib/utils'
 import { SET_HOME_DATA } from 'src/store/actions'
 import { connect, DispatchProp } from 'react-redux'
 
@@ -20,13 +20,13 @@ interface IState {
 }
 
 interface IProps extends RouteComponentProps {
-    appData: IGlobal.AppData
+	appData: IGlobal.AppData
 }
 
 const PriceBox = styled.div`
     position: relative;
 	padding: ${getUnit(12)} ${getUnit(15)};
-	padding-Bottom: ${getUnit(22)}
+	padding-Bottom: ${getUnit(22)};
 	display: flex;
 	flex-direction: column;
 	background: white;
@@ -74,20 +74,20 @@ const LButton = styled(Button)`
 // class Shop extends Component<RouteComponentProps<any>, IState> {
 class Shop extends Component<IProps & DispatchProp, IState> {
 
-    public state: IState = {
+	public state: IState = {
 		data: [],
 		coo: [],
 		visible: false,
 		err: null,
 		money: 6000,
 		month: 3,
-    }
+	}
 
-    public render(): JSX.Element {
+	public render(): JSX.Element {
 		const { appData } = this.props
-		const { money,month } = this.state
-        return (
-			<MobileLayout 
+		const { money, month } = this.state
+		return (
+			<MobileLayout
 				appBar={
 					<NavBar
 						theme={new NavBarThemeData({
@@ -101,15 +101,17 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						divider={false}
 					/>
 				}
-				style={{background: 'linear-gradient(to bottom,#1F83FE ,#FFFFFF)'}}>
-				<PriceBox className="flex_center" style={{marginTop: getUnit(70)}}>
-					<div style={{display:'flex',justifyContent:'center',fontWeight: 700,fontSize: getUnit(14)}}>
+				style={{ background: 'linear-gradient(to bottom,#1F83FE ,#FFFFFF)' }}>
+				<PriceBox className="flex_center" style={{ marginTop: getUnit(70) }}>
+					<div style={{ display: 'flex', justifyContent: 'center', fontWeight: 700, fontSize: getUnit(14) }}>
 						借款金额(元)
 					</div>
-					<div 
-						style={{display:'flex',justifyContent:'center',width: '87%',
-						fontWeight: 700,fontSize: getUnit(30),color: 'rgba(69, 134, 254, 1)',
-						background: 'rgba(243, 253, 255, 1)',marginTop:getUnit(10)}}
+					<div
+						style={{
+							display: 'flex', justifyContent: 'center', width: '87%',
+							fontWeight: 700, fontSize: getUnit(30), color: 'rgba(69, 134, 254, 1)',
+							background: 'rgba(243, 253, 255, 1)', marginTop: getUnit(10)
+						}}
 					>
 						￥{money}
 					</div>
@@ -160,27 +162,27 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						<Dashed>
 							····································································································
 						</Dashed>
-						<Dignity style={{color:'#2F99FD'}}>请选择</Dignity>
+						<Dignity style={{ color: '#2F99FD' }}>请选择</Dignity>
 					</ItemWrapper>
 					<div style={{ padding: `0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
-					    <CheckBox
-					        options={[{
-					            label: <div style={{ fontSize: getUnit(12) }}>我已阅读<span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span>隐私信息将严格保密</div>,
-					            value: true
-					        }]}
-					        value={[true]}
-					    />
+						<CheckBox
+							options={[{
+								label: <div style={{ fontSize: getUnit(12) }}>我已阅读<span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span>隐私信息将严格保密</div>,
+								value: true
+							}]}
+							value={[true]}
+						/>
 					</div>
 				</PriceBox>
-				<div style={{display: 'flex',justifyContent:'center'}}>
+				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<LButton onClick={this.handleSign}>签署借款协议</LButton>
 				</div>
-            </MobileLayout>
-        )
-    }
+			</MobileLayout>
+		)
+	}
 
-    public componentDidMount = () => {
-        this.getcc()
+	public componentDidMount = () => {
+		this.getcc()
 		// if(data){
 		// 	this.setState({
 		// 		money: data.money || 6000,
@@ -188,14 +190,15 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		// 	})
 		// }
 		// if(this.props.location.state){
-			// this.setState({
-			// 	money: this.props.location.state.money,
-			// 	month: this.props.location.state.month
-			// })
+		// this.setState({
+		// 	money: this.props.location.state.money,
+		// 	month: this.props.location.state.month
+		// })
 		// }
 	}
 	private getcc = () => {
-		console.log(this.props.location)
+		const state: any = this.props.location.state || {}
+		console.log(state.money, state.month)
 		let data = this.props.location.state
 		// if(!data){
 		// 	return
@@ -206,43 +209,43 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		// 	})
 		// }
 	}
-	
-	private handleSign = () => {
-        const { history } = this.props
-        history.push('/protocol')
-	}
-	
-	private handleView = (id: string) => {
-	    const { err } = this.state
-	    const { history } = this.props
-	    if (err !== null) {
-	        this.setState({
-	            visible: true
-	        })
-	    } else {
-	        history.push(`/news/${id}`)
-	    }
-	}
-    // private getData = async () => {
-    //     try {
-    //         const { match } = this.props
-    //         const data = await http('news/team_info', {
-    //             id: match.params.id
-    //         })
-    //         this.setState({
-    //             ...data.msg
-    //         })
-    //     } catch (data) {
-    //         Toast.info({
-    //             content: data.msg || '服务器繁忙,请稍后再试',
-    //         })
-    //     }
-    // }
 
-    private handleBack = () => {
-        const { history } = this.props
-        history.goBack()
-    }
+	private handleSign = () => {
+		const { history } = this.props
+		history.push('/protocol')
+	}
+
+	private handleView = (id: string) => {
+		const { err } = this.state
+		const { history } = this.props
+		if (err !== null) {
+			this.setState({
+				visible: true
+			})
+		} else {
+			history.push(`/news/${id}`)
+		}
+	}
+	// private getData = async () => {
+	//     try {
+	//         const { match } = this.props
+	//         const data = await http('news/team_info', {
+	//             id: match.params.id
+	//         })
+	//         this.setState({
+	//             ...data.msg
+	//         })
+	//     } catch (data) {
+	//         Toast.info({
+	//             content: data.msg || '服务器繁忙,请稍后再试',
+	//         })
+	//     }
+	// }
+
+	private handleBack = () => {
+		const { history } = this.props
+		history.goBack()
+	}
 
 }
 
@@ -256,7 +259,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 
 export default connect(
-    ({ appData }: IInitState) => ({
-        appData
-    })
+	({ appData }: IInitState) => ({
+		appData
+	})
 )(withRouter(Shop))

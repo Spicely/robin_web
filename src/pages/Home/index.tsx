@@ -14,8 +14,8 @@ interface IState {
     coo: any[]
     visible: boolean
     err: null | any
-	money: number
-	month: number
+    money: number
+    month: number
 }
 
 interface IProps extends RouteComponentProps {
@@ -116,13 +116,13 @@ class Home extends Component<IProps & DispatchProp, IState> {
         coo: [],
         visible: false,
         err: null,
-		money: 6000,
-		month: 12,
+        money: 6000,
+        month: 12,
     }
 
     public render(): JSX.Element {
         const { appData, userInfo } = this.props
-		const { money,month } = this.state
+        const { money, month } = this.state
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -172,7 +172,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                     defaultValue={money}
                                     min={appData.minPirce}
                                     max={appData.maxPrice}
-									onChange={this.moneyChange}
+                                    onChange={this.moneyChange}
                                 />
                             </div>
                             <div className="flex" style={{ marginTop: getUnit(20) }}>
@@ -186,9 +186,9 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                     defaultValue={month}
                                     min={3}
                                     max={36}
-									onChange={this.monthChange}
+                                    onChange={this.monthChange}
                                 />
-                            
+
                             </div>
                             <div className="flex" style={{ marginTop: getUnit(20) }}>
                                 <SliderLabel className="flex_1">3个月</SliderLabel>
@@ -216,18 +216,18 @@ class Home extends Component<IProps & DispatchProp, IState> {
     public componentDidMount() {
         // this.getData()
     }
-	
-	private moneyChange= (val: any) => {
-		this.setState({
-		    money: val
-		})
-	} 
-	private monthChange = (val: any) => {
-		this.setState({
-		    month: val
-		})
-	} 
-	
+
+    private moneyChange = (val: any) => {
+        this.setState({
+            money: val
+        })
+    }
+    private monthChange = (val: any) => {
+        this.setState({
+            month: val
+        })
+    }
+
     private handleView = (id: string) => {
         const { err } = this.state
         const { history } = this.props
@@ -241,9 +241,9 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     private handleRequireRend = () => {
-		
-        const {userInfo, history} = this.props
-		history.push({pathname:'/requireRend',state: {money:this.state.money,month:this.state.month}})
+
+        const { userInfo, history } = this.props
+        history.push({ pathname: '/requireRend', state: { money: this.state.money, month: this.state.month } })
         // console.log(userInfo)
         // if(userInfo && userInfo.id){
         //     let Info = userInfo.userInfo
