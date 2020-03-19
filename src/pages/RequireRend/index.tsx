@@ -15,6 +15,8 @@ interface IState {
 	coo: any[]
 	visible: boolean
 	err: null | any
+	money: number
+	month: number
 }
 
 interface IProps extends RouteComponentProps {
@@ -76,11 +78,14 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		data: [],
 		coo: [],
 		visible: false,
-		err: null
+		err: null,
+		money: 6000,
+		month: 3,
     }
 
     public render(): JSX.Element {
 		const { appData } = this.props
+		const { money,month } = this.state
         return (
 			<MobileLayout 
 				appBar={
@@ -106,7 +111,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						fontWeight: 700,fontSize: getUnit(30),color: 'rgba(69, 134, 254, 1)',
 						background: 'rgba(243, 253, 255, 1)',marginTop:getUnit(10)}}
 					>
-						50,0000
+						￥{money}
 					</div>
 					<ItemWrapper>
 						<Title>收款账户</Title>
@@ -127,7 +132,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						<Dashed>
 							····································································································
 						</Dashed>
-						<Dignity>6个月</Dignity>
+						<Dignity>{month}个月</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>起始日期</Title>
@@ -174,8 +179,32 @@ class Shop extends Component<IProps & DispatchProp, IState> {
         )
     }
 
-    public componentDidMount() {
-        // this.getData()
+    public componentDidMount = () => {
+        this.getcc()
+		// if(data){
+		// 	this.setState({
+		// 		money: data.money || 6000,
+		// 		month: data.month || 3
+		// 	})
+		// }
+		// if(this.props.location.state){
+			// this.setState({
+			// 	money: this.props.location.state.money,
+			// 	month: this.props.location.state.month
+			// })
+		// }
+	}
+	private getcc = () => {
+		console.log(this.props.location)
+		let data = this.props.location.state
+		// if(!data){
+		// 	return
+		// }else{
+		// 	this.setState({
+		// 		money: data.money,
+		// 		month: data.month
+		// 	})
+		// }
 	}
 	
 	private handleSign = () => {

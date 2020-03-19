@@ -14,6 +14,8 @@ interface IState {
     coo: any[]
     visible: boolean
     err: null | any
+	money: number
+	month: number
 }
 
 interface IProps extends RouteComponentProps {
@@ -113,11 +115,14 @@ class Home extends Component<IProps & DispatchProp, IState> {
         data: [],
         coo: [],
         visible: false,
-        err: null
+        err: null,
+		money: 6000,
+		month: 12,
     }
 
     public render(): JSX.Element {
         const { appData, userInfo } = this.props
+		const { money,month } = this.state
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -150,11 +155,11 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         <div className="flex">
                             <div className="flex_1">
                                 <PriceT className="flex_center">借款金额</PriceT>
-                                <PriceL className="flex_center">￥50,0000</PriceL>
+                                <PriceL className="flex_center">￥{money}</PriceL>
                             </div>
                             <div className="flex_1">
                                 <PriceT className="flex_center">借款期限</PriceT>
-                                <PriceL className="flex_center">3个月</PriceL>
+                                <PriceL className="flex_center">{month}个月</PriceL>
                             </div>
                             <div className="flex_1">
                                 <PriceT className="flex_center">利息（元）</PriceT>
@@ -164,9 +169,10 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         <div className="flex_column">
                             <div style={{ padding: `0 ${getUnit(15)}` }}>
                                 <LSlider
-                                    defaultValue={26}
+                                    defaultValue={money}
                                     min={appData.minPirce}
                                     max={appData.maxPrice}
+									onChange={this.moneyChange}
                                 />
                             </div>
                             <div className="flex" style={{ marginTop: getUnit(20) }}>
@@ -177,11 +183,12 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         <div className="flex_column">
                             <div style={{ padding: `0 ${getUnit(15)}` }}>
                                 <LSlider
-                                    defaultValue={26}
-                                    min={0}
-                                    max={30}
+                                    defaultValue={month}
+                                    min={3}
+                                    max={36}
+									onChange={this.monthChange}
                                 />
-
+                            
                             </div>
                             <div className="flex" style={{ marginTop: getUnit(20) }}>
                                 <SliderLabel className="flex_1">3个月</SliderLabel>
@@ -209,7 +216,18 @@ class Home extends Component<IProps & DispatchProp, IState> {
     public componentDidMount() {
         // this.getData()
     }
-
+	
+	private moneyChange= (val: any) => {
+		this.setState({
+		    money: val
+		})
+	} 
+	private monthChange = (val: any) => {
+		this.setState({
+		    month: val
+		})
+	} 
+	
     private handleView = (id: string) => {
         const { err } = this.state
         const { history } = this.props
@@ -223,26 +241,28 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     private handleRequireRend = () => {
+		
         const {userInfo, history} = this.props
-        console.log(userInfo)
-        if(userInfo && userInfo.id){
-            let Info = userInfo.userInfo
-            if(Info && Info.status){
-                if(Info.status === 3){
-                    history.push('/requireRend')
-                }else if(Info.status === 2){
-                    history.push('/authenBank')
-                }else if(Info.status === 1){
-                    history.push('/authenInfo')
-                }else {
-                    history.push('/authen')
-                }
-            }else{
-                history.push('/authen')
-            }
-        }else{
-            history.push('/login')
-        }
+		history.push({pathname:'/requireRend',state: {money:this.state.money,month:this.state.month}})
+        // console.log(userInfo)
+        // if(userInfo && userInfo.id){
+        //     let Info = userInfo.userInfo
+        //     if(Info && Info.status){
+        //         if(Info.status === 3){
+        //             history.push('/requireRend')
+        //         }else if(Info.status === 2){
+        //             history.push('/authenBank')
+        //         }else if(Info.status === 1){
+        //             history.push('/authenInfo')
+        //         }else {
+        //             history.push('/authen')
+        //         }
+        //     }else{
+        //         history.push('/authen')
+        //     }
+        // }else{
+        //     history.push('/login')
+        // }
     }
 
     private getData = async () => {
