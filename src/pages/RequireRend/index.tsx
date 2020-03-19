@@ -183,31 +183,16 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 	public componentDidMount = () => {
 		this.getcc()
-		// if(data){
-		// 	this.setState({
-		// 		money: data.money || 6000,
-		// 		month: data.month || 3
-		// 	})
-		// }
-		// if(this.props.location.state){
-		// this.setState({
-		// 	money: this.props.location.state.money,
-		// 	month: this.props.location.state.month
-		// })
-		// }
 	}
 	private getcc = () => {
 		const state: any = this.props.location.state || {}
 		console.log(state.money, state.month)
-		let data = this.props.location.state
-		// if(!data){
-		// 	return
-		// }else{
-		// 	this.setState({
-		// 		money: data.money,
-		// 		month: data.month
-		// 	})
-		// }
+		if(state.money && state.month){
+			this.setState({
+				money: state.money,
+				month: state.month
+			})
+		}
 	}
 
 	private handleSign = () => {
