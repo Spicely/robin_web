@@ -243,26 +243,25 @@ class Home extends Component<IProps & DispatchProp, IState> {
     private handleRequireRend = () => {
 
         const { userInfo, history } = this.props
-        history.push({ pathname: '/requireRend', state: { money: this.state.money, month: this.state.month } })
-        // console.log(userInfo)
-        // if(userInfo && userInfo.id){
-        //     let Info = userInfo.userInfo
-        //     if(Info && Info.status){
-        //         if(Info.status === 3){
-        //             history.push('/requireRend')
-        //         }else if(Info.status === 2){
-        //             history.push('/authenBank')
-        //         }else if(Info.status === 1){
-        //             history.push('/authenInfo')
-        //         }else {
-        //             history.push('/authen')
-        //         }
-        //     }else{
-        //         history.push('/authen')
-        //     }
-        // }else{
-        //     history.push('/login')
-        // }
+        console.log(userInfo)
+        if(userInfo && userInfo.id){
+            let Info = userInfo.userInfo
+            if(Info && Info.status){
+                if(Info.status === 3){
+                    history.push({ pathname: '/requireRend', state: { money: this.state.money, month: this.state.month } })
+                }else if(Info.status === 2){
+                    history.push('/authenBank')
+                }else if(Info.status === 1){
+                    history.push('/authenInfo')
+                }else {
+                    history.push('/authen')
+                }
+            }else{
+                history.push('/authen')
+            }
+        }else{
+            history.push('/login')
+        }
     }
 
     private getData = async () => {

@@ -20,7 +20,8 @@ interface IState {
 }
 
 interface IProps extends RouteComponentProps {
-	appData: IGlobal.AppData
+	appData: IGlobal.AppData,
+	userInfo: IGlobal.UserInfo
 }
 
 const PriceBox = styled.div`
@@ -195,9 +196,20 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		}
 	}
 
-	private handleSign = () => {
-		const { history } = this.props
-		history.push('/protocol')
+	private handleSign = async () => {
+		const { history,userInfo } = this.props
+		const close = Toast.loading()
+		try {
+			const data = await http('/user/creatOrder', { price:this.state.money,term: this.state.month,userId: userInfo.id,purpose: '其他' })
+			console.log(data)
+			close()
+			history.replace({ pathname: '/protocol', state: { orderId: data.data.id} })
+		} catch (e) {
+			close()
+			Toast.info({
+				content: e.msg || '认证失败'
+			})
+		}
 	}
 
 	private handleView = (id: string) => {
@@ -244,7 +256,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 
 export default connect(
-	({ appData }: IInitState) => ({
-		appData
+	({ appData,userInfo }: IInitState) => ({
+		appData,userInfo
 	})
 )(withRouter(Shop))

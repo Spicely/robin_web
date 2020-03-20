@@ -131,7 +131,7 @@ class My extends Component<IProps, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>修改密码</div>
                             </div>
                         }
-                        link
+                        link = "/rePwd"
                         onPress={this.handleToView}
                     />
                     <div className="flex_center" style={{ marginTop: getUnit(20) }}>

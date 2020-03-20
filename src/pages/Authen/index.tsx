@@ -313,6 +313,7 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
         if (e.currentTarget.files) {
             const _file = e.currentTarget.files.item(0)
             if (_file) {
+                console.log(_file)
                 const reader = new FileReader()
                 reader.readAsDataURL(_file)
                 reader.onload = async () => {

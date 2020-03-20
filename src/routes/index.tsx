@@ -13,6 +13,7 @@ import AuthenInfo from '../pages/Authen/info'
 import AuthenBank from '../pages/Authen/bank'
 import RequireRend from '../pages/RequireRend'
 import Protoco from '../pages/Protoco'
+import ProtoSuccess from '../pages/ProtoSuccess'
 import PayRend from '../pages/PayRend'
 
 function Loading(props: any) {
@@ -71,6 +72,9 @@ export const routes: IRoutes[] = [{
 }, {
     component: PayRend,
     path: '/payRend'
+}, {
+    component: ProtoSuccess,
+    path: '/protoSuccess'
 }]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {
