@@ -33,7 +33,8 @@ const Lighting = styled.div`
 	position: absolute;
     height: ${getUnit(76)};
 	width: ${getUnit(76)};
-    background: skyBlue;
+    background: url(${require('../../assets/dd.png')});
+	background-size: 100% 100%;
 	right: 8%;
 `
 
@@ -50,7 +51,7 @@ const PriceBox = styled.div`
 const ItemWrapper = styled.div`
 	display: flex;
 	flex-direction: row;
-	align-item: center;
+	align-items: center;
 	width: 100%;
 	margin: ${getUnit(10)} 0;
 `
@@ -64,7 +65,7 @@ const Dashed = styled.div`
 	display: flex;
 	overflow:hidden;
 	color: #E4E4E4;
-	margin: 0 ${getUnit(10)};
+	border-bottom: 1px dashed;
 `
 const Dignity = styled.div`
 	flex: none;
@@ -135,37 +136,27 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 				<PriceBox className="flex_center" style={{marginTop: getUnit(-30),paddingBottom: getUnit(5)}}>
 					<ItemWrapper>
 						<Title>借贷金额</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>50,0000元</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>收款账户</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>622848 410012344570</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>月费率</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>0.006%</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>借贷期限</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>6个月</Dignity>
 					</ItemWrapper>
 					<ItemWrapper style={{marginBottom: 0}}>
 						<Title>起始日期</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>2020/03/14-2020/09/14</Dignity>
 					</ItemWrapper>
 				</PriceBox>
@@ -177,9 +168,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 				<PriceBox style={{borderRadius: `0 0 ${getUnit(5)} ${getUnit(5)}`,marginTop: getUnit(-1),paddingTop: 0}}>
 					<ItemWrapper style={{marginTop: 0}}>
 						<Title>工本费</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity></Dignity>
 					</ItemWrapper>
 					<div style={{color:'#2F99FD'}}>

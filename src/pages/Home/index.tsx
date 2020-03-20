@@ -198,10 +198,14 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         <div style={{ padding: `0 ${getUnit(15)}` }}>
                             <LButton onClick={this.handleRequireRend}>申请贷款</LButton>
                         </div>
-                        <div style={{ padding: `0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
-                            <CheckBox
+                        <div style={{ padding: `0 0 0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
+                            <CheckBox style={{display:'flex',alignItems:'flex_start'}}
                                 options={[{
-                                    label: <div style={{ fontSize: getUnit(12) }}>我已阅读<span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span>隐私信息将严格保密</div>,
+                                    label: <div style={{ fontSize: getUnit(12) }}>
+                                            我已阅读
+                                            <Link to={{pathname: 'privacryPolice'}}>><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
+                                            隐私信息将严格保密
+                                        </div>,
                                     value: true
                                 }]}
                                 value={[true]}

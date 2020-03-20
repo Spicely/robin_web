@@ -2,6 +2,7 @@ import React from 'react'
 import Loadable from 'react-loadable'
 import Index from '../pages/Index'
 import RePwd from '../pages/RePwd'
+import RePwdZ from '../pages/RePwdZ'
 import Wallet from '../pages/Wallet'
 import AddressList from '../pages/AddressList'
 import AddressAdd from '../pages/AddressAdd'
@@ -15,6 +16,8 @@ import RequireRend from '../pages/RequireRend'
 import Protoco from '../pages/Protoco'
 import ProtoSuccess from '../pages/ProtoSuccess'
 import PayRend from '../pages/PayRend'
+import AboutMe from '../pages/AboutMe'
+import PrivacryPolice from '../pages/PrivacryPolice'
 
 function Loading(props: any) {
     if (props.error) {
@@ -75,6 +78,15 @@ export const routes: IRoutes[] = [{
 }, {
     component: ProtoSuccess,
     path: '/protoSuccess'
+}, {
+    component: RePwdZ,
+    path: '/rePwdZ'
+}, {
+    component: AboutMe,
+    path: '/aboutMe'
+}, {
+    component: PrivacryPolice,
+    path: '/privacryPolice'
 }]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {

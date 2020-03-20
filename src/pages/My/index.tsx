@@ -87,21 +87,41 @@ class My extends Component<IProps, IState> {
                     <Gird.Item
                         title={
                             <div className="flex">
-                                <Image src={require('../../assets/user_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>关于我们</div>
+                                <Image src={require('../../assets/renzhengjindu.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>认证进度</div>
                             </div>
                         }
-                        link="/userOrder"
+                        link
                         onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
                             <div className="flex">
-                                <Image src={require('../../assets/v2_q6kef5.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <Image src={require('../../assets/huankuanzhangdan.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>还款账单</div>
                             </div>
                         }
                         link="/payRend"
+                        onPress={this.handleToView}
+                    />
+                    <Gird.Item
+                        title={
+                            <div className="flex">
+                                <Image src={require('../../assets/wodehetong.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>我的合同</div>
+                            </div>
+                        }
+                        link
+                        onPress={this.handleToView}
+                    />
+                    <Gird.Item
+                        title={
+                            <div className="flex">
+                                <Image src={require('../../assets/user_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>关于我们</div>
+                            </div>
+                        }
+                        link = '/aboutMe'
                         onPress={this.handleToView}
                     />
                     <Gird.Item
@@ -117,21 +137,11 @@ class My extends Component<IProps, IState> {
                     <Gird.Item
                         title={
                             <div className="flex">
-                                <Image src={require('../../assets/phone_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>服务电话</div>
-                            </div>
-                        }
-                        link="/customer"
-                        onPress={this.handleToView}
-                    />
-                    <Gird.Item
-                        title={
-                            <div className="flex">
                                 <Image src={require('../../assets/u.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>修改密码</div>
                             </div>
                         }
-                        link = "/rePwd"
+                        link = "/rePwdZ"
                         onPress={this.handleToView}
                     />
                     <div className="flex_center" style={{ marginTop: getUnit(20) }}>

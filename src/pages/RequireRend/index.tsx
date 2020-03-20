@@ -52,7 +52,7 @@ const Dashed = styled.div`
 	display: flex;
 	overflow:hidden;
 	color: #E4E4E4;
-	margin: 0 ${getUnit(10)};
+	border-bottom: 1px dashed;
 `
 const Dignity = styled.div`
 	flex: none;
@@ -118,57 +118,45 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 					</div>
 					<ItemWrapper>
 						<Title>收款账户</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>622848 410012344570</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>月费率</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>0.006%</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>借贷期限</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>{month}个月</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>起始日期</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>2020/03/14-2020/09/14</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>首次还款日</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>04/12</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>还款日</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity>每月12日</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>贷款用途</Title>
-						<Dashed>
-							····································································································
-						</Dashed>
+						<Dashed/>
 						<Dignity style={{ color: '#2F99FD' }}>请选择</Dignity>
 					</ItemWrapper>
-					<div style={{ padding: `0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
+					<div style={{ padding: `0 0 0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
 						<CheckBox
 							options={[{
-								label: <div style={{ fontSize: getUnit(12) }}>我已阅读<span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span>隐私信息将严格保密</div>,
+								label: <div style={{ fontSize: getUnit(12) }}>我已阅读
+								<Link to={{pathname: 'privacryPolice'}}>><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
+								隐私信息将严格保密</div>,
 								value: true
 							}]}
 							value={[true]}
