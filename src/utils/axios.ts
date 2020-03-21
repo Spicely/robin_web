@@ -8,7 +8,8 @@ interface IValue {
 }
 
 const ADMIN_ID = '5e6ce86a71a4c94c7088ba5b' // 这个为用户ID
-export const baseUrl = 'https://api.muka.site'
+// export const baseUrl = 'https://api.muka.site'
+export const baseUrl = 'http://localhost:7001'
 export const imgUrl = 'https://api.muka.site'
 
 export interface IRresItem<T = any> {

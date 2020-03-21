@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
-import { http } from 'src/utils'
-import { Toast, MobileLayout, Button, Image, Item, Icon, CheckBox } from 'components'
-import { Slider } from 'antd-mobile'
-import { RouteComponentProps, withRouter, Link } from 'react-router-dom'
+import { MobileLayout, Button } from 'components'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
-import { getUnit, ButtonThemeData, BorderRadius,ItemThemeData } from 'src/components/lib/utils'
-import { SET_HOME_DATA } from 'src/store/actions'
+import { getUnit } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
 
 
@@ -18,8 +15,10 @@ interface IState {
 }
 
 interface IProps extends RouteComponentProps {
-    appData: IGlobal.AppData
+	appData: IGlobal.AppData
+	userInfo: IGlobal.UserInfo
 }
+
 const Header = styled.div`
     height: ${getUnit(188)};
     background: linear-gradient(to bottom,#2848FE ,#4C97FE);
@@ -66,6 +65,7 @@ const Dashed = styled.div`
 	overflow:hidden;
 	color: #E4E4E4;
 	border-bottom: 1px dashed;
+	margin: 0 ${getUnit(15)};
 `
 const Dignity = styled.div`
 	flex: none;
@@ -101,136 +101,142 @@ const LButton = styled(Button)`
     font-size: ${getUnit(16)};
 `
 
-// class Shop extends Component<RouteComponentProps<any>, IState> {
 class Shop extends Component<IProps & DispatchProp, IState> {
 
-    public state: IState = {
+	public state: IState = {
 		data: [],
 		coo: [],
 		visible: false,
 		err: null
-    }
-
-    public render(): JSX.Element {
-		const { appData } = this.props
-        return (
-            <MobileLayout style={{background: 'rgb(245,245,245)'}}>
-				<Header>
-				    <div
-				    	style={{ fontSize: getUnit(14),color: 'rgba(255, 255, 255, 0.5)' }}
-				    >
-				    	订单状态
-				    </div>
-					<div 
-						style={{ fontSize: getUnit(19), color: 'rgba(255, 255, 255, 1)',marginTop: getUnit(10) }}
-					>
-						待支付工本费
-					</div>
-					<div
-						style={{ fontSize: getUnit(12), color: 'rgba(255, 255, 255, 0.5)',marginTop: getUnit(30) }}
-					>
-						借款订单号: ABFDF3459ZMJHX23J3LQPZ
-					</div>
-					<Lighting></Lighting>
-				</Header>
-				<PriceBox className="flex_center" style={{marginTop: getUnit(-30),paddingBottom: getUnit(5)}}>
-					<ItemWrapper>
-						<Title>借贷金额</Title>
-						<Dashed/>
-						<Dignity>50,0000元</Dignity>
-					</ItemWrapper>
-					<ItemWrapper>
-						<Title>收款账户</Title>
-						<Dashed/>
-						<Dignity>622848 410012344570</Dignity>
-					</ItemWrapper>
-					<ItemWrapper>
-						<Title>月费率</Title>
-						<Dashed/>
-						<Dignity>0.006%</Dignity>
-					</ItemWrapper>
-					<ItemWrapper>
-						<Title>借贷期限</Title>
-						<Dashed/>
-						<Dignity>6个月</Dignity>
-					</ItemWrapper>
-					<ItemWrapper style={{marginBottom: 0}}>
-						<Title>起始日期</Title>
-						<Dashed/>
-						<Dignity>2020/03/14-2020/09/14</Dignity>
-					</ItemWrapper>
-				</PriceBox>
-				<Partition style={{marginTop: getUnit(-1)}}>
-					<Qiu style={{marginLeft: getUnit(-10)}}></Qiu>
-					<div style={{flex:1}}></div>
-					<Qiu style={{marginRight: getUnit(-10)}}></Qiu>
-				</Partition>
-				<PriceBox style={{borderRadius: `0 0 ${getUnit(5)} ${getUnit(5)}`,marginTop: getUnit(-1),paddingTop: 0}}>
-					<ItemWrapper style={{marginTop: 0}}>
-						<Title>工本费</Title>
-						<Dashed/>
-						<Dignity></Dignity>
-					</ItemWrapper>
-					<div style={{color:'#2F99FD'}}>
-						工本费是验证客户还款能力，请联系在线客服申请账号支付本次贷款金融服务费，服务费支付成功即可到账，服务费是贷款金额的5%，按时还款满3个月后系统退回工本费
-					</div>
-				</PriceBox>
-				<div style={{display: 'flex',justifyContent:'center'}}>
-					<LButton>提现</LButton>
-				</div>
-            </MobileLayout>
-        )
-    }
-
-    public componentDidMount() {
-        // this.getData()
-    }
-	
-	private handleView = (id: string) => {
-	    const { err } = this.state
-	    const { history } = this.props
-	    if (err !== null) {
-	        this.setState({
-	            visible: true
-	        })
-	    } else {
-	        history.push(`/news/${id}`)
-	    }
 	}
-    // private getData = async () => {
-    //     try {
-    //         const { match } = this.props
-    //         const data = await http('news/team_info', {
-    //             id: match.params.id
-    //         })
-    //         this.setState({
-    //             ...data.msg
-    //         })
-    //     } catch (data) {
-    //         Toast.info({
-    //             content: data.msg || '服务器繁忙,请稍后再试',
-    //         })
-    //     }
-    // }
 
-    private handleBack = () => {
-        const { history } = this.props
-        history.goBack()
-    }
+	public render(): JSX.Element {
+		const { appData, userInfo } = this.props
+		return (
+			<MobileLayout style={{ background: 'rgb(245,245,245)' }}>
+				{
+					(userInfo.order && userInfo.userInfo) ? (
+						<div>
+							<Header>
+								<div
+									style={{ fontSize: getUnit(14), color: 'rgba(255, 255, 255, 0.5)' }}
+								>
+									订单状态
+				    			</div>
+								<div
+									style={{ fontSize: getUnit(19), color: 'rgba(255, 255, 255, 1)', marginTop: getUnit(10) }}
+								>
+									{this.getStatus(userInfo.order.status)}
+								</div>
+								<div
+									style={{ fontSize: getUnit(12), color: 'rgba(255, 255, 255, 0.5)', marginTop: getUnit(30) }}
+								>
+									借款订单号: {userInfo.order.orderId}
+								</div>
+								<Lighting></Lighting>
+							</Header>
+							<PriceBox className="flex_center" style={{ marginTop: getUnit(-30), paddingBottom: getUnit(5) }}>
+								<ItemWrapper>
+									<Title>借贷金额</Title>
+									<Dashed />
+									<Dignity>{userInfo.order.price}元</Dignity>
+								</ItemWrapper>
+								<ItemWrapper>
+									<Title>收款账户</Title>
+									<Dashed />
+									<Dignity>{this.formatBankNumber(userInfo.userInfo.bankCard)}</Dignity>
+								</ItemWrapper>
+								<ItemWrapper>
+									<Title>月费率</Title>
+									<Dashed />
+									<Dignity>{appData.serviceRate}%</Dignity>
+								</ItemWrapper>
+								<ItemWrapper>
+									<Title>借贷期限</Title>
+									<Dashed />
+									<Dignity>{userInfo.order.term}个月</Dignity>
+								</ItemWrapper>
+								<ItemWrapper style={{ marginBottom: 0 }}>
+									<Title>起始日期</Title>
+									<Dashed />
+									<Dignity>2020/03/14-2020/09/14</Dignity>
+								</ItemWrapper>
+							</PriceBox>
+							<Partition style={{ marginTop: getUnit(-1) }}>
+								<Qiu style={{ marginLeft: getUnit(-10) }}></Qiu>
+								<div style={{ flex: 1 }}></div>
+								<Qiu style={{ marginRight: getUnit(-10) }}></Qiu>
+							</Partition>
+							<PriceBox style={{ borderRadius: `0 0 ${getUnit(5)} ${getUnit(5)}`, marginTop: getUnit(-1), paddingTop: 0 }}>
+								<ItemWrapper style={{ marginTop: 0 }}>
+									<Title>工本费</Title>
+									<Dashed />
+									<Dignity></Dignity>
+								</ItemWrapper>
+								<div style={{ color: '#2F99FD' }}>
+									{userInfo.order.describeStatus}
+								</div>
+							</PriceBox>
+							{/* <div style={{ display: 'flex', justifyContent: 'center', marginBottom: getUnit(30) }}>
+								<LButton>提现</LButton>
+							</div> */}
+						</div>
+					) : null
+				}
+			</MobileLayout>
+		)
+	}
+
+	public componentDidMount() {
+		// this.getData()
+	}
+
+	private handleView = (id: string) => {
+		const { err } = this.state
+		const { history } = this.props
+		if (err !== null) {
+			this.setState({
+				visible: true
+			})
+		} else {
+			history.push(`/news/${id}`)
+		}
+	}
+
+	private formatBankNumber = (bankNumber: string): string => {
+		return bankNumber.substr(0, 4) + "*** ********" + bankNumber.substr(-4);
+	}
+
+	private getStatus = (number: number): string => {
+		switch (number) {
+			case 0: return '工本费';
+			case 1: return '质押金';
+			case 2: return '放款成功';
+			case 3: return '订单冻结';
+			case 4: return '订单解冻，需回档';
+			case 5: return '信用不足';
+			case 6: return '流水不足';
+			case 7: return '提现成功，出款中';
+			case 8: return '退款，维护中';
+			case 9: return '待激活';
+			case 10: return '银行卡异常';
+			case 11: return '收取保险费';
+			case 12: return '预付前1期费用';
+			case 13: return '预付前2期费用';
+			case 14: return '预付前3期费用';
+			case 15: return '预付前4期费用';
+			case 16: return '预付前5期费用';
+			case 17: return '预付前7期费用';
+			case 18: return '资金对冲';
+			default: return '';
+		}
+	}
 
 }
 
-
-
-// export default connect(
-//     ({ homeData }: IInitState) => ({
-//         homeData
-//     })
-// )(withRouter(Shop))
-
-
 export default connect(
-    ({ appData }: IInitState) => ({
-        appData
-    })
+	({ appData, userInfo }: IInitState) => ({
+		appData,
+		userInfo
+	})
 )(withRouter(Shop))

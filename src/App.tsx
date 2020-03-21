@@ -21,7 +21,7 @@ class App extends React.Component {
 							navBarTheme: new NavBarThemeData({
 								navBarColor: Color.fromRGB(255, 255, 255),
 								iconTheme: new IconThemeData({
-									color: Color.fromRGB(255, 255, 255)
+									color: Color.fromRGB(0, 0, 0)
 								})
 							}),
 							buttonTheme: new ButtonThemeData({

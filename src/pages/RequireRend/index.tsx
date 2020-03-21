@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
 import { Toast, MobileLayout, Button, NavBar, Image, Item, Icon, CheckBox } from 'components'
-import { Slider } from 'antd-mobile'
+import { Slider, Picker } from 'antd-mobile'
 import { RouteComponentProps, withRouter, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
 import { getUnit, NavBarThemeData, Color, IconThemeData } from 'src/components/lib/utils'
-import { SET_HOME_DATA } from 'src/store/actions'
+import { SET_HOME_DATA, SET_USERINFO_DATA } from 'src/store/actions'
 import { connect, DispatchProp } from 'react-redux'
+import moment from 'moment'
 
 
 interface IState {
@@ -17,6 +18,7 @@ interface IState {
 	err: null | any
 	money: number
 	month: number
+	val: any
 }
 
 interface IProps extends RouteComponentProps {
@@ -82,24 +84,43 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		err: null,
 		money: 6000,
 		month: 3,
+		val: '',
 	}
 
+	private education = [{
+		label: '本科',
+		value: '本科',
+	}, {
+		label: '专科',
+		value: '专科',
+	}, {
+		label: '硕士研究生',
+		value: '硕士研究生',
+	}, {
+		label: '博士研究生',
+		value: '博士研究生',
+	}, {
+		label: '高中',
+		value: '高中',
+	}]
+
 	public render(): JSX.Element {
-		const { appData } = this.props
-		const { money, month } = this.state
+		const { userInfo, appData } = this.props
+		const { money, month, val } = this.state
 		return (
 			<MobileLayout
 				appBar={
 					<NavBar
 						theme={new NavBarThemeData({
-							navBarColor: Color.fromRGB(255, 255, 255),
+							navBarColor: Color.fromRGBO(0, 0, 0, 0),
 							iconTheme: new IconThemeData({
-								color: Color.fromRGB(0, 0, 0)
+								color: Color.fromRGB(255, 255, 255)
 							})
 
 						})}
 						onBack={this.handleBack}
 						divider={false}
+						fixed
 					/>
 				}
 				style={{ background: 'linear-gradient(to bottom,#1F83FE ,#FFFFFF)' }}>
@@ -118,44 +139,51 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 					</div>
 					<ItemWrapper>
 						<Title>收款账户</Title>
-						<Dashed/>
-						<Dignity>622848 410012344570</Dignity>
+						<Dashed />
+						<Dignity>{userInfo.userInfo ? userInfo.userInfo.bankCard : ''}</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>月费率</Title>
-						<Dashed/>
-						<Dignity>0.006%</Dignity>
+						<Dashed />
+						<Dignity>{appData.serviceRate}%</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>借贷期限</Title>
-						<Dashed/>
+						<Dashed />
 						<Dignity>{month}个月</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>起始日期</Title>
-						<Dashed/>
-						<Dignity>2020/03/14-2020/09/14</Dignity>
+						<Dashed />
+						<Dignity>{moment().format('YYYY/MM/DD')}-{moment().add(month, 'M').format('YYYY/MM/DD')}</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>首次还款日</Title>
-						<Dashed/>
-						<Dignity>04/12</Dignity>
+						<Dashed />
+						<Dignity>{moment().add(1, 'M').format('MM/DD')}</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>还款日</Title>
-						<Dashed/>
+						<Dashed />
 						<Dignity>每月12日</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>贷款用途</Title>
-						<Dashed/>
-						<Dignity style={{ color: '#2F99FD' }}>请选择</Dignity>
+						<Dashed />
+						<Picker
+							data={this.education}
+							cols={1}
+							value={val}
+							onOk={this.handlePickerValue}
+						>
+							<Dignity style={{ color: '#2F99FD' }}>{val || '请选择'}</Dignity>
+						</Picker>
 					</ItemWrapper>
 					<div style={{ padding: `0 0 0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
 						<CheckBox
 							options={[{
 								label: <div style={{ fontSize: getUnit(12) }}>我已阅读
-								<Link to={{pathname: 'privacryPolice'}}>><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
+								<Link to={{ pathname: 'privacryPolice' }}>><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
 								隐私信息将严格保密</div>,
 								value: true
 							}]}
@@ -170,13 +198,19 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		)
 	}
 
+	private handlePickerValue = (data: any) => {
+		this.setState({
+			val: data[0]
+		})
+	}
+
 	public componentDidMount = () => {
 		this.getcc()
 	}
 	private getcc = () => {
 		const state: any = this.props.location.state || {}
 		console.log(state.money, state.month)
-		if(state.money && state.month){
+		if (state.money && state.month) {
 			this.setState({
 				money: state.money,
 				month: state.month
@@ -185,13 +219,21 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 	}
 
 	private handleSign = async () => {
-		const { history,userInfo } = this.props
+		const { history, userInfo, dispatch } = this.props
+		const { val } = this.state
+		if (!val) {
+			Toast.info({
+				content: '请选择贷款用途'
+			})
+			return
+		}
 		const close = Toast.loading()
 		try {
-			const data = await http('/user/creatOrder', { price:this.state.money,term: this.state.month,userId: userInfo.id,purpose: '其他' })
-			console.log(data)
+			const { data } = await http('/user/creatOrder', { price: this.state.money, term: this.state.month, userId: userInfo.id, purpose: val })
+			userInfo.order = data
+			dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
 			close()
-			history.replace({ pathname: '/protocol', state: { orderId: data.data.id} })
+			history.replace({ pathname: '/protocol', state: { orderId: data.id } })
 		} catch (e) {
 			close()
 			Toast.info({
@@ -244,7 +286,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 
 export default connect(
-	({ appData,userInfo }: IInitState) => ({
-		appData,userInfo
+	({ appData, userInfo }: IInitState) => ({
+		appData, userInfo
 	})
 )(withRouter(Shop))

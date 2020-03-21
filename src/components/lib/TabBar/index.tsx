@@ -1,8 +1,8 @@
 import React, { Component, Children, CSSProperties, cloneElement, createContext } from 'react'
 import styled, { css } from 'styled-components'
-import { isNil, isFunction } from 'lodash'
+import { isNil, isFunction, isNumber } from 'lodash'
 import { Consumer as ThemeConsumer } from '../ThemeProvider'
-import { TabBarThemeData, getUnit, transition, getClassName, getRatioUnit, Color, ThemeData } from '../utils'
+import { TabBarThemeData, getUnit, transition, getClassName, Color, ThemeData } from '../utils'
 import { browser } from 'muka'
 import Icon from '../Icon'
 
@@ -15,6 +15,7 @@ export interface ITabBarProps {
     type?: IType
     theme?: TabBarThemeData
     style?: CSSProperties
+    defaultSelecte?: number
     selected?: number
     tabViewClassName?: string
     tabViewBarClassName?: string
@@ -54,7 +55,7 @@ interface ITabBarItemViewProps {
 const TabBarItemView = styled.div<ITabBarItemViewProps>`
     ${({ type, theme }) => {
         if (type === 'horizontal') return css`width: 100%;`
-        else return css`width: ${getRatioUnit(50)}; ${TabBarItemBox} { width: ${getRatioUnit(50)}; height: ${getRatioUnit(50)};&:hover { background: ${Color.setOpacity(theme.primarySwatch, 0.2).toString()}}}`
+        else return css`width: ${getUnit(50)}; ${TabBarItemBox} { width: ${getUnit(50)}; height: ${getUnit(50)};&:hover { background: ${Color.setOpacity(theme.primarySwatch, 0.2).toString()}}}`
     }}
     overflow: auto;
     position: relative;
@@ -68,6 +69,7 @@ const TabBarItemTabView = styled.div`
 interface ITabBarItemScrollViewProps {
     tabBarTheme: TabBarThemeData
     mode?: IMode
+    animation: boolean
 }
 
 const TabBarItemScrollView = styled.div<ITabBarItemScrollViewProps>`
@@ -76,7 +78,12 @@ const TabBarItemScrollView = styled.div<ITabBarItemScrollViewProps>`
     flex-shrink: 0;
     overflow: auto;
     ${({ tabBarTheme, mode }) => mode === 'menu' ? 0 : tabBarTheme.tabViewPadding.toString()};
-    ${transition(0.5)}
+    ${({ animation }) => {
+        if (animation) {
+            return css`${transition(0.5)}`
+        }
+    }};
+    
 `
 
 interface ITabBarItem {
@@ -108,8 +115,8 @@ interface IActiveBarProps {
 const ActiveBar = styled.div<IActiveBarProps>`
     ${transition(0.3, ['top', 'left'])};
     ${({ type, activeNum, selectIndex }) => {
-        if (type === 'horizontal') return css`height: ${getRatioUnit(2)};width: ${getRatioUnit(activeNum)};bottom: 0;left: ${getRatioUnit((selectIndex || 0) * activeNum)};`
-        else return css`width: ${getRatioUnit(2)};height: ${getRatioUnit(activeNum)};left: 0;top: ${getRatioUnit((selectIndex || 0) * activeNum)};`
+        if (type === 'horizontal') return css`height: ${getUnit(2)};width: ${getUnit(activeNum)};bottom: 0;left: ${getUnit((selectIndex || 0) * activeNum)};`
+        else return css`width: ${getUnit(2)};height: ${getUnit(activeNum)};left: 0;top: ${getUnit((selectIndex || 0) * activeNum)};`
     }}
     background: ${({ tabBarTheme, theme }) => tabBarTheme.activeBarColor || theme.primarySwatch};
     position: absolute;
@@ -185,8 +192,13 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
 
     constructor(props: ITabBarProps) {
         super(props)
-        this.state.selected = props.selected || 0
+        this.state.selected = props.defaultSelecte || props.selected || 0
+        if (isNumber(props.defaultSelecte)) {
+            this.animation = false
+        }
     }
+
+    private animation: boolean = true
 
     public static defaultProps: ITabBarProps = {
         mode: 'tab',
@@ -259,19 +271,22 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                                     className={getClassName(`flex_1 ${type === 'vertical' ? 'flex_column' : 'flex'}`, tabViewBarClassName)}
                                 >
                                     {
-                                        tabViews.map((i, index) => (
-                                            <TabBarItemScrollView
-                                                mode={mode}
-                                                className={tabViewClassName}
-                                                tabBarTheme={theme || value.theme.tabBarTheme}
-                                                style={{
-                                                    transform: `translate3d(${selected && type === 'horizontal' ? getRatioUnit(selected * -width) : 0}, ${selected && type === 'vertical' ? getRatioUnit(selected * -height) : 0}, 0)`
-                                                }}
-                                                key={index}
-                                            >
-                                                {i}
-                                            </TabBarItemScrollView>
-                                        ))
+                                        tabViews.map((i, index) => {
+                                            return (
+                                                <TabBarItemScrollView
+                                                    mode={mode}
+                                                    className={tabViewClassName}
+                                                    tabBarTheme={theme || value.theme.tabBarTheme}
+                                                    animation={this.animation}
+                                                    style={{
+                                                        transform: `translate3d(${selected && type === 'horizontal' ? getUnit(selected * -width) : 0}, ${selected && type === 'vertical' ? getUnit(selected * -height) : 0}, 0)`
+                                                    }}
+                                                    key={index}
+                                                >
+                                                    {i}
+                                                </TabBarItemScrollView>
+                                            )
+                                        })
                                     }
                                 </TabBarItemTabView>
                                 {mode === 'menu' ? (
@@ -348,6 +363,11 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
         const { selected } = this.state
         if (selected === field) return
         if (!isNil(field)) {
+            this.animation = true
+            if (isFunction(onChange)) {
+                onChange(field)
+                return
+            }
             const info = this.getRootNodeInfo()
             const itemInfo = this.getSelectedNodeInfo()
             this.setState({
@@ -356,9 +376,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                 height: info.height,
                 activeNum: itemInfo
             })
-            if (isFunction(onChange)) {
-                onChange(field)
-            }
+            
         }
     }
 }

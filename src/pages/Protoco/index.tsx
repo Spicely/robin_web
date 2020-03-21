@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
 import { http, baseUrl } from 'src/utils'
-import { Toast, MobileLayout, Button,NavBar, Image, Item, Icon, CheckBox } from 'components'
-import { Slider } from 'antd-mobile'
-import { RouteComponentProps, withRouter, Link } from 'react-router-dom'
+import { Toast, MobileLayout, Button, NavBar } from 'components'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
-import { getUnit,NavBarThemeData,Color,IconThemeData} from 'src/components/lib/utils'
-import { SET_HOME_DATA } from 'src/store/actions'
+import { getUnit, NavBarThemeData, Color, IconThemeData } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
-import userInfo from 'src/store/reducers/userInfo'
 import CanvasDraw from "react-canvas-draw"
 import Axios from 'axios'
+import { SET_USERINFO_DATA } from 'src/store/actions'
 
 
 interface IState {
@@ -57,86 +55,86 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 	private canvas: any
 
-    public state: IState = {
+	public state: IState = {
 		data: [],
 		coo: [],
 		visible: false,
 		err: null,
 		mode: null,
 		orderId: ''
-    }
+	}
 
-    public render(): JSX.Element {
+	public render(): JSX.Element {
 		const { appData } = this.props
 		const { mode } = this.state
-        return (
-            <MobileLayout 
-			appBar={
-				<NavBar
-					theme={new NavBarThemeData({
-						navBarColor: Color.fromRGB(255, 255, 255),
-						iconTheme: new IconThemeData({
-							color: Color.fromRGB(0, 0, 0)
-						})
-
-					})}
-					title = '借款协议'
-					titleCenter
-					onBack={this.handleBack}
-					divider={false}
-				/>
-			}
-			style={{background: 'white'}}>
+		return (
+			<MobileLayout
+				appBar={
+					<NavBar
+						title='借款协议'
+						titleCenter
+						onBack={this.handleBack}
+						divider={false}
+					/>
+				}>
 				<PriceBox className="flex_center">
-					<div style={{display:'flex',justifyContent:'center',fontWeight: 700,fontSize: getUnit(14),width:'100%',padding:getUnit(15),marginTop:getUnit(-30)}}>
-						<div dangerouslySetInnerHTML={{__html: mode}} />
+					<div style={{ display: 'flex', justifyContent: 'center', fontWeight: 700, fontSize: getUnit(14), width: '100%', padding: getUnit(15) }}>
+						<div dangerouslySetInnerHTML={{ __html: mode }} />
 					</div>
-					<div style={{color: '#4586FE'}}>签名区域</div>
-					<div className='flex_center' style={{width:'100%',
-						height: getUnit(200),color: '#4586FE',
-						marginTop:getUnit(15),border: '1px dashed #4586FE',borderRadius: getUnit(5)}}>
-							<CanvasDraw lazyRadius={1} brushRadius={1} brushColor='skyBlue' ref={(e) => this.canvas = e} canvasHeight={400} style={{width: '100%'}}/>
-						</div>
+					<div style={{ color: '#4586FE' }}>签名区域</div>
+					<div className='flex_center' style={{
+						width: '100%',
+						height: getUnit(200), color: '#4586FE',
+						marginTop: getUnit(15), border: '1px dashed #4586FE', borderRadius: getUnit(5)
+					}}>
+						<CanvasDraw lazyRadius={1} brushRadius={1} brushColor='skyBlue' ref={(e) => this.canvas = e} canvasHeight={400} style={{ width: '100%' }} />
+					</div>
 				</PriceBox>
-				<div style={{display: 'flex',justifyContent:'space-around'}}>
-					<LButton style={{background: '#D6E8FA',color:'skyBlue'}}>重写</LButton>
+				<div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: getUnit(40) }}>
+					<LButton style={{ background: '#D6E8FA', color: 'skyBlue' }}
+						onClick={this.reLoad}
+					>重写</LButton>
 					<LButton onClick={this.submit}>提交</LButton>
 				</div>
-            </MobileLayout>
-        )
-    }
-
-    public componentDidMount() {
-        this.getData()
+			</MobileLayout>
+		)
 	}
-	private cc = (val:any) => {
+
+	public componentDidMount() {
+		this.getData()
+	}
+	private cc = (val: any) => {
 		console.log(val)
 	}
 
 	private dataURLtoFile(dataurl: string, filename: string) {
-        const arr = dataurl.split(',')
-        const mime = ((arr[0] || '').match(/:(.*?);/) || [])[1]
-        const bstr = atob(arr[1])
-        let n = bstr.length
-        const u8arr = new Uint8Array(n)
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n)
-        }
-        const blob: any = new Blob([u8arr], { type: mime })
-        if (/Edge/.test(navigator.userAgent)) {
-            blob.lastModifiedDate = new Date()
-            blob.name = filename
-            blob.filename = filename
-            return blob
-        } else {
-            const file = new File([blob], filename)
-            return file
-        }
-    }
+		const arr = dataurl.split(',')
+		const mime = ((arr[0] || '').match(/:(.*?);/) || [])[1]
+		const bstr = atob(arr[1])
+		let n = bstr.length
+		const u8arr = new Uint8Array(n)
+		while (n--) {
+			u8arr[n] = bstr.charCodeAt(n)
+		}
+		const blob: any = new Blob([u8arr], { type: mime })
+		if (/Edge/.test(navigator.userAgent)) {
+			blob.lastModifiedDate = new Date()
+			blob.name = filename
+			blob.filename = filename
+			return blob
+		} else {
+			const file = new File([blob], filename)
+			return file
+		}
+	}
+
+	private reLoad = () => {
+		this.canvas.clear()
+	}
 	private submit = async () => {
-		const _file = this.dataURLtoFile(this.canvas.canvasContainer.children[1].toDataURL(),'sign.png')
+		const _file = this.dataURLtoFile(this.canvas.canvasContainer.children[1].toDataURL(), 'sign.png')
 		const formData = new FormData()
-		const { history } = this.props
+		const { history, dispatch } = this.props
 		if (_file) {
 			const reader = new FileReader()
 			reader.readAsDataURL(_file)
@@ -145,13 +143,16 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 				const close = Toast.loading()
 				try {
 					const data = await Axios.post(baseUrl + '/upload/index', formData)
-					console.log(data.data.data.url)
-					const data2 = await http('user/autograph',{
+					await http('user/autograph', {
 						userId: this.props.userInfo.id,
 						orderId: this.state.orderId,
 						autograph: data.data.data.url
 					})
-					console.log(data2)
+					const { userInfo } = this.props
+					if (userInfo.order) {
+						userInfo.order.autograph = data.data.data.url
+						dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+					}
 					history.replace('protoSuccess')
 					close()
 				} catch (e) {
@@ -167,41 +168,41 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		// history.replace('/protoSuccess')
 	}
 	private handleView = (id: string) => {
-	    const { err } = this.state
-	    const { history } = this.props
-	    if (err !== null) {
-	        this.setState({
-	            visible: true
-	        })
-	    } else {
-	        history.push(`/news/${id}`)
-	    }
+		const { err } = this.state
+		const { history } = this.props
+		if (err !== null) {
+			this.setState({
+				visible: true
+			})
+		} else {
+			history.push(`/news/${id}`)
+		}
 	}
-    private getData = async () => {
+	private getData = async () => {
 		const state: any = this.props.location.state || {}
 		console.log(state)
-		if(state.orderId){
+		if (state.orderId) {
 			this.setState({
 				orderId: state.orderId
 			})
 		}
-        try {
-            const { match } = this.props
-			const data = await http('user/getContractTemplate',{userId: this.props.userInfo.id})
+		try {
+			const { match } = this.props
+			const data = await http('user/getContractTemplate', { userId: this.props.userInfo.id })
 			this.setState({
 				mode: data.data.contractTemplate
 			})
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
-        }
-    }
+		} catch (data) {
+			Toast.info({
+				content: data.msg || '服务器繁忙,请稍后再试',
+			})
+		}
+	}
 
-    private handleBack = () => {
-        const { history } = this.props
-        history.goBack()
-    }
+	private handleBack = () => {
+		const { history } = this.props
+		history.goBack()
+	}
 
 }
 
@@ -215,7 +216,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 
 export default connect(
-    ({ appData,userInfo }: IInitState) => ({
-        appData,userInfo
-    })
+	({ appData, userInfo }: IInitState) => ({
+		appData, userInfo
+	})
 )(withRouter(Shop))

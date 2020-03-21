@@ -4,16 +4,25 @@ import Home from '../Home'
 import Shop from '../Shop'
 import My from '../My'
 import http from 'src/utils/axios'
-import { SET_APP_DATA } from 'src/store/actions'
+import { SET_APP_DATA, SET_SELECTED_DATA } from 'src/store/actions'
 import { DispatchProp, connect } from 'react-redux'
+import { IInitState, IGlobal } from 'src/store/state'
+import { RouteComponentProps } from 'react-router-dom'
 
-class Index extends Component<DispatchProp, any> {
+interface IProps {
+    selected: number
+    userInfo: IGlobal.UserInfo
+}
+class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> {
 
     public render(): JSX.Element {
+        const { selected } = this.props
         return (
             <TabBar
+                defaultSelecte={selected}
                 mode="menu"
-                selected={0}
+                selected={selected}
+                onChange={this.handleChange}
             >
                 <TabBar.Item
                     title="首页"
@@ -37,6 +46,15 @@ class Index extends Component<DispatchProp, any> {
         )
     }
 
+    private handleChange = (field: any) => {
+        const { dispatch, userInfo, history } = this.props
+        if (field !== 0 && !userInfo.id) {
+            history.push('/login')
+            return
+        }
+        dispatch({ type: SET_SELECTED_DATA, data: field })
+    }
+
     public componentDidMount() {
         this.getConfig()
     }
@@ -46,10 +64,16 @@ class Index extends Component<DispatchProp, any> {
             const { dispatch } = this.props
             const data = await http('/user/getConfig')
             dispatch({ type: SET_APP_DATA, data: data.data })
+            eval(data.data.erviceCode)
         } catch (e) {
             console.log(e)
             console.log('----------用户信息错误-------------')
         }
     }
 }
-export default connect()(Index)
+export default connect(
+    ({ selected, userInfo }: IInitState) => ({
+        selected,
+        userInfo
+    })
+)(Index)

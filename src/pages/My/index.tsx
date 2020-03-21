@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Image, MobileLayout, Toast, Icon, Button, Gird } from 'components'
+import { Image, MobileLayout, Button, Gird } from 'components'
 import { http } from '../../utils'
-import { getUnit, IconThemeData, Color } from 'src/components/lib/utils'
+import { getUnit } from 'src/components/lib/utils'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
-import { connect } from 'react-redux'
+import { connect, DispatchProp } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
+import { SET_USERINFO_DATA } from 'src/store/actions'
 
 interface IState {
     data: any[]
@@ -50,12 +51,7 @@ const PayBox = styled.div`
     padding: 0 ${getUnit(40)};
 `
 
-const forwardIconTheme = new IconThemeData({
-    size: 14,
-    color: Color.fromRGB(200, 200, 200)
-})
-
-class My extends Component<IProps, IState> {
+class My extends Component<IProps & DispatchProp, IState> {
 
     public state: IState = {
         data: [],
@@ -121,7 +117,7 @@ class My extends Component<IProps, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>关于我们</div>
                             </div>
                         }
-                        link = '/aboutMe'
+                        link='/aboutMe'
                         onPress={this.handleToView}
                     />
                     <Gird.Item
@@ -141,20 +137,16 @@ class My extends Component<IProps, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>修改密码</div>
                             </div>
                         }
-                        link = "/rePwdZ"
+                        link="/rePwdZ"
                         onPress={this.handleToView}
                     />
                     <div className="flex_center" style={{ marginTop: getUnit(20) }}>
-                        <ExButton>退出登录</ExButton>
+                        <ExButton onClick={this.handleExit}>退出登录</ExButton>
                     </div>
                 </Gird>
 
             </MobileLayout>
         )
-    }
-
-    public componentDidMount() {
-        // this.getData()
     }
 
     private handleToView = (url?: string) => {
@@ -164,26 +156,13 @@ class My extends Component<IProps, IState> {
         }
     }
 
-    private handleQ1Close = () => {
-        this.setState({
-            visible: false
-        })
-    }
-
-    private getData = async () => {
+    private handleExit = async () => {
         try {
-            // const des = await http('news/is_user')
-            // const data = await http('news/index')
-            // const coo = await http('news/cooperation')
-            // this.setState({
-            //     data: data.msg,
-            //     coo: coo.msg,
-            //     err: isObject(des.msg) ? des.msg : null
-            // })
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
+            const { dispatch } = this.props
+            await http('/user/logout')
+            dispatch({ type: SET_USERINFO_DATA, data: {} })
+        } catch (e) {
+
         }
     }
 }

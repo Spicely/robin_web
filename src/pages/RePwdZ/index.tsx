@@ -104,17 +104,10 @@ class RePwdZ extends Component<RouteComponentProps & DispatchProp, IState> {
                 backgroundColor="#fff"
                 appBar={
                     <NavBar
-                        theme={new NavBarThemeData({
-                            navBarColor: Color.fromRGB(255, 255, 255),
-                            iconTheme: new IconThemeData({
-                                color: Color.fromRGB(0, 0, 0)
-                            })
-
-                        })}
+                        title="修改密码"
                         divider={false}
                         titleCenter
                         onBack={this.handleBack}
-                        fixed
                     />
                 }
             >

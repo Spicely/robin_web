@@ -4,6 +4,7 @@ import homeData from './homeData'
 import userInfo from './userInfo'
 import userAddressList from './userAddressList'
 import appData from './appData'
+import selected from './selected'
 
 export default combineReducers({
     token,
@@ -11,4 +12,5 @@ export default combineReducers({
     userInfo,
     userAddressList,
     appData,
+    selected,
 })

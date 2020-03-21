@@ -200,33 +200,6 @@ class Shop extends Component<IProps & DispatchProp, IState> {
         /* const { history } = this.props
         history.push('/protocol') */
 	}
-	
-	private handleView = (id: string) => {
-	    const { err } = this.state
-	    const { history } = this.props
-	    if (err !== null) {
-	        this.setState({
-	            visible: true
-	        })
-	    } else {
-	        history.push(`/news/${id}`)
-	    }
-	}
-    // private getData = async () => {
-    //     try {
-    //         const { match } = this.props
-    //         const data = await http('news/team_info', {
-    //             id: match.params.id
-    //         })
-    //         this.setState({
-    //             ...data.msg
-    //         })
-    //     } catch (data) {
-    //         Toast.info({
-    //             content: data.msg || '服务器繁忙,请稍后再试',
-    //         })
-    //     }
-    // }
 
     private handleBack = () => {
         const { history } = this.props
@@ -234,16 +207,6 @@ class Shop extends Component<IProps & DispatchProp, IState> {
     }
 
 }
-
-
-
-// export default connect(
-//     ({ homeData }: IInitState) => ({
-//         homeData
-//     })
-// )(withRouter(Shop))
-
-
 export default connect(
     ({ appData }: IInitState) => ({
         appData

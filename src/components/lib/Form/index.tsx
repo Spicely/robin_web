@@ -515,7 +515,7 @@ export default class Form extends Component<IFormProps, IState> {
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
                             {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
-                            <div className="flex_1">
+                            <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
                                     key={field}

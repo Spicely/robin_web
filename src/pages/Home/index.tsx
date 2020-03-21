@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Image, MobileLayout, Toast, Item, Icon, Button, CheckBox } from 'components'
+import { Image, MobileLayout, Item, Button, CheckBox } from 'components'
 import { http } from '../../utils'
 import { Slider } from 'antd-mobile'
 import { getUnit, ItemThemeData, } from 'src/components/lib/utils'
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { SET_HOME_DATA } from 'src/store/actions'
 import { IInitState, IGlobal } from 'src/store/state'
 import { connect, DispatchProp } from 'react-redux'
 
@@ -16,6 +15,7 @@ interface IState {
     err: null | any
     money: number
     month: number
+    price: string
 }
 
 interface IProps extends RouteComponentProps {
@@ -43,7 +43,7 @@ const LSlider = styled(Slider)`
 `
 
 const LButton = styled(Button)`
-    margin-top: ${getUnit(30)};
+    margin-top: ${getUnit(20)};
     width: 100%;
     height: ${getUnit(45)};
     background: linear-gradient(45deg,rgba(255,221,90,1) 0%,rgba(253,145,0,1) 100%);
@@ -70,7 +70,7 @@ const PriceBox = styled.div`
 
 const PriceInfo = styled.div`
     position: absolute;
-    top: ${getUnit(180)};
+    top: ${getUnit(170)};
     width: calc(100% - ${getUnit(80)});
 `
 const PriceT = styled.div`
@@ -116,13 +116,14 @@ class Home extends Component<IProps & DispatchProp, IState> {
         coo: [],
         visible: false,
         err: null,
-        money: 6000,
-        month: 12,
+        money: 0,
+        month: 0,
+        price: '0'
     }
 
     public render(): JSX.Element {
         const { appData, userInfo } = this.props
-        const { money, month } = this.state
+        const { money, month, price } = this.state
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -163,7 +164,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             </div>
                             <div className="flex_1">
                                 <PriceT className="flex_center">利息（元）</PriceT>
-                                <PriceL className="flex_center">￥360.24</PriceL>
+                                <PriceL className="flex_center">￥{price}</PriceL>
                             </div>
                         </div>
                         <div className="flex_column">
@@ -190,7 +191,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                 />
 
                             </div>
-                            <div className="flex" style={{ marginTop: getUnit(20) }}>
+                            <div className="flex" style={{ marginTop: getUnit(15) }}>
                                 <SliderLabel className="flex_1">3个月</SliderLabel>
                                 <SliderLabel className="flex_1" style={{ textAlign: 'right' }}>36个月</SliderLabel>
                             </div>
@@ -198,12 +199,12 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         <div style={{ padding: `0 ${getUnit(15)}` }}>
                             <LButton onClick={this.handleRequireRend}>申请贷款</LButton>
                         </div>
-                        <div style={{ padding: `0 0 0 ${getUnit(15)}`, marginTop: getUnit(25) }}>
-                            <CheckBox style={{display:'flex',alignItems:'flex_start'}}
+                        <div style={{ padding: `0 0 0 ${getUnit(15)}`, marginTop: getUnit(15) }}>
+                            <CheckBox style={{ display: 'flex', alignItems: 'flex_start' }}
                                 options={[{
                                     label: <div style={{ fontSize: getUnit(12) }}>
-                                            我已阅读
-                                            <Link to={{pathname: 'privacryPolice'}}>><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
+                                        我已阅读
+                                            <Link to={{ pathname: 'privacryPolice' }}><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
                                             隐私信息将严格保密
                                         </div>,
                                     value: true
@@ -218,65 +219,68 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     public componentDidMount() {
-        // this.getData()
+        const { appData } = this.props
+        console.log(appData)
+        // const price = (appData.initPrice + Number(appData.serviceRate) * appData.initPrice) / appData.initMonth).toFixed(2)
+        this.setState({
+            money: appData.initPrice || appData.minPirce,
+            month: appData.initMonth || appData.months[0],
+            // price,
+        })
     }
 
     private moneyChange = (val: any) => {
+        const { appData } = this.props
+        const { month } = this.state
+        const price = ((Number(val) + Number(appData.serviceRate) * Number(val)) / month).toFixed(2)
         this.setState({
-            money: val
+            money: val,
+            price,
         })
     }
     private monthChange = (val: any) => {
+        const { appData } = this.props
+        const { money } = this.state
+        const price = ((Number(money) + Number(appData.serviceRate) * Number(money)) / val).toFixed(2)
         this.setState({
-            month: val
+            month: val,
+            price,
         })
     }
 
-    private handleView = (id: string) => {
-        const { err } = this.state
-        const { history } = this.props
-        if (err !== null) {
-            this.setState({
-                visible: true
-            })
-        } else {
-            history.push(`/news/${id}`)
-        }
-    }
-
     private handleRequireRend = () => {
-
         const { userInfo, history } = this.props
-        console.log(userInfo)
-        if(userInfo && userInfo.id){
+        if (userInfo && userInfo.id) {
             let Info = userInfo.userInfo
-            if(Info && Info.status){
-                if(Info.status === 3){
-                    history.push({ pathname: '/requireRend', state: { money: this.state.money, month: this.state.month } })
-                }else if(Info.status === 2){
+            if (Info && Info.status) {
+                if (Info.status === 3) {
+                    if (!userInfo.order) {
+                        history.push({
+                            pathname: '/requireRend',
+                            state: { money: this.state.money, month: this.state.month }
+                        })
+                    } else {
+                        if (!userInfo.order.autograph) {
+                            history.push({
+                                pathname: '/protocol',
+                                state: { orderId: userInfo.order.id }
+                            })
+                        } else {
+
+                        }
+                    }
+                } else if (Info.status === 2) {
                     history.push('/authenBank')
-                }else if(Info.status === 1){
+                } else if (Info.status === 1) {
                     history.push('/authenInfo')
-                }else {
+                } else {
                     history.push('/authen')
                 }
-            }else{
+            } else {
                 history.push('/authen')
             }
-        }else{
+        } else {
             history.push('/login')
-        }
-    }
-
-    private getData = async () => {
-        try {
-            const data = await http('wxapp/goods/goodsList')
-            const { dispatch } = this.props
-            dispatch({ type: SET_HOME_DATA, data: data.data })
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
         }
     }
 }

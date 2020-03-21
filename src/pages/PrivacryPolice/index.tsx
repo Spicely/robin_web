@@ -10,13 +10,13 @@ import styled from 'styled-components'
 
 
 interface IState {
-	about: any
+    about: any
 }
 
 class PrivacryPolice extends Component<RouteComponentProps & DispatchProp, IState> {
     public state: IState = {
         about: ''
-	}
+    }
 
     public render(): JSX.Element {
         const { about } = this.state
@@ -32,15 +32,15 @@ class PrivacryPolice extends Component<RouteComponentProps & DispatchProp, IStat
                             })
 
                         })}
+                        title="隐私协议"
                         style={{ background: 'rgba(0,0,0,0)' }}
                         divider={false}
                         titleCenter
                         onBack={this.handleBack}
-                        fixed
                     />
                 }
             >
-                <div dangerouslySetInnerHTML={{__html: about}} style={{marginTop:getUnit(50),padding: getUnit(10)}} />
+                <div dangerouslySetInnerHTML={{ __html: about }} style={{ padding: getUnit(10) }} />
             </MobileLayout>
         )
     }

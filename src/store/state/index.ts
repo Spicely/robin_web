@@ -32,6 +32,24 @@ interface IUserInfo {
     id: string
 }
 
+interface IOrder {
+    status: number
+    describeStatus: string
+    cashPrice: number
+    cashStatus: number
+    autograph: string
+    user: string
+    adminUser: string
+    price: number
+    term: number
+    purpose: string
+    orderId: string
+    repayPrice: number
+    createdAt: number
+    updatedAt: number
+    id: string
+}
+
 export namespace IGlobal {
     export interface HomeData {
         goods_data: IGoodsData[]
@@ -45,6 +63,7 @@ export namespace IGlobal {
         createdAt: number
         updatedAt: number
         id: string
+        order?: IOrder
     }
 
     export interface AppData {
@@ -53,8 +72,8 @@ export namespace IGlobal {
         minPirce: number
         maxPrice: number
         initPrice: number
-        months: string
-        initMonth: string
+        months: number[]
+        initMonth: number
         serviceRate: string
         auditFee: number
         repaymentDay: number
@@ -66,6 +85,9 @@ export namespace IGlobal {
         createdAt: number
         updatedAt: number
         id: string
+        about: string
+        serviceLink: string
+        serviceCode: string
     }
 
     export interface UserAddressList {
@@ -87,4 +109,5 @@ export interface IInitState {
     userInfo: IGlobal.UserInfo
     userAddressList: IGlobal.UserAddressList
     appData: IGlobal.AppData
+    selected: number
 }
