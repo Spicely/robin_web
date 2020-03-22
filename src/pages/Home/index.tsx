@@ -18,7 +18,7 @@ interface IState {
     err: null | any
     money: number
     month: number
-    price: string
+    price: any
 }
 const dialogTheme = new DialogThemeData({
     height: '100%',
@@ -131,6 +131,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
         const { appData } = this.props
         const { money, month, price, data, items, visible } = this.state
         const marks: any = {}
+        const vprice = ((appData.serviceRate * (appData.initPrice || appData.minPirce)) * (appData.initMonth || appData.months[0])).toFixed(2)
         appData.months.forEach((i) => {
             marks[i] = ''
         })
@@ -183,7 +184,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             </div>
                             <div className="flex_1">
                                 <PriceT className="flex_center">利息（元）</PriceT>
-                                <PriceL className="flex_center">￥{price}</PriceL>
+                                <PriceL className="flex_center">￥{isNaN(price) ? vprice : price}</PriceL>
                             </div>
                         </div>
                         <div className="flex_column">

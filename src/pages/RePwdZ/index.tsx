@@ -111,7 +111,7 @@ class RePwdZ extends Component<RouteComponentProps & DispatchProp, IState> {
                     />
                 }
             >
-                <Form getItems={this.getRegisterItems} style={{ padding: `0 ${getUnit(10)}`,marginTop:getUnit(30) }} />
+                <Form getItems={this.getRegisterItems} style={{ padding: `0 ${getUnit(10)}`, marginTop: getUnit(30) }} />
             </MobileLayout>
         )
     }
@@ -123,15 +123,15 @@ class RePwdZ extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private getCode = async () => {
         if (this.registerFn) {
+            const form = this.registerFn.getFieldValue()
+            if (!verify.isMobile(form.mobile || '')) {
+                Toast.info({
+                    content: '请输入正确的电话号码',
+                })
+                return false
+            }
             const close = Toast.loading()
             try {
-                const form = this.registerFn.getFieldValue()
-                if (!verify.isMobile(form.mobile || '')) {
-                    Toast.info({
-                        content: '请输入正确的电话号码',
-                    })
-                    return false
-                }
                 const data = await http('/user/sms/send', { mobile: form.mobile, status: 2 })
                 Toast.info({
                     content: data.msg,

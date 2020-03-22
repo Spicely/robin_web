@@ -94,7 +94,6 @@ class RePwd extends Component<IProps & RouteComponentProps & DispatchProp, IStat
             props: {
                 children: '提交',
                 mold: 'primary',
-                async: true,
                 style: {
                     margin: `${getUnit(10)} ${getUnit(10)} 0 ${getUnit(10)}`,
                     borderRadius: getUnit(30),
@@ -139,15 +138,15 @@ class RePwd extends Component<IProps & RouteComponentProps & DispatchProp, IStat
 
     private getCode = async () => {
         if (this.registerFn) {
+            const form = this.registerFn.getFieldValue()
+            if (!verify.isMobile(form.mobile || '')) {
+                Toast.info({
+                    content: '请输入正确的电话号码',
+                })
+                return false
+            }
             const close = Toast.loading()
             try {
-                const form = this.registerFn.getFieldValue()
-                if (!verify.isMobile(form.mobile || '')) {
-                    Toast.info({
-                        content: '请输入正确的电话号码',
-                    })
-                    return false
-                }
                 const data = await http('/user/sms/send', { mobile: form.mobile, status: 2 })
                 Toast.info({
                     content: data.msg,
@@ -167,32 +166,36 @@ class RePwd extends Component<IProps & RouteComponentProps & DispatchProp, IStat
     }
 
     private handleRegister = async () => {
-        try {
-            if (this.registerFn) {
-                const form = this.registerFn.getFieldValue()
-                if (!verify.isMobile(form.mobile)) {
-                    Toast.info({
-                        content: '请输入正确的手机号',
-                    })
-                    return
-                }
-                if (!form.code) {
-                    Toast.info({
-                        content: '请输入验证码',
-                    })
-                    return
-                }
+        if (this.registerFn) {
+            const form = this.registerFn.getFieldValue()
+            if (!verify.isMobile(form.mobile)) {
+                Toast.info({
+                    content: '请输入正确的手机号',
+                })
+                return
+            }
+            if (!form.code) {
+                Toast.info({
+                    content: '请输入验证码',
+                })
+                return
+            }
+            const close = Toast.loading()
+            try {
                 const data = await http('/user/rePwd', form)
                 const { history } = this.props
+                close()
                 Toast.info({
                     content: data.msg,
                 })
                 history.goBack()
+
+            } catch (data) {
+                close()
+                Toast.info({
+                    content: data.msg || '服务器繁忙,请稍后再试',
+                })
             }
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
         }
     }
 }

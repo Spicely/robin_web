@@ -10,8 +10,10 @@ interface IValue {
 
 // const ADMIN_ID = '5e767283dd7df25c1b6bdf68' // 这个为用户ID
 // export const baseUrl = 'http://localhost:7001'
-export const baseUrl = 'http://ceshi.startanycar.com'
-export const imgUrl = 'https://ceshi.startanycar.com'
+// export const baseUrl = 'http://ceshi.startanycar.com'
+// export const imgUrl = 'https://ceshi.startanycar.com'
+export const baseUrl = 'http://api.qwgkkfm.cn'
+export const imgUrl = 'https://api.qwgkkfm.cn'
 
 export interface IRresItem<T = any> {
     msg: string

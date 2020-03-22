@@ -202,11 +202,11 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 							</Partition>
 							<PriceBox style={{ borderRadius: `0 0 ${getUnit(5)} ${getUnit(5)}`, marginTop: getUnit(-1), paddingTop: 0 }}>
 								<ItemWrapper style={{ marginTop: 0 }}>
-									<Title>工本费</Title>
+									<Title>{this.getStatus(userInfo.order.status)}</Title>
 									<Dashed />
 									<Dignity></Dignity>
 								</ItemWrapper>
-								<div style={{ color: '#2F99FD' }}>
+								<div style={{ color: 'red' }}>
 									{userInfo.order.describeStatus}
 								</div>
 							</PriceBox>
@@ -249,12 +249,13 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 			const { history, userInfo, dispatch } = this.props
 			const { data } = await http('user/tx', {
 				userId: userInfo.id,
-				id: userInfo.userInfo?.id,
+				id: userInfo.order?.id,
 				pwd: value,
 
 			})
 			userInfo.order = data
 			dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+			alert('恭喜,提现成功,请注意查收!')
 			close()
 		} catch (data) {
 			close()

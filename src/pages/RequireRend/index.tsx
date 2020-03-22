@@ -1,12 +1,12 @@
-import React, { Component,MouseEvent } from 'react'
+import React, { Component, MouseEvent } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, Button, NavBar,  CheckBox, Dialog } from 'components'
-import {  Picker } from 'antd-mobile'
-import { RouteComponentProps, withRouter,  } from 'react-router-dom'
+import { Toast, MobileLayout, Button, NavBar, CheckBox, Dialog } from 'components'
+import { Picker } from 'antd-mobile'
+import { RouteComponentProps, withRouter, } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
 import { getUnit, NavBarThemeData, Color, IconThemeData, DialogThemeData } from 'src/components/lib/utils'
-import {  SET_USERINFO_DATA } from 'src/store/actions'
+import { SET_USERINFO_DATA } from 'src/store/actions'
 import { connect, DispatchProp } from 'react-redux'
 import moment from 'moment'
 
@@ -22,8 +22,8 @@ interface IState {
 }
 
 const dialogTheme = new DialogThemeData({
-    height: '100%',
-    width: '100%'
+	height: '100%',
+	width: '100%'
 })
 
 interface IProps extends RouteComponentProps {
@@ -157,7 +157,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 					<ItemWrapper>
 						<Title>收款账户</Title>
 						<Dashed />
-						<Dignity>{userInfo.userInfo ? userInfo.userInfo.bankCard : ''}</Dignity>
+						<Dignity>{this.formatBankNumber(userInfo.userInfo?.bankCard || '')}</Dignity>
 					</ItemWrapper>
 					<ItemWrapper>
 						<Title>月费率</Title>
@@ -232,9 +232,9 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 	}
 
 	private handleYS = (e: MouseEvent<HTMLSpanElement>) => {
-        this.setState({ visible: true })
-        e.stopPropagation()
-    }
+		this.setState({ visible: true })
+		e.stopPropagation()
+	}
 
 	public componentDidMount = () => {
 		this.getcc()
@@ -303,6 +303,10 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 	private handleBack = () => {
 		const { history } = this.props
 		history.goBack()
+	}
+
+	private formatBankNumber = (bankNumber: string): string => {
+		return bankNumber.substr(0, 4) + "*** ********" + bankNumber.substr(-4);
 	}
 
 }

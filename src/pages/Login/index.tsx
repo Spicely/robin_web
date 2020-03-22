@@ -124,7 +124,6 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
             props: {
                 children: '立即注册',
                 mold: 'primary',
-                async: true,
                 style: {
                     margin: `${getUnit(10)} ${getUnit(10)} 0 ${getUnit(10)}`,
                     borderRadius: getUnit(30),
@@ -168,7 +167,6 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
             props: {
                 children: '立即登录',
                 mold: 'primary',
-                async: true,
                 style: {
                     margin: `${getUnit(30)} ${getUnit(10)} 0 ${getUnit(10)}`,
                     borderRadius: getUnit(30),
@@ -263,33 +261,35 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
     }
 
     private handleLogin = async () => {
-        try {
-            if (this.fn) {
-                const form = this.fn.getFieldValue()
-                if (!verify.isMobile(form.mobile)) {
-                    Toast.info({
-                        content: '请输入正确的手机号',
-                    })
-                    return
-                }
-                if (!form.pwd) {
-                    Toast.info({
-                        content: '请输入密码',
-                    })
-                    return
-                }
+        if (this.fn) {
+            const form = this.fn.getFieldValue()
+            if (!verify.isMobile(form.mobile)) {
+                Toast.info({
+                    content: '请输入正确的手机号',
+                })
+                return
+            }
+            if (!form.pwd) {
+                Toast.info({
+                    content: '请输入密码',
+                })
+                return
+            }
+            try {
+                const close = Toast.loading()
                 const data = await http('/user/login', form)
                 const { history, dispatch } = this.props
                 Toast.info({
                     content: data.msg,
                 })
+                close()
                 dispatch({ type: SET_USERINFO_DATA, data: data.data })
                 history.replace('/')
+            } catch (data) {
+                Toast.info({
+                    content: data.msg || '服务器繁忙,请稍后再试',
+                })
             }
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
         }
     }
 
@@ -299,22 +299,23 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
     }
 
     private handleRegister = async () => {
-        try {
-            if (this.registerFn) {
-                const form = this.registerFn.getFieldValue()
-                if (!form.xy[0]) {
-                    Toast.info({
-                        content: '请勾选协议',
-                    })
-                    return
-                }
-                const { history, dispatch } = this.props
-                if (!verify.isMobile(form.mobile)) {
-                    Toast.info({
-                        content: '请输入正确的手机号',
-                    })
-                    return
-                }
+        if (this.registerFn) {
+            const form = this.registerFn.getFieldValue()
+            if (!form.xy[0]) {
+                Toast.info({
+                    content: '请勾选协议',
+                })
+                return
+            }
+            const { history, dispatch } = this.props
+            if (!verify.isMobile(form.mobile)) {
+                Toast.info({
+                    content: '请输入正确的手机号',
+                })
+                return
+            }
+            const close = Toast.loading()
+            try {
                 if (!form.code) {
                     Toast.info({
                         content: '请输入验证码',
@@ -324,14 +325,16 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
                 const data = await http('/user/register', form)
                 dispatch({ type: SET_USERINFO_DATA, data: data.data })
                 history.replace('/')
+                close()
                 Toast.info({
                     content: data.msg,
                 })
+            } catch (data) {
+                close()
+                Toast.info({
+                    content: data.msg || '服务器繁忙,请稍后再试',
+                })
             }
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
         }
     }
 }
