@@ -311,9 +311,10 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
     public componentDidMount() {
         const info = this.getRootNodeInfo()
         const itemInfo = this.getSelectedNodeInfo()
+        const { mode } = this.props
         this.setState({
             height: info.height,
-            menuHeight: browser.height,
+            menuHeight: mode === 'menu' ? browser.GL_SC_HEIGHT : browser.height,
             width: info.width,
             activeNum: itemInfo
         })
@@ -376,7 +377,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                 height: info.height,
                 activeNum: itemInfo
             })
-            
+
         }
     }
 }

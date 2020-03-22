@@ -24,7 +24,9 @@ const initData: IGlobal.AppData = {
     about: '',
     serviceLink: '',
     serviceCode: '',
-    logo: '/public/uploads/logo.png'
+    logo: '/public/uploads/logo.png',
+    agreement: '',
+    tx: true
 }
 
 export default function appData(state = initData, action: AnyAction) {

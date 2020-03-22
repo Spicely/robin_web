@@ -578,7 +578,6 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
                 const nana = form.nagai.map((item: any) => {
                     return item.label
                 }).join('')
-                console.log(nana)
                 try {
                     await http('user/authenInfo', { ...form, userId: this.props.userInfo.id, nagai: nana })
                     const { history, userInfo, dispatch } = this.props

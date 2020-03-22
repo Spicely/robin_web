@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Modal } from 'antd-mobile'
 import { Image, MobileLayout, Button, Gird, Toast } from 'components'
-import { http } from '../../utils'
+import { http, baseUrl } from '../../utils'
 import { getUnit } from 'src/components/lib/utils'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
@@ -65,7 +65,7 @@ class My extends Component<IProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
-        const { userInfo } = this.props
+        const { userInfo, appData } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -73,8 +73,8 @@ class My extends Component<IProps & DispatchProp, IState> {
                 <HeaderBox>
                     <div className="flex" style={{ marginTop: getUnit(20) }}>
                         <Image
-                            src={require('../../assets/v2_q5sp1k.png')}
-                            style={{ width: getUnit(70), height: getUnit(70) }}
+                            src={baseUrl + appData.logo}
+                            style={{ width: getUnit(70), height: getUnit(70), borderRadius: '50%' }}
                         />
                         <div className="flex_justify">
                             <div style={{ marginLeft: getUnit(20) }}>
@@ -135,8 +135,8 @@ class My extends Component<IProps & DispatchProp, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>在线客服</div>
                             </div>
                         }
-                        link
-                        onPress={this.handleKF}
+                        link="privacryPolice"
+                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -235,7 +235,7 @@ class My extends Component<IProps & DispatchProp, IState> {
 
     private handleExit = () => {
         alert('确定要登出？', '', [
-            { text: '取消', onPress: () => console.log('cancel') },
+            { text: '取消' },
             {
                 text: '确定', onPress: async () => {
                     try {

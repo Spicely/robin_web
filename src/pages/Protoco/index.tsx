@@ -86,7 +86,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						height: getUnit(200), color: '#4586FE',
 						marginTop: getUnit(15), border: '1px dashed #4586FE', borderRadius: getUnit(5)
 					}}>
-						<CanvasDraw lazyRadius={1} brushRadius={1} brushColor='skyBlue' ref={(e) => this.canvas = e} canvasHeight={400} style={{ width: '100%' }} />
+						<CanvasDraw lazyRadius={1} brushRadius={1} brushColor='#000' ref={(e) => this.canvas = e} canvasHeight={400} style={{ width: '100%' }} />
 					</div>
 				</PriceBox>
 				<div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: getUnit(40) }}>
@@ -127,6 +127,21 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 	private reLoad = () => {
 		this.canvas.clear()
 	}
+
+	private getUser = async () => {
+        const close = Toast.loading()
+        const { userInfo, dispatch } = this.props
+        try {
+            const data = await http('user/getUser', {
+                userId: userInfo.id
+            })
+            dispatch({ type: SET_USERINFO_DATA, data: data.data })
+            close()
+        } catch (data) {
+            dispatch({ type: SET_USERINFO_DATA, data: {} })
+            close()
+        }
+    }
 	private submit = async () => {
 		const _file = this.dataURLtoFile(this.canvas.canvasContainer.children[1].toDataURL(), 'sign.png')
 		const formData = new FormData()
@@ -149,6 +164,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						userInfo.order.autograph = data.data.data.url
 						dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
 					}
+					this.getUser()
 					history.replace('protoSuccess')
 					close()
 				} catch (e) {

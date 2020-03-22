@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component,MouseEvent } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, Button, NavBar, Image, Item, Icon, CheckBox } from 'components'
-import { Slider, Picker } from 'antd-mobile'
-import { RouteComponentProps, withRouter, Link } from 'react-router-dom'
+import { Toast, MobileLayout, Button, NavBar,  CheckBox, Dialog } from 'components'
+import {  Picker } from 'antd-mobile'
+import { RouteComponentProps, withRouter,  } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
-import { getUnit, NavBarThemeData, Color, IconThemeData } from 'src/components/lib/utils'
-import { SET_HOME_DATA, SET_USERINFO_DATA } from 'src/store/actions'
+import { getUnit, NavBarThemeData, Color, IconThemeData, DialogThemeData } from 'src/components/lib/utils'
+import {  SET_USERINFO_DATA } from 'src/store/actions'
 import { connect, DispatchProp } from 'react-redux'
 import moment from 'moment'
 
@@ -20,6 +20,11 @@ interface IState {
 	month: number
 	val: any
 }
+
+const dialogTheme = new DialogThemeData({
+    height: '100%',
+    width: '100%'
+})
 
 interface IProps extends RouteComponentProps {
 	appData: IGlobal.AppData,
@@ -88,25 +93,37 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 	}
 
 	private education = [{
-		label: '本科',
-		value: '本科',
+		label: '流动资金',
+		value: '流动资金',
 	}, {
-		label: '专科',
-		value: '专科',
+		label: '支付货款',
+		value: '支付货款',
 	}, {
-		label: '硕士研究生',
-		value: '硕士研究生',
+		label: '生产经营',
+		value: '生产经营',
 	}, {
-		label: '博士研究生',
-		value: '博士研究生',
+		label: '购房',
+		value: '购房',
 	}, {
-		label: '高中',
-		value: '高中',
+		label: '购车',
+		value: '购车',
+	}, {
+		label: '装修',
+		value: '装修',
+	}, {
+		label: '旅游',
+		value: '旅游',
+	}, {
+		label: '教育留学',
+		value: '教育留学',
+	}, {
+		label: '其他',
+		value: '其他',
 	}]
 
 	public render(): JSX.Element {
 		const { userInfo, appData } = this.props
-		const { money, month, val } = this.state
+		const { money, month, val, visible } = this.state
 		return (
 			<MobileLayout
 				appBar={
@@ -183,7 +200,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						<CheckBox
 							options={[{
 								label: <div style={{ fontSize: getUnit(12) }}>我已阅读
-								<Link to={{ pathname: 'privacryPolice' }}>><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
+							<span style={{ color: '#4F9BFF', fontSize: getUnit(12) }} onClick={this.handleYS}>《隐私政策》</span>
 								隐私信息将严格保密</div>,
 								value: true
 							}]}
@@ -191,6 +208,16 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 						/>
 					</div>
 				</PriceBox>
+				<Dialog
+					visible={visible}
+					footer={
+						<Button mold="primary" onClick={() => this.setState({ visible: false })} style={{ height: getUnit(35) }}>确认</Button>
+					}
+					onClose={() => this.setState({ visible: false })}
+					theme={dialogTheme}
+				>
+					<div dangerouslySetInnerHTML={{ __html: appData.agreement }} />
+				</Dialog>
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<LButton onClick={this.handleSign}>签署借款协议</LButton>
 				</div>
@@ -204,12 +231,16 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 		})
 	}
 
+	private handleYS = (e: MouseEvent<HTMLSpanElement>) => {
+        this.setState({ visible: true })
+        e.stopPropagation()
+    }
+
 	public componentDidMount = () => {
 		this.getcc()
 	}
 	private getcc = () => {
 		const state: any = this.props.location.state || {}
-		console.log(state.money, state.month)
 		if (state.money && state.month) {
 			this.setState({
 				money: state.money,

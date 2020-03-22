@@ -197,6 +197,31 @@ class AuthenBank extends Component<IProps & DispatchProp, IState> {
                 </div>
             ),
             field: 'bankPhone'
+        }, {
+            component: 'Label',
+            props: {
+                value: ''
+            },
+            render: (val) => (
+                <div style={{ marginTop: getUnit(10) }}>
+                    <Item
+                        title={<TitleBox>借款金额：</TitleBox>}
+                        flexType="value"
+                        lineType="none"
+                        icon={null}
+                        value={
+                            <LInput
+                                value={val}
+                                type="number"
+                                placeholder="请输入借款金额"
+                                onClose={this.handleClose.bind(this, 'price')}
+                                onChange={this.handleInput.bind(this, 'price')}
+                            />
+                        }
+                    />
+                </div>
+            ),
+            field: 'price'
         }]
         return items
     }
@@ -266,7 +291,6 @@ class AuthenBank extends Component<IProps & DispatchProp, IState> {
         if (this.fn) {
             const form = this.fn.getFieldValue()
             const status = Object.keys(form).every((i: string) => form[i])
-            console.log(form)
             if (status) {
                 const close = Toast.loading()
                 try {

@@ -125,7 +125,6 @@ class Team extends Component<IProps & RouteComponentProps<any>, IState> {
             const data = await http('user/getUser', {
                 userId: userInfo.id
             })
-            console.log(data)
             dispatch({ type: SET_USERINFO_DATA, data: data.data })
             close()
         } catch (data) {

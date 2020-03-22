@@ -520,7 +520,6 @@ export default class Notice extends Component<INoticeProps, IState> {
     private setSelectIndex(index: number, value: any[]) {
         if (this.animateNode) {
             const ref = this.animateNode.getBoundingClientRect()
-            console.log(ref)
             this.viewInfo = {
                 left: ref.width,
                 top: ref.height

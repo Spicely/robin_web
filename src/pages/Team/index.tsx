@@ -122,7 +122,7 @@ class Team extends Component<IProps & RouteComponentProps<any>, IState> {
                     <div className="flex" style={{ padding: `0 ${getUnit(20)}`, marginTop: getUnit(60) }}>
                         <div className="flex_1 flex_center">
                             {examineStatus < 2 ? <Button mold="primary" theme={backButton} onClick={this.handleBack}>返回</Button>
-                                : examineStatus === 2 ? <Button mold="primary" theme={backButton} onClick={this.handleBack}>申请贷款</Button>
+                                : examineStatus === 2 ? <Button mold="primary" theme={backButton} onClick={this.handleTo}>申请贷款</Button>
                                     : <Button mold="primary" theme={backButton} onClick={this.reRenzheng}>重新认证</Button>}
 
                         </div>
@@ -143,7 +143,6 @@ class Team extends Component<IProps & RouteComponentProps<any>, IState> {
             const data = await http('user/getUser', {
                 userId: userInfo.id
             })
-            console.log(data)
             this.setState({
                 examineStatus: data.data.userInfo.examineStatus
             })
@@ -160,7 +159,12 @@ class Team extends Component<IProps & RouteComponentProps<any>, IState> {
     private handleBack = () => {
         const { history } = this.props
         history.replace('/')
+    }
 
+    private handleTo = () => {
+        const { history, dispatch } = this.props
+        dispatch({ type: SET_SELECTED_DATA, data: 0 })
+        history.replace('/')
     }
 
     private reRenzheng = async () => {

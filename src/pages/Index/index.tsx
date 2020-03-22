@@ -4,7 +4,7 @@ import Home from '../Home'
 import Shop from '../Shop'
 import My from '../My'
 import http from 'src/utils/axios'
-import { SET_APP_DATA, SET_SELECTED_DATA } from 'src/store/actions'
+import { SET_APP_DATA, SET_SELECTED_DATA, SET_USERINFO_DATA } from 'src/store/actions'
 import { DispatchProp, connect } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
 import { RouteComponentProps } from 'react-router-dom'
@@ -46,6 +46,18 @@ class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> 
         )
     }
 
+    private getUser = async () => {
+        const { userInfo, dispatch } = this.props
+        try {
+            const data = await http('user/getUser', {
+                userId: userInfo.id
+            })
+            dispatch({ type: SET_USERINFO_DATA, data: data.data })
+        } catch (data) {
+
+        }
+    }
+
     private handleChange = (field: any) => {
         const { dispatch, userInfo, history } = this.props
         if (field !== 0 && !userInfo.id) {
@@ -56,6 +68,7 @@ class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> 
             history.push('/authen')
             return
         }
+        this.getUser()
         dispatch({ type: SET_SELECTED_DATA, data: field })
     }
 
@@ -66,12 +79,10 @@ class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> 
     private getConfig = async () => {
         try {
             const { dispatch } = this.props
-            const data = await http('/user/getConfig')
-            dispatch({ type: SET_APP_DATA, data: data.data })
-            eval(data.data.erviceCode)
+            const { data } = await http('/user/getConfig')
+            dispatch({ type: SET_APP_DATA, data: data })
+            eval(data.serviceCode)
         } catch (e) {
-            console.log(e)
-            console.log('----------用户信息错误-------------')
         }
     }
 }

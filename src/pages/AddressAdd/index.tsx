@@ -70,9 +70,7 @@ export default class AddressAdd extends Component<RouteComponentProps<any>, ISta
             const res = await http('wxapp/goods/getAddressDetail', {
                 address_id: id
             })
-            console.log(res)
             const address = this.handlePickerLabel([res.address_data.address_province, res.address_data.address_city, res.address_data.address_area])
-            console.log(address)
             this.fn && this.fn.setFieldValue({
                 name: res.address_data.address_name,
                 phone: res.address_data.address_phone,

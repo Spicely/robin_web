@@ -211,15 +211,15 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
                             </span>
                         </div>
                         <div className="flex" style={{ marginTop: getUnit(20) }}>
-                            <div className="flex_1" style={{ marginRight: getUnit(10) }}>
+                            <div className="flex_1" style={{ marginRight: getUnit(10) }} onClick={this.handlePick}>
                                 {!image1 ? <ImgBox style={{ backgroundImage: `url(${require('../../assets/c_2.png')})` }}></ImgBox> :
                                     <ImgBox style={{ backgroundImage: `url(${baseUrl + image1})` }}></ImgBox>}
-                                <VButton mold="primary" onClick={this.handlePick}>拍摄正面照</VButton>
+                                <VButton mold="primary">拍摄正面照</VButton>
                             </div>
-                            <div className="flex_1">
+                            <div className="flex_1" onClick={this.handlePick2}>
                                 {!image2 ? <ImgBox style={{ backgroundImage: `url(${require('../../assets/c_1.png')})` }}></ImgBox> :
                                     <ImgBox style={{ backgroundImage: `url(${baseUrl + image2})` }}></ImgBox>}
-                                <VButton mold="primary" onClick={this.handlePick2}>拍摄背面照</VButton>
+                                <VButton mold="primary" >拍摄背面照</VButton>
                             </div>
                         </div>
                         <Item
@@ -293,7 +293,6 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
                     const close = Toast.loading()
                     try {
                         const data = await Axios.post(baseUrl + '/upload/index', formData)
-                        console.log(data)
                         this.setState({
                             image1: data.data.data.url
                         })
@@ -313,7 +312,6 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
         if (e.currentTarget.files) {
             const _file = e.currentTarget.files.item(0)
             if (_file) {
-                console.log(_file)
                 const reader = new FileReader()
                 reader.readAsDataURL(_file)
                 reader.onload = async () => {
@@ -321,7 +319,6 @@ class AuthenOne extends Component<IProps & DispatchProp, IState> {
                     const close = Toast.loading()
                     try {
                         const data = await Axios.post(baseUrl + '/upload/index', formData)
-                        console.log(data)
                         this.setState({
                             image2: data.data.data.url
                         })

@@ -200,7 +200,6 @@ export default class NavBar extends Component<INavBarProps, any> {
         const { endVal } = this.props
         const top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
         if (isNumber(endVal)) {
-            console.log(top)
         }
     }
 

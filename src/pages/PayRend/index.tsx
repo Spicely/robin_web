@@ -147,9 +147,9 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 								}
 
 							</PriceBox>
-							<div style={{ display: 'flex', justifyContent: 'center', marginBottom: getUnit(40) }}>
+							{/* <div style={{ display: 'flex', justifyContent: 'center', marginBottom: getUnit(40) }}>
 								<LButton onClick={this.handleSign}>还款</LButton>
-							</div>
+							</div> */}
 						</div>
 					) : null
 				}

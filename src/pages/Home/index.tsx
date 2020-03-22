@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { Image, MobileLayout, Item, Button, CheckBox, Notice, Toast } from 'components'
+import React, { Component, MouseEvent } from 'react'
+import { Image, MobileLayout, Item, Button, CheckBox, Notice, Toast, Dialog } from 'components'
 import { Slider, Carousel } from 'antd-mobile'
-import { getUnit, ItemThemeData } from 'src/components/lib/utils'
-import { withRouter, RouteComponentProps, Link } from 'react-router-dom'
+import { getUnit, ItemThemeData, DialogThemeData } from 'src/components/lib/utils'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
 import { connect, DispatchProp } from 'react-redux'
@@ -20,7 +20,10 @@ interface IState {
     month: number
     price: string
 }
-
+const dialogTheme = new DialogThemeData({
+    height: '100%',
+    width: '100%'
+})
 interface IProps extends RouteComponentProps {
     appData: IGlobal.AppData
     userInfo: IGlobal.UserInfo
@@ -126,7 +129,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
 
     public render(): JSX.Element {
         const { appData } = this.props
-        const { money, month, price, data, items } = this.state
+        const { money, month, price, data, items, visible } = this.state
         const marks: any = {}
         appData.months.forEach((i) => {
             marks[i] = ''
@@ -186,9 +189,10 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         <div className="flex_column">
                             <div style={{ padding: `0 ${getUnit(15)}` }}>
                                 <LSlider
-                                    defaultValue={money}
+                                    value={money}
                                     min={appData.minPirce}
                                     max={appData.maxPrice}
+                                    step={100}
                                     onChange={this.moneyChange}
                                 />
                             </div>
@@ -200,7 +204,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         <div className="flex_column">
                             <div style={{ padding: `0 ${getUnit(15)}` }}>
                                 <LSlider
-                                    defaultValue={month}
+                                    value={month}
                                     min={appData.months[0] || 0}
                                     max={appData.months[appData.months.length - 1] || 0}
                                     onChange={this.monthChange}
@@ -222,7 +226,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                 options={[{
                                     label: <div style={{ fontSize: getUnit(12) }}>
                                         我已阅读
-                                            <Link to={{ pathname: 'privacryPolice' }}><span style={{ color: '#4F9BFF', fontSize: getUnit(12) }}>《隐私政策》</span></Link>
+                                            <span style={{ color: '#4F9BFF', fontSize: getUnit(12) }} onClick={this.handleYS}>《隐私政策》</span>
                                             隐私信息将严格保密
                                         </div>,
                                     value: true
@@ -232,6 +236,16 @@ class Home extends Component<IProps & DispatchProp, IState> {
                         </div>
                     </PriceInfo>
                 </PriceBox>
+                <Dialog
+                    visible={visible}
+                    footer={
+                        <Button mold="primary" onClick={() => this.setState({ visible: false })} style={{ height: getUnit(35) }}>确认</Button>
+                    }
+                    onClose={() => this.setState({ visible: false })}
+                    theme={dialogTheme}
+                >
+                    <div dangerouslySetInnerHTML={{ __html: appData.agreement }} />
+                </Dialog>
             </MobileLayout>
         )
     }
@@ -242,14 +256,13 @@ class Home extends Component<IProps & DispatchProp, IState> {
 
     public componentDidMount() {
         const { appData } = this.props
-        const price = (((appData.initPrice || appData.minPirce) + appData.serviceRate * (appData.initPrice || appData.minPirce)) / (appData.initMonth || appData.months[0])).toFixed(2)
+        const price = ((appData.serviceRate * (appData.initPrice || appData.minPirce)) * (appData.initMonth || appData.months[0])).toFixed(2)
         const data: any = []
-        Array.from({ length: 100 }).forEach((i) => {
+        Array.from({ length: 50 }).forEach((i) => {
             data.push({
                 label: `${this.names[random(0, this.names.length - 1)]}${Array.from({ length: random(2, 3) }).map(_ => '').join('*')} | 1${this.phone[random(0, this.phone.length - 1)]}${random(0, 9)}****${random(0, 9)}${random(0, 9)}${random(0, 9)}${random(0, 9)}  已成功贷款${random(appData.minPirce, appData.maxPrice)}元`
             })
         })
-        console.log(data)
         this.setState({
             money: appData.initPrice || appData.minPirce,
             month: appData.initMonth || appData.months[0],
@@ -257,6 +270,11 @@ class Home extends Component<IProps & DispatchProp, IState> {
             data,
         })
         this.getData()
+    }
+
+    private handleYS = (e: MouseEvent<HTMLSpanElement>) => {
+        this.setState({ visible: true })
+        e.stopPropagation()
     }
 
     private getData = async () => {
@@ -277,7 +295,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
     private moneyChange = (val: any) => {
         const { appData } = this.props
         const { month } = this.state
-        const price = ((Number(val) + Number(appData.serviceRate) * Number(val)) / month).toFixed(2)
+        const price = (Number(appData.serviceRate) * Number(val) * month).toFixed(2)
         this.setState({
             money: val,
             price,
@@ -286,7 +304,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
     private monthChange = (val: any) => {
         const { appData } = this.props
         const { money } = this.state
-        const price = ((Number(money) + Number(appData.serviceRate) * Number(money)) / val).toFixed(2)
+        const price = (Number(appData.serviceRate) * Number(money) * val).toFixed(2)
         this.setState({
             month: val,
             price,

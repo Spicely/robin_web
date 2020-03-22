@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { MobileLayout, Button, Image } from 'components'
+import { Modal } from 'antd-mobile'
+import { MobileLayout, Button, Toast } from 'components'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
@@ -7,7 +8,12 @@ import { getUnit } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
 import { Steps } from 'antd-mobile'
 import Xx from '../Xx'
+import { http } from 'src/utils'
+import { SET_USERINFO_DATA } from 'src/store/actions'
+
 const Step = Steps.Step;
+
+const prompt = Modal.prompt
 
 interface IState {
 	data: any[]
@@ -204,9 +210,9 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 									{userInfo.order.describeStatus}
 								</div>
 							</PriceBox>
-							{/* <div style={{ display: 'flex', justifyContent: 'center', marginBottom: getUnit(30) }}>
-								<LButton>提现</LButton>
-							</div> */}
+							{userInfo.order?.status === 2 && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: getUnit(30) }}>
+								<LButton onClick={this.handleTx}>提现</LButton>
+							</div>}
 						</div>
 					) : <Xx />
 				}
@@ -216,6 +222,46 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 	private formatBankNumber = (bankNumber: string): string => {
 		return bankNumber.substr(0, 4) + "*** ********" + bankNumber.substr(-4);
+	}
+
+	private handleTx = async () => {
+		const { appData } = this.props
+		if (appData.tx) {
+			prompt('请输入您的提现密码', '',
+				[
+					{
+						text: '取消',
+					},
+					{
+						text: '确认',
+						onPress: this.tx,
+					},
+				], 'default', undefined, ['提现密码'])
+		} else {
+			this.tx()
+		}
+
+	}
+
+	private tx = async (value?: string) => {
+		const close = Toast.loading()
+		try {
+			const { history, userInfo, dispatch } = this.props
+			const { data } = await http('user/tx', {
+				userId: userInfo.id,
+				id: userInfo.userInfo?.id,
+				pwd: value,
+
+			})
+			userInfo.order = data
+			dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+			close()
+		} catch (data) {
+			close()
+			Toast.info({
+				content: data.msg || '服务器繁忙,请稍后再试',
+			})
+		}
 	}
 
 	private getStatus = (number: number): string => {

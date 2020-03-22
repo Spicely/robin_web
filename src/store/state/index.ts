@@ -90,6 +90,8 @@ export namespace IGlobal {
         serviceLink: string
         serviceCode: string
         logo: string
+        agreement: string
+        tx: boolean
     }
 
     export interface UserAddressList {

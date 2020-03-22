@@ -1,15 +1,20 @@
-import React, { Component } from 'react'
+import React, { Component, MouseEvent } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
-import { MobileLayout, NavBar, Form, Toast, CountDown, Image, TabBar } from 'components'
+import { MobileLayout, NavBar, Form, Toast, CountDown, Image, TabBar, Dialog, Button } from 'components'
 import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
-import { getUnit } from 'src/components/lib/utils'
+import { getUnit, DialogThemeData } from 'src/components/lib/utils'
 import { http, baseUrl } from '../../utils'
 import { connect, DispatchProp } from 'react-redux'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { SET_USERINFO_DATA } from 'src/store/actions'
 import { IInitState, IGlobal } from 'src/store/state'
 
+
+const dialogTheme = new DialogThemeData({
+    height: '100%',
+    width: '100%'
+})
 
 const ViewBox = styled.div`
     height: ${getUnit(179)};
@@ -39,9 +44,21 @@ interface IProps {
     appData: IGlobal.AppData
 }
 
-interface IState { }
+interface IState {
+    visible: boolean
+}
+
+const VStyle = createGlobalStyle`
+    .eqw input { 
+        padding-right : 5px !important;
+    }
+`
 
 class Login extends Component<IProps & RouteComponentProps & DispatchProp, IState> {
+
+    public state: IState = {
+        visible: false
+    }
 
     private fn?: IFormFun
 
@@ -64,6 +81,7 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
                 title: '验证码',
                 placeholder: '请输入验证码',
                 type: 'tel',
+                className: 'eqw'
             },
             extend: <CountDown
                 seconds={60}
@@ -94,12 +112,13 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
             className: 'flex_center',
             props: {
                 options: [{
-                    label: <div>我已阅读<Link to={{ pathname: 'privacryPolice' }}><span style={{ color: '#4F9BFF' }}>《隐私政策》</span></Link>隐私信息将严格保密</div>,
+                    label: <div>我已阅读<span style={{ color: '#4F9BFF' }} onClick={this.handleYS}>《隐私政策》</span>隐私信息将严格保密</div>,
                     value: true
                 }],
                 iconColor: '#fff',
                 value: [true],
             },
+            field: 'xy'
         }, {
             component: 'Button',
             props: {
@@ -164,6 +183,7 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
 
     public render(): JSX.Element {
         const { appData } = this.props
+        const { visible } = this.state
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -177,10 +197,11 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
                     />
                 }
             >
+                <VStyle />
                 <ViewBox className="flex_center">
                     <div>
                         <Image src={baseUrl + appData.logo} style={{ width: getUnit(83), height: getUnit(83) }} />
-                        <LogoTitle className="flex_center">芝麻分期</LogoTitle>
+                        <LogoTitle className="flex_center">{appData.smsSign}</LogoTitle>
                     </div>
                 </ViewBox>
                 <TabBar
@@ -193,6 +214,16 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
                         <Form getItems={this.getRegisterItems} style={{ padding: `0 ${getUnit(10)}` }} />
                     </TabBar.Item>
                 </TabBar>
+                <Dialog
+                    visible={visible}
+                    footer={
+                        <Button mold="primary" onClick={() => this.setState({ visible: false })} style={{ height: getUnit(35) }}>确认</Button>
+                    }
+                    onClose={() => this.setState({ visible: false })}
+                    theme={dialogTheme}
+                >
+                    <div dangerouslySetInnerHTML={{ __html: appData.agreement }} />
+                </Dialog>
             </MobileLayout>
         )
     }
@@ -262,10 +293,21 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
         }
     }
 
+    private handleYS = (e: MouseEvent<HTMLSpanElement>) => {
+        this.setState({ visible: true })
+        e.stopPropagation()
+    }
+
     private handleRegister = async () => {
         try {
             if (this.registerFn) {
                 const form = this.registerFn.getFieldValue()
+                if (!form.xy[0]) {
+                    Toast.info({
+                        content: '请勾选协议',
+                    })
+                    return
+                }
                 const { history, dispatch } = this.props
                 if (!verify.isMobile(form.mobile)) {
                     Toast.info({

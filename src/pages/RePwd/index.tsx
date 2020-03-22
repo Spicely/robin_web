@@ -124,7 +124,7 @@ class RePwd extends Component<IProps & RouteComponentProps & DispatchProp, IStat
                 <ViewBox className="flex_center">
                     <div>
                         <Image src={baseUrl + appData.logo} style={{ width: getUnit(83), height: getUnit(83) }} />
-                        <LogoTitle className="flex_center">芝麻分期</LogoTitle>
+                        <LogoTitle className="flex_center">{appData.smsSign}</LogoTitle>
                     </div>
                 </ViewBox>
                 <Form getItems={this.getRegisterItems} style={{ padding: `0 ${getUnit(10)}` }} />
