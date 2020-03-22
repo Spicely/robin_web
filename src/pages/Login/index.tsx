@@ -235,15 +235,15 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
 
     private getCode = async () => {
         if (this.registerFn) {
+            const form = this.registerFn.getFieldValue()
+            if (!verify.isMobile(form.mobile || '')) {
+                Toast.info({
+                    content: '请输入正确的电话号码',
+                })
+                return false
+            }
             const close = Toast.loading()
             try {
-                const form = this.registerFn.getFieldValue()
-                if (!verify.isMobile(form.mobile || '')) {
-                    Toast.info({
-                        content: '请输入正确的电话号码',
-                    })
-                    return false
-                }
                 const data = await http('/user/sms/send', { mobile: form.mobile, status: 1 })
                 Toast.info({
                     content: data.msg,

@@ -314,7 +314,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
         const { mode } = this.props
         this.setState({
             height: info.height,
-            menuHeight: mode === 'menu' ? browser.GL_SC_HEIGHT : browser.height,
+            // menuHeight: mode === 'menu' ? browser.GL_SC_HEIGHT : browser.height,
             width: info.width,
             activeNum: itemInfo
         })

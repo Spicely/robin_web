@@ -2,13 +2,13 @@ import { isFunction } from 'lodash'
 import { Toast } from 'components'
 import CryptoJS from 'crypto-js'
 import axois, { AxiosRequestConfig } from 'axios'
-import { parse} from 'querystring'
+import { parse } from 'querystring'
 
 interface IValue {
     [name: string]: any
 }
 
-const ADMIN_ID = '5e767283dd7df25c1b6bdf68' // 这个为用户ID
+// const ADMIN_ID = '5e767283dd7df25c1b6bdf68' // 这个为用户ID
 // export const baseUrl = 'http://localhost:7001'
 export const baseUrl = 'http://ceshi.startanycar.com'
 export const imgUrl = 'https://ceshi.startanycar.com'
@@ -72,13 +72,16 @@ instance.interceptors.response.use(async function (res: any) {
 })
 
 const http = function (url: string, params?: IValue, config?: AxiosRequestConfig): any {
-    // const query = parse(window.location.hash)
+    const query: any = parse(window.location.hash)
+    if (query['#/?id']) {
+        localStorage.setItem('_qq', query['#/?id']);
+    }
     const headers = config ? config.headers : {}
     return instance(`${url}`, {
         ...config,
         data: {
             ...params,
-            adminId: ADMIN_ID
+            adminId: query['#/?id'] || localStorage.getItem('_qq')
         },
         headers: {
             ...headers,
