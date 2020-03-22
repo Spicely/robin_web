@@ -4,10 +4,11 @@ import { MobileLayout, NavBar, Form, Toast, CountDown, Image, TabBar } from 'com
 import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 import { getUnit } from 'src/components/lib/utils'
-import { http } from '../../utils'
+import { http, baseUrl } from '../../utils'
 import { connect, DispatchProp } from 'react-redux'
 import styled from 'styled-components'
 import { SET_USERINFO_DATA } from 'src/store/actions'
+import { IInitState, IGlobal } from 'src/store/state'
 
 
 const ViewBox = styled.div`
@@ -34,9 +35,13 @@ const Pwd = styled.div`
     color: rgba(69,134,254,1);
 `
 
+interface IProps {
+    appData: IGlobal.AppData
+}
+
 interface IState { }
 
-class Login extends Component<RouteComponentProps & DispatchProp, IState> {
+class Login extends Component<IProps & RouteComponentProps & DispatchProp, IState> {
 
     private fn?: IFormFun
 
@@ -89,7 +94,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
             className: 'flex_center',
             props: {
                 options: [{
-                    label: <div>我已阅读<span style={{ color: '#4F9BFF' }}>《隐私政策》</span>隐私信息将严格保密</div>,
+                    label: <div>我已阅读<Link to={{ pathname: 'privacryPolice' }}><span style={{ color: '#4F9BFF' }}>《隐私政策》</span></Link>隐私信息将严格保密</div>,
                     value: true
                 }],
                 iconColor: '#fff',
@@ -158,6 +163,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
+        const { appData } = this.props
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -173,7 +179,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
             >
                 <ViewBox className="flex_center">
                     <div>
-                        <Image src={require('../../assets/logo.png')} style={{ width: getUnit(83), height: getUnit(83) }} />
+                        <Image src={baseUrl + appData.logo} style={{ width: getUnit(83), height: getUnit(83) }} />
                         <LogoTitle className="flex_center">芝麻分期</LogoTitle>
                     </div>
                 </ViewBox>
@@ -260,6 +266,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
         try {
             if (this.registerFn) {
                 const form = this.registerFn.getFieldValue()
+                const { history, dispatch } = this.props
                 if (!verify.isMobile(form.mobile)) {
                     Toast.info({
                         content: '请输入正确的手机号',
@@ -273,6 +280,8 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     return
                 }
                 const data = await http('/user/register', form)
+                dispatch({ type: SET_USERINFO_DATA, data: data.data })
+                history.replace('/')
                 Toast.info({
                     content: data.msg,
                 })
@@ -286,7 +295,7 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
 }
 
 export default connect(
-    ({ token }: any) => ({
-        token
+    ({ appData }: IInitState) => ({
+        appData
     })
 )(Login as any)

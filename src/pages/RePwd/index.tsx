@@ -4,9 +4,10 @@ import { MobileLayout, NavBar, Form, Toast, CountDown, Image } from 'components'
 import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 import { getUnit } from 'src/components/lib/utils'
-import { http } from '../../utils'
+import { http, baseUrl } from '../../utils'
 import { connect, DispatchProp } from 'react-redux'
 import styled from 'styled-components'
+import { IInitState, IGlobal } from 'src/store/state'
 
 
 const ViewBox = styled.div`
@@ -33,9 +34,16 @@ const Pwd = styled.div`
     color: rgba(69,134,254,1);
 `
 
+interface IProps {
+    appData: IGlobal.AppData
+}
+
+
 interface IState { }
 
-class RePwd extends Component<RouteComponentProps & DispatchProp, IState> {
+
+
+class RePwd extends Component<IProps & RouteComponentProps & DispatchProp, IState> {
 
     private registerFn?: IFormFun
 
@@ -99,6 +107,7 @@ class RePwd extends Component<RouteComponentProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
+        const { appData } = this.props
         return (
             <MobileLayout
                 backgroundColor="#fff"
@@ -114,7 +123,7 @@ class RePwd extends Component<RouteComponentProps & DispatchProp, IState> {
             >
                 <ViewBox className="flex_center">
                     <div>
-                        <Image src={require('../../assets/logo.png')} style={{ width: getUnit(83), height: getUnit(83) }} />
+                        <Image src={baseUrl + appData.logo} style={{ width: getUnit(83), height: getUnit(83) }} />
                         <LogoTitle className="flex_center">芝麻分期</LogoTitle>
                     </div>
                 </ViewBox>
@@ -189,7 +198,7 @@ class RePwd extends Component<RouteComponentProps & DispatchProp, IState> {
 }
 
 export default connect(
-    ({ token }: any) => ({
-        token
+    ({ appData }: IInitState) => ({
+        appData
     })
 )(RePwd as any)

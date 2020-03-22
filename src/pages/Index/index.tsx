@@ -52,6 +52,10 @@ class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> 
             history.push('/login')
             return
         }
+        if (field === 1 && !userInfo.userInfo) {
+            history.push('/authen')
+            return
+        }
         dispatch({ type: SET_SELECTED_DATA, data: field })
     }
 

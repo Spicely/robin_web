@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
-import { Image, MobileLayout, Item, Button, CheckBox } from 'components'
-import { http } from '../../utils'
-import { Slider } from 'antd-mobile'
-import { getUnit, ItemThemeData, } from 'src/components/lib/utils'
+import { Image, MobileLayout, Item, Button, CheckBox, Notice, Toast } from 'components'
+import { Slider, Carousel } from 'antd-mobile'
+import { getUnit, ItemThemeData } from 'src/components/lib/utils'
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
 import { connect, DispatchProp } from 'react-redux'
+import { SET_SELECTED_DATA } from 'src/store/actions'
+import { random } from 'lodash'
+import { http, baseUrl } from 'src/utils'
 
 interface IState {
     data: any[]
     coo: any[]
+    items: any[]
     visible: boolean
     err: null | any
     money: number
@@ -23,7 +26,7 @@ interface IProps extends RouteComponentProps {
     userInfo: IGlobal.UserInfo
 }
 
-const LSlider = styled(Slider)`
+const LSlider = styled(Slider) <any>`
     margin-top: ${getUnit(35)};
     .am-slider-rail {
         height: ${getUnit(5)};
@@ -94,7 +97,6 @@ const PriceL = styled.div`
 
 const Header = styled.div`
     height: ${getUnit(188)};
-    background: url(${require('../../assets/header.png')});
     background-size: 100% 100%;
 `
 const Pirce = styled.div`
@@ -114,6 +116,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
     public state: IState = {
         data: [],
         coo: [],
+        items: [],
         visible: false,
         err: null,
         money: 0,
@@ -122,16 +125,24 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
-        const { appData, userInfo } = this.props
-        const { money, month, price } = this.state
+        const { appData } = this.props
+        const { money, month, price, data, items } = this.state
+        const marks: any = {}
+        appData.months.forEach((i) => {
+            marks[i] = ''
+        })
         return (
             <MobileLayout
                 backgroundColor="#fff"
             >
                 <Header>
-                    <Pirce>
-                        {appData.maxPrice}
-                    </Pirce>
+                    <Carousel style={{ height: '100%' }} autoplay>
+                        {
+                            items.map((i, index: number) => {
+                                return <Image src={baseUrl + i.img} style={{ height: getUnit(188), width: '100%' }} key={index} />
+                            })
+                        }
+                    </Carousel>
                 </Header>
                 <Item
                     theme={itmeTheme}
@@ -141,11 +152,16 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             className="flex_justify"
                             style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)' }}
                         >
-                            <div className="flex">
+                            <div className="flex" style={{ width: '100%' }}>
                                 <div className="flex_justify">
                                     <Image src={require('../../assets/zx.png')} style={{ height: getUnit(16), width: getUnit(47) }} />
                                 </div>
-                                <div className="flex_1" style={{ marginLeft: getUnit(10) }}>张** | 157****0813  已成功贷款200000元！</div>
+                                <div className="flex_1" style={{ marginLeft: getUnit(10), overflow: 'hidden' }}>
+                                    <Notice
+                                        value={data}
+                                        effect="scrollY"
+                                    />
+                                </div>
                             </div>
                         </div>
                     }
@@ -185,15 +201,17 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             <div style={{ padding: `0 ${getUnit(15)}` }}>
                                 <LSlider
                                     defaultValue={month}
-                                    min={3}
-                                    max={36}
+                                    min={appData.months[0] || 0}
+                                    max={appData.months[appData.months.length - 1] || 0}
                                     onChange={this.monthChange}
+                                    marks={marks}
+                                    step={null}
                                 />
 
                             </div>
                             <div className="flex" style={{ marginTop: getUnit(15) }}>
-                                <SliderLabel className="flex_1">3个月</SliderLabel>
-                                <SliderLabel className="flex_1" style={{ textAlign: 'right' }}>36个月</SliderLabel>
+                                <SliderLabel className="flex_1">{appData.months[0] || 0}个月</SliderLabel>
+                                <SliderLabel className="flex_1" style={{ textAlign: 'right' }}>{appData.months[appData.months.length - 1] || 0}个月</SliderLabel>
                             </div>
                         </div>
                         <div style={{ padding: `0 ${getUnit(15)}` }}>
@@ -218,15 +236,42 @@ class Home extends Component<IProps & DispatchProp, IState> {
         )
     }
 
+    private names: string[] = ["王", "李", "张", "刘", "陈", "杨", "黄", "赵", "吴", "周", "徐", "孙", "马", "朱", "胡", "郭", "何", "高", "林", "罗", "郑", "梁", "谢", "宋", "唐", "许", "韩", "冯", "邓", "曹", "彭", "曾", "萧", "田", "董", "潘", "袁", "于", "蒋", "蔡", "余", "杜", "叶", "程", "苏", "魏", "吕", "丁", "任", "沈", "姚", "卢", "姜", "崔", "钟", "谭", "陆", "汪", "范", "金", "石", "廖", "贾", "夏", "韦", "傅", "方", "白", "邹", "孟", "熊", "秦", "邱", "江", "尹", "薛", "阎", "段", "雷", "侯", "龙", "史", "陶", "黎", "贺", "顾", "毛", "郝", "龚", "邵", "万", "钱", "严", "覃", "武戴", "莫", "孔", "向", "汤"]
+
+    private phone: number[] = [3, 4, 5, 7, 8]
+
     public componentDidMount() {
         const { appData } = this.props
-        console.log(appData)
-        // const price = (appData.initPrice + Number(appData.serviceRate) * appData.initPrice) / appData.initMonth).toFixed(2)
+        const price = (((appData.initPrice || appData.minPirce) + appData.serviceRate * (appData.initPrice || appData.minPirce)) / (appData.initMonth || appData.months[0])).toFixed(2)
+        const data: any = []
+        Array.from({ length: 100 }).forEach((i) => {
+            data.push({
+                label: `${this.names[random(0, this.names.length - 1)]}${Array.from({ length: random(2, 3) }).map(_ => '').join('*')} | 1${this.phone[random(0, this.phone.length - 1)]}${random(0, 9)}****${random(0, 9)}${random(0, 9)}${random(0, 9)}${random(0, 9)}  已成功贷款${random(appData.minPirce, appData.maxPrice)}元`
+            })
+        })
+        console.log(data)
         this.setState({
             money: appData.initPrice || appData.minPirce,
             month: appData.initMonth || appData.months[0],
-            // price,
+            price,
+            data,
         })
+        this.getData()
+    }
+
+    private getData = async () => {
+        try {
+            const close = Toast.loading()
+            const { data } = await http('/user/carouselList')
+            this.setState({
+                items: data
+            })
+            close()
+        } catch (e) {
+            Toast.info({
+                content: e.msg || '网络不稳定'
+            })
+        }
     }
 
     private moneyChange = (val: any) => {
@@ -249,11 +294,15 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     private handleRequireRend = () => {
-        const { userInfo, history } = this.props
+        const { userInfo, history, dispatch } = this.props
         if (userInfo && userInfo.id) {
             let Info = userInfo.userInfo
             if (Info && Info.status) {
                 if (Info.status === 3) {
+                    if (Info.examineStatus !== 2) {
+                        history.push('/team')
+                        return
+                    }
                     if (!userInfo.order) {
                         history.push({
                             pathname: '/requireRend',
@@ -266,7 +315,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                 state: { orderId: userInfo.order.id }
                             })
                         } else {
-
+                            dispatch({ type: SET_SELECTED_DATA, data: 1 })
                         }
                     }
                 } else if (Info.status === 2) {

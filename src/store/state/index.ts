@@ -30,6 +30,7 @@ interface IUserInfo {
     createdAt: number
     updatedAt: number
     id: string
+    examineStatus: 1 | 2 |3
 }
 
 interface IOrder {
@@ -74,7 +75,7 @@ export namespace IGlobal {
         initPrice: number
         months: number[]
         initMonth: number
-        serviceRate: string
+        serviceRate: number
         auditFee: number
         repaymentDay: number
         autoRefuse: boolean
@@ -88,6 +89,7 @@ export namespace IGlobal {
         about: string
         serviceLink: string
         serviceCode: string
+        logo: string
     }
 
     export interface UserAddressList {

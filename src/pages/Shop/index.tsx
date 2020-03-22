@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
-import { MobileLayout, Button } from 'components'
+import { MobileLayout, Button, Image } from 'components'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
 import { getUnit } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
-
+import { Steps } from 'antd-mobile'
+import Xx from '../Xx'
+const Step = Steps.Step;
 
 interface IState {
 	data: any[]
@@ -101,6 +103,31 @@ const LButton = styled(Button)`
     font-size: ${getUnit(16)};
 `
 
+const TText = styled.div`
+    font-size: ${getUnit(16)};
+    font-family: PingFang SC;
+    font-weight: 400;
+    line-height: ${getUnit(24)};
+    color: rgba(34,34,34,1);
+`
+
+const LText = styled.div`
+    font-size: ${getUnit(14)};
+    font-family: PingFang SC;
+    font-weight: 400;
+    line-height:${getUnit(24)};
+    color: rgba(155,161,175,1);
+`
+
+const LSteps = styled(Steps)`
+    .am-steps-item-process .am-steps-item-icon > .am-steps-icon {
+        line-height: 22px;
+    }
+    .am-steps-item-title div {
+        font-weight: initial !important;
+    }
+`
+
 class Shop extends Component<IProps & DispatchProp, IState> {
 
 	public state: IState = {
@@ -181,26 +208,10 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 								<LButton>提现</LButton>
 							</div> */}
 						</div>
-					) : null
+					) : <Xx />
 				}
 			</MobileLayout>
 		)
-	}
-
-	public componentDidMount() {
-		// this.getData()
-	}
-
-	private handleView = (id: string) => {
-		const { err } = this.state
-		const { history } = this.props
-		if (err !== null) {
-			this.setState({
-				visible: true
-			})
-		} else {
-			history.push(`/news/${id}`)
-		}
 	}
 
 	private formatBankNumber = (bankNumber: string): string => {

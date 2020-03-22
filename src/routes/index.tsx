@@ -18,6 +18,7 @@ import ProtoSuccess from '../pages/ProtoSuccess'
 import PayRend from '../pages/PayRend'
 import AboutMe from '../pages/AboutMe'
 import PrivacryPolice from '../pages/PrivacryPolice'
+import Ht from '../pages/Ht'
 
 function Loading(props: any) {
     if (props.error) {
@@ -69,6 +70,9 @@ export const routes: IRoutes[] = [{
 }, {
     component: RequireRend,
     path: '/requireRend'
+},{
+    component: Ht,
+    path: '/ht'
 }, {
     component: Protoco,
     path: '/protocol'

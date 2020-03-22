@@ -2,15 +2,16 @@ import { isFunction } from 'lodash'
 import { Toast } from 'components'
 import CryptoJS from 'crypto-js'
 import axois, { AxiosRequestConfig } from 'axios'
+import { parse} from 'querystring'
 
 interface IValue {
     [name: string]: any
 }
 
-const ADMIN_ID = '5e6ce86a71a4c94c7088ba5b' // 这个为用户ID
-// export const baseUrl = 'https://api.muka.site'
-export const baseUrl = 'http://localhost:7001'
-export const imgUrl = 'https://api.muka.site'
+const ADMIN_ID = '5e767283dd7df25c1b6bdf68' // 这个为用户ID
+// export const baseUrl = 'http://localhost:7001'
+export const baseUrl = 'http://ceshi.startanycar.com'
+export const imgUrl = 'https://ceshi.startanycar.com'
 
 export interface IRresItem<T = any> {
     msg: string
@@ -71,6 +72,7 @@ instance.interceptors.response.use(async function (res: any) {
 })
 
 const http = function (url: string, params?: IValue, config?: AxiosRequestConfig): any {
+    // const query = parse(window.location.hash)
     const headers = config ? config.headers : {}
     return instance(`${url}`, {
         ...config,

@@ -185,7 +185,7 @@ export default class Notice extends Component<INoticeProps, IState> {
                             {
                                 icon && (
                                     <div className="flex_justify" style={{ marginRight: '5px' }}>
-                                        <Icon icon={icon} color={iconColor}/>
+                                        <Icon icon={icon} color={iconColor} />
                                     </div>
                                 )
                             }
@@ -399,122 +399,128 @@ export default class Notice extends Component<INoticeProps, IState> {
     }
 
     private itemNodeFun = (time: number) => {
+        this.initStart()
         this.timer = setInterval(() => {
-            const { loop, value } = this.props
-            if (this.animateNode) {
-                const ref = this.animateNode.getBoundingClientRect()
-                this.viewInfo = {
-                    left: ref.width,
-                    top: ref.height
-                }
+            this.initStart()
+        }, time)
+    }
+
+    private initStart = () => {
+        const { loop, value } = this.props
+        if (this.animateNode) {
+            const ref = this.animateNode.getBoundingClientRect()
+            this.viewInfo = {
+                left: ref.width,
+                top: ref.height
             }
-            const { valueIndex, selectIndex } = this.state
-            const index = valueIndex + 1
-            const sIndex = selectIndex + 1
-            if (loop) {
-                if (this.status) {
+        }
+        const { valueIndex, selectIndex } = this.state
+        const index = valueIndex + 1
+        const sIndex = selectIndex + 1
+        if (loop) {
+            if (this.status) {
+                this.setState({
+                    valueIndex: value.length + 1 === index ? 0 : index,
+                    valueAnimate: value.length + 1 === index ? false : true,
+                    selectIndex: value.length > 2 ? index : sIndex,
+                    animate: sIndex === value.length + 2 ? false : true
+                }, () => {
+                    // tslint:disable-next-line: no-shadowed-variable
+                    const { selectIndex } = this.state
+                    if (selectIndex === value.length + 2) {
+                        this.ev = true
+                        this.setState({
+                            selectIndex: value.length - 1,
+                            animate: false
+                        }, () => {
+                            setTimeout(() => {
+                                this.setState({
+                                    selectIndex: value.length,
+                                    animate: true
+                                })
+                            }, 10)
+                        })
+                    }
+                    if (value.length + 1 === index) {
+                        setTimeout(() => {
+                            this.setState({
+                                valueIndex: 1,
+                                valueAnimate: true
+                            })
+                        }, 10)
+                    }
+                })
+            } else {
+                if (value.length === 1) {
                     this.setState({
-                        valueIndex: value.length + 1 === index ? 0 : index,
-                        valueAnimate: value.length + 1 === index ? false : true,
-                        selectIndex: value.length > 2 ? index : sIndex,
-                        animate: sIndex === value.length + 2 ? false : true
+                        valueIndex: value.length + 1 <= index ? -1 : index,
+                        valueAnimate: value.length + 1 <= index ? false : true,
+                        selectIndex: sIndex >= 3 ? 0 : sIndex,
+                        animate: sIndex >= 3 ? false : true,
                     }, () => {
                         // tslint:disable-next-line: no-shadowed-variable
-                        const { selectIndex } = this.state
-                        if (selectIndex === value.length + 2) {
-                            this.ev = true
-                            this.setState({
-                                selectIndex: value.length - 1,
-                                animate: false
-                            }, () => {
-                                setTimeout(() => {
-                                    this.setState({
-                                        selectIndex: value.length,
-                                        animate: true
-                                    })
-                                }, 10)
-                            })
-                        }
-                        if (value.length + 1 === index) {
+                        const { valueIndex } = this.state
+
+                        if (valueIndex === -1) {
                             setTimeout(() => {
                                 this.setState({
-                                    valueIndex: 1,
+                                    valueIndex: 0,
                                     valueAnimate: true
                                 })
                             }, 10)
                         }
-                    })
-                } else {
-                    if (value.length === 1) {
-                        this.setState({
-                            valueIndex: value.length + 1 <= index ? -1 : index,
-                            valueAnimate: value.length + 1 <= index ? false : true,
-                            selectIndex: sIndex >= 3 ? 0 : sIndex,
-                            animate: sIndex >= 3 ? false : true,
-                        }, () => {
-                            // tslint:disable-next-line: no-shadowed-variable
-                            const { valueIndex } = this.state
-
-                            if (valueIndex === -1) {
-                                setTimeout(() => {
-                                    this.setState({
-                                        valueIndex: 0,
-                                        valueAnimate: true
-                                    })
-                                }, 10)
-                            }
-                            if (sIndex >= 3) {
-                                setTimeout(() => {
-                                    this.setState({
-                                        selectIndex: 1,
-                                        animate: true
-                                    })
-                                }, 10)
-                            }
-                        })
-                        return
-                    }
-                    this.setState({
-                        valueIndex: index,
-                        animate: true,
-                        selectIndex: sIndex,
-                        valueAnimate: true
-                    })
-                    if (index - value.length === 1) {
-                        this.status = true
-                        this.setState({
-                            valueIndex: 0,
-                            valueAnimate: false
-                        }, () => {
+                        if (sIndex >= 3) {
                             setTimeout(() => {
                                 this.setState({
-                                    valueIndex: 1,
-                                    valueAnimate: true
+                                    selectIndex: 1,
+                                    animate: true
                                 })
                             }, 10)
-                        })
-                    }
-                }
-
-            } else {
-                if (index === value.length) {
-                    clearInterval(this.timer)
-                    this.timer = undefined
+                        }
+                    })
                     return
                 }
                 this.setState({
-                    valueIndex: index > value.length ? 0 : index,
+                    valueIndex: index,
                     animate: true,
-                    selectIndex: sIndex > value.length ? 0 : sIndex,
+                    selectIndex: sIndex,
                     valueAnimate: true
                 })
+                if (index - value.length === 1) {
+                    this.status = true
+                    this.setState({
+                        valueIndex: 0,
+                        valueAnimate: false
+                    }, () => {
+                        setTimeout(() => {
+                            this.setState({
+                                valueIndex: 1,
+                                valueAnimate: true
+                            })
+                        }, 10)
+                    })
+                }
             }
-        }, time)
+
+        } else {
+            if (index === value.length) {
+                clearInterval(this.timer)
+                this.timer = undefined
+                return
+            }
+            this.setState({
+                valueIndex: index > value.length ? 0 : index,
+                animate: true,
+                selectIndex: sIndex > value.length ? 0 : sIndex,
+                valueAnimate: true
+            })
+        }
     }
 
     private setSelectIndex(index: number, value: any[]) {
         if (this.animateNode) {
             const ref = this.animateNode.getBoundingClientRect()
+            console.log(ref)
             this.viewInfo = {
                 left: ref.width,
                 top: ref.height

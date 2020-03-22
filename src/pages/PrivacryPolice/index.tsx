@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { MobileLayout, NavBar, Form, Toast, CountDown, Image } from 'components'
-import { verify } from 'muka'
-import { IFormFun, IFormItem } from 'src/components/lib/Form'
+import { MobileLayout, NavBar } from 'components'
 import { getUnit, NavBarThemeData, Color, IconThemeData } from 'src/components/lib/utils'
 import { http } from '../../utils'
 import { connect, DispatchProp } from 'react-redux'
-import styled from 'styled-components'
 
 
 interface IState {

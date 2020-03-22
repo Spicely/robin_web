@@ -10,7 +10,7 @@ const initData: IGlobal.AppData = {
     initPrice: 0,
     months: [],
     initMonth: 0,
-    serviceRate: '',
+    serviceRate: 0,
     auditFee: 0,
     repaymentDay: 0,
     autoRefuse: false,
@@ -24,6 +24,7 @@ const initData: IGlobal.AppData = {
     about: '',
     serviceLink: '',
     serviceCode: '',
+    logo: '/public/uploads/logo.png'
 }
 
 export default function appData(state = initData, action: AnyAction) {

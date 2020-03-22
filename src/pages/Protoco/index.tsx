@@ -4,7 +4,7 @@ import { Toast, MobileLayout, Button, NavBar } from 'components'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { IInitState, IGlobal } from 'src/store/state'
-import { getUnit, NavBarThemeData, Color, IconThemeData } from 'src/components/lib/utils'
+import { getUnit } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
 import CanvasDraw from "react-canvas-draw"
 import Axios from 'axios'
@@ -65,7 +65,6 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 	}
 
 	public render(): JSX.Element {
-		const { appData } = this.props
 		const { mode } = this.state
 		return (
 			<MobileLayout
@@ -102,9 +101,6 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 
 	public componentDidMount() {
 		this.getData()
-	}
-	private cc = (val: any) => {
-		console.log(val)
 	}
 
 	private dataURLtoFile(dataurl: string, filename: string) {
@@ -180,7 +176,6 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 	}
 	private getData = async () => {
 		const state: any = this.props.location.state || {}
-		console.log(state)
 		if (state.orderId) {
 			this.setState({
 				orderId: state.orderId
@@ -190,7 +185,7 @@ class Shop extends Component<IProps & DispatchProp, IState> {
 			const { match } = this.props
 			const data = await http('user/getContractTemplate', { userId: this.props.userInfo.id })
 			this.setState({
-				mode: data.data.contractTemplate
+				mode: data.data.contractTemplate.replace('｛借款人签名｝', '')
 			})
 		} catch (data) {
 			Toast.info({

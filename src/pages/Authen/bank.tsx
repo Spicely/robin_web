@@ -123,51 +123,6 @@ class AuthenBank extends Component<IProps & DispatchProp, IState> {
 
     private fn?: IFormFun
 
-    private marriage = [{
-        label: '已婚',
-        value: '已婚',
-    }, {
-        label: '未婚',
-        value: '未婚',
-    }]
-
-    private education = [{
-        label: '本科',
-        value: '本科',
-    }, {
-        label: '专科',
-        value: '专科',
-    }, {
-        label: '硕士研究生',
-        value: '硕士研究生',
-    }, {
-        label: '博士研究生',
-        value: '博士研究生',
-    }, {
-        label: '高中',
-        value: '高中',
-    }]
-
-    private relation = [{
-        label: '父母',
-        value: '父母',
-    }, {
-        label: '配偶',
-        value: '配偶',
-    }, {
-        label: '兄弟姐妹',
-        value: '兄弟姐妹',
-    }, {
-        label: '子女',
-        value: '子女',
-    }, {
-        label: '领导/同事',
-        value: '领导/同事',
-    }, {
-        label: '朋友',
-        value: '朋友',
-    }]
-
     private getItems = (fn: IFormFun) => {
         this.fn = fn
         const items: IFormItem[] = [{
@@ -306,12 +261,7 @@ class AuthenBank extends Component<IProps & DispatchProp, IState> {
             </MobileLayout >
         )
     }
-
-    private handlePickerValue = (field: string, data: any) => {
-        this.fn && this.fn.setFieldValue({
-            [field]: data[0]
-        })
-    }
+    
     private next = async () => {   // 下一步
         if (this.fn) {
             const form = this.fn.getFieldValue()
@@ -341,40 +291,6 @@ class AuthenBank extends Component<IProps & DispatchProp, IState> {
             }
         }
     }
-    private handleNagaiPickerValue = (field: string, v: any) => {
-        const newVal: any[] = []
-        district.forEach((i) => {
-            if (i.value === v[0]) {
-                newVal.push({
-                    label: i.label,
-                    value: v[0]
-                })
-                if (i.children) {
-                    i.children.forEach((t: any) => {
-                        if (t.value === v[1]) {
-                            newVal.push({
-                                label: t.label,
-                                value: v[1]
-                            })
-                            if (t.children) {
-                                t.children.forEach((f: any) => {
-                                    if (f.value === v[2]) {
-                                        newVal.push({
-                                            label: f.label,
-                                            value: v[2]
-                                        })
-                                    }
-                                })
-                            }
-                        }
-                    })
-                }
-            }
-        })
-        this.fn && this.fn.setFieldValue({
-            [field]: newVal
-        })
-    }
 
     private handleInput = (field: string, e: ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value
@@ -387,20 +303,6 @@ class AuthenBank extends Component<IProps & DispatchProp, IState> {
         this.fn && this.fn.setFieldValue({
             [field]: ''
         })
-    }
-
-    private getData = async () => {
-        try {
-            const { dispatch } = this.props
-            const close = Toast.loading()
-            const data = await http('wxapp/goods/getAddressData')
-            dispatch({ type: SET_USERADDRESSLIST_DATA, data: data.address_data })
-            close()
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
-        }
     }
 
     private handleBack = () => {
