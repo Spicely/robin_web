@@ -75,7 +75,7 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
                 maxLength: 11
             },
             field: 'mobile'
-        }, {
+        },/* {
             component: 'ItemInput',
             props: {
                 title: '验证码',
@@ -99,7 +99,7 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
                 onClick={this.getCode}
             />,
             field: 'code'
-        }, {
+        }, */{
             component: 'ItemInput',
             props: {
                 title: '设置密码',
@@ -316,12 +316,12 @@ class Login extends Component<IProps & RouteComponentProps & DispatchProp, IStat
             }
             const close = Toast.loading()
             try {
-                if (!form.code) {
-                    Toast.info({
-                        content: '请输入验证码',
-                    })
-                    return
-                }
+                // if (!form.code) {
+                //     Toast.info({
+                //         content: '请输入验证码',
+                //     })
+                //     return
+                // }
                 const data = await http('/user/register', form)
                 dispatch({ type: SET_USERINFO_DATA, data: data.data })
                 history.replace('/')

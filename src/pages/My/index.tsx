@@ -128,7 +128,7 @@ class My extends Component<IProps & DispatchProp, IState> {
                         link='/aboutMe'
                         onPress={this.handleToView}
                     />
-                    <Gird.Item
+                    {/* <Gird.Item
                         title={
                             <div className="flex">
                                 <Image src={require('../../assets/kf_icon.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
@@ -137,7 +137,7 @@ class My extends Component<IProps & DispatchProp, IState> {
                         }
                         link="privacryPolice"
                         onPress={this.handleToView}
-                    />
+                    /> */}
                     <Gird.Item
                         title={
                             <div className="flex">

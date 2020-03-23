@@ -180,7 +180,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             </div>
                             <div className="flex_1">
                                 <PriceT className="flex_center">借款期限</PriceT>
-                                <PriceL className="flex_center">{month}个月</PriceL>
+                                <PriceL className="flex_center">{month || (appData.initMonth || appData.months[0])}个月</PriceL>
                             </div>
                             <div className="flex_1">
                                 <PriceT className="flex_center">利息（元）</PriceT>
