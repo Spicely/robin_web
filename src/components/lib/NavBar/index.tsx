@@ -52,7 +52,7 @@ const Nav = styled.div<IStyleProps>`
     box-sizing: border-box;
     z-index: 8;
     ${({ fixed }) => {
-        if (fixed) return css`position: sticky; top: 0;`
+        if (fixed) return css`position: fixed; top: 0;`
     }}
 `
 
@@ -200,7 +200,6 @@ export default class NavBar extends Component<INavBarProps, any> {
         const { endVal } = this.props
         const top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
         if (isNumber(endVal)) {
-            console.log(top)
         }
     }
 

@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import { isFunction } from 'lodash'
-import { getClassName, IValue } from '../utils'
+import { getClassName, IValue, getUnit } from '../utils'
+import 'react-quill/dist/quill.snow.css'
+import 'react-quill/dist/quill.bubble.css'
+import 'react-quill/dist/quill.core.css'
+import { createGlobalStyle } from 'styled-components'
 
 export interface IEditorProps {
     className?: string
@@ -11,7 +15,15 @@ export interface IEditorProps {
     handlers?: IValue
     onImageChange?: (imageHandler: (url: string) => void) => void
 }
-const prefixClass = 'editor'
+
+const GStyle = createGlobalStyle`
+    .mk_editor {
+        .ql-editor {
+            min-height: ${getUnit(160)};
+            max-height: ${getUnit(500)};
+        }
+    }
+`
 
 export default class Editor extends Component<IEditorProps, any> {
     constructor(props: IEditorProps) {
@@ -56,22 +68,25 @@ export default class Editor extends Component<IEditorProps, any> {
 
         if (Quill) {
             return (
-                <Quill
-                    ref={(el: Element) => { this.quillRef = el }}
-                    className={getClassName(prefixClass, className)}
-                    value={this.props.value || value}
-                    onChange={this.handleChange}
-                    theme={theme}
-                    modules={{
-                        toolbar: {
-                            container,
-                            handlers: {
-                                ...handlers,
-                                image: this.handleImgUpload
-                            },
-                        }
-                    }}
-                />
+                <Fragment>
+                    <GStyle />
+                    <Quill
+                        ref={(el: Element) => { this.quillRef = el }}
+                        className={getClassName('mk_editor', className)}
+                        value={this.props.value || value}
+                        onChange={this.handleChange}
+                        theme={theme}
+                        modules={{
+                            toolbar: {
+                                container,
+                                handlers: {
+                                    ...handlers,
+                                    image: this.handleImgUpload
+                                },
+                            }
+                        }}
+                    />
+                </Fragment>
             )
         } else {
             return <Fragment />

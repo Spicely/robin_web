@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Divider } from 'antd'
-import { Image, MobileLayout, Toast, Carousel, NavBar, Icon, Item, Gird } from 'components'
+import { Image, MobileLayout, Toast, Carousel, NavBar, Icon, Item, Gird, Button, Colors } from 'components'
 import { http, imgUrl } from '../../utils'
-import { CarouselThemeData, getUnit, IconThemeData } from 'src/components/lib/utils'
+import { CarouselThemeData, getUnit, IconThemeData, ButtonThemeData, Border, Color, NavBarThemeData } from 'src/components/lib/utils'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
 import { IGoodsData } from 'src/store/state'
@@ -18,6 +18,26 @@ const carouselTheme = new CarouselThemeData({
 const iconTheme = new IconThemeData({
     size: 14
 })
+
+const cartBtnTheme = new ButtonThemeData({
+    height: 50,
+    border: Border.all({ width: 0 }),
+    buttonColor: Color.fromRGB(87, 183, 43),
+    color: Color.fromRGB(255, 255, 255)
+})
+
+const payBtnTheme = new ButtonThemeData({
+    height: 50,
+    border: Border.all({ width: 0 }),
+    buttonColor: Color.fromRGB(0, 0, 0),
+    color: Color.fromRGB(255, 255, 255)
+})
+
+const PayItem = styled.div`
+    width: ${getUnit(55)};
+    padding: ${getUnit(5)} 0;
+    background: #fff;
+`
 
 const ShopItemLabel = styled.div`
     font-size: ${getUnit(10)};
@@ -72,9 +92,29 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
                                 <Icon icon="ios-arrow-back" />
                             </div>
                         }
+                        theme={new NavBarThemeData({ navBarColor: Color.fromRGBO(255, 255, 255, 0) })}
+                        fixed
                         divider={false}
                         onBack={this.handleBack}
                     />
+                }
+                footer={
+                    <div className="flex">
+                        <PayItem>
+                            <div className="flex_center">
+                                <Icon icon="msg" />
+                            </div>
+                            <div className="flex_center" style={{ fontSize: getUnit(12) }}>客服</div>
+                        </PayItem>
+                        <PayItem>
+                            <div className="flex_center">
+                                <Icon icon="shop-car" />
+                            </div>
+                            <div className="flex_center" style={{ fontSize: getUnit(12) }}>购物</div>
+                        </PayItem>
+                        <Button className="flex_1" mold="primary" theme={cartBtnTheme}>加入购物车</Button>
+                        <Button className="flex_1" mold="primary" theme={payBtnTheme} >立即购买</Button>
+                    </div>
                 }
             >
                 <Carousel
@@ -93,7 +133,7 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
                                 <div style={{ color: 'rgba(87, 183, 43, 1)', fontSize: getUnit(16), position: 'relative', top: getUnit(12) }}>¥</div>
                                 <ShopItemPirce>{data.goods_price}</ShopItemPirce>
                                 <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
-                                    <div className="flex_justify" style={{ background: 'rgb(32, 32, 32)', color: '#fff', height: getUnit(18), fontSize: getUnit(11) }}>特价</div>
+                                    <div className="flex_justify" style={{ background: 'rgb(32, 32, 32)', color: '#fff', height: getUnit(18), fontSize: getUnit(11), padding: `0 ${getUnit(5)}` }}>特价</div>
                                 </div>
                             </div>
                             <ShopItemTitle>{data.goods_name}</ShopItemTitle>
@@ -157,8 +197,9 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
     }
 
     private getData = async () => {
+        const close = Toast.loading()
         try {
-            const close = Toast.loading()
+           
             const { params } = this.props.match
             const res = await http('wxapp/goods/goodsShow', {
                 gid: params.id
@@ -166,7 +207,7 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
             this.setState({
                 data: res.data
             })
-            close()
+            // close()
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',

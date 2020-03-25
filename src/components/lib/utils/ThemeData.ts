@@ -23,6 +23,7 @@ import SelectThemeData from './SelectThemeData'
 import TreeThemeData from './TreeThemeData'
 import NoticeThemeData from './NoticeThemeData'
 import GridThemeData from './GridThemeData'
+import GirdThemeData from './GirdThemeData'
 import RangePickerThemeData from './RangePickerThemeData'
 import { TableThemeData } from '.'
 
@@ -61,6 +62,7 @@ interface IThemeDataProps {
     gridTheme?: GridThemeData
     rangePickerTheme?: RangePickerThemeData
     tableTheme?: TableThemeData
+    girdTheme?: GirdThemeData
 }
 
 export default class ThemeData {
@@ -168,6 +170,8 @@ export default class ThemeData {
     public rangePickerTheme: RangePickerThemeData = new RangePickerThemeData()
 
     public tableTheme: TableThemeData = new TableThemeData()
+
+    public girdTheme: GirdThemeData = new GirdThemeData()
 
     public unit: IUnit = 'rem'
 

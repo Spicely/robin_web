@@ -12,6 +12,7 @@ import UserOrder from '../pages/UserOrder'
 import Bank from '../pages/Bank'
 import AddBank from '../pages/Bank/add'
 import UserBind from '../pages/Bank/bind'
+import Code from '../pages/Code'
 
 function Loading(props: any) {
     if (props.error) {
@@ -60,6 +61,9 @@ export const routes: IRoutes[] = [{
 }, {
     component: Bank,
     path: '/bank'
+}, {
+    component: Code,
+    path: '/code'
 }, {
     component: AddBank,
     path: '/addBank'

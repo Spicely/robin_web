@@ -160,15 +160,15 @@ export default class Button extends Component<IButtonProps, IState> {
         return (
             <Consumer>
                 {
-                    (value) => (
+                    (init) => (
                         <Btn
                             {...otherProps}
                             className={className}
                             disabled={loading || disabled}
                             mold={mold}
                             fixed={fixed}
-                            theme={value.theme}
-                            buttonTheme={theme || value.theme.buttonTheme}
+                            theme={init.theme}
+                            buttonTheme={theme || init.theme.buttonTheme}
                             onClick={this.handelOk}
                         >
                             <div className="flex_center">
@@ -176,12 +176,12 @@ export default class Button extends Component<IButtonProps, IState> {
                                     {loading ? <Icon
                                         icon="loading"
                                         style={{ marginRight: '8px' }}
-                                        theme={theme ? theme.iconTheme : value.theme.buttonTheme.iconTheme}
+                                        theme={theme ? theme.iconTheme : init.theme.buttonTheme.iconTheme}
                                         rotate
                                     /> : ''}
                                     <BtnLabel
                                         className="flex_center"
-                                        buttonTheme={theme || value.theme.buttonTheme}
+                                        buttonTheme={theme || init.theme.buttonTheme}
                                     >
                                         {children}
                                     </BtnLabel>

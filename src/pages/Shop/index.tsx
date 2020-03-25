@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { http } from 'src/utils'
+import { http, Empty } from 'src/utils'
 import { Toast, MobileLayout, Button, Image } from 'components'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { IInitState } from 'src/store/state'
-import { getUnit, ButtonThemeData, BorderRadius } from 'src/components/lib/utils'
+import { ButtonThemeData, BorderRadius, getUnit } from 'src/components/lib/utils'
 
 
 interface IState { }

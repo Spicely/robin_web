@@ -121,6 +121,7 @@ class My extends Component<IProps, IState> {
                 </HeaderBox>
                 <Gird
                     style={{ margin: getUnit(10), marginTop: getUnit(20), borderRadius: getUnit(5), overflow: 'hidden' }}
+                    onPress={this.handleToView}
                 >
                     <Gird.Item
                         title={
@@ -130,7 +131,7 @@ class My extends Component<IProps, IState> {
                             </div>
                         }
                         link="/userOrder"
-                        onPress={this.handleToView}
+
                     />
                     <Gird.Item
                         title={
@@ -140,7 +141,6 @@ class My extends Component<IProps, IState> {
                             </div>
                         }
                         link="/addressList"
-                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -150,7 +150,6 @@ class My extends Component<IProps, IState> {
                             </div>
                         }
                         link="/customer"
-                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -159,8 +158,7 @@ class My extends Component<IProps, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>邀请码</div>
                             </div>
                         }
-                        link
-                        onPress={this.handleToView}
+                        link="code"
                     />
                     <Gird.Item
                         title={
@@ -170,7 +168,6 @@ class My extends Component<IProps, IState> {
                             </div>
                         }
                         link
-                        onPress={this.handleToView}
                     />
                     <Gird.Item
                         title={
@@ -180,7 +177,6 @@ class My extends Component<IProps, IState> {
                             </div>
                         }
                         link
-                        onPress={this.handleToView}
                     />
                 </Gird>
             </MobileLayout>

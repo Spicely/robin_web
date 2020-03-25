@@ -28,12 +28,6 @@ class Index extends Component<DispatchProp, any> {
                     <Mall />
                 </TabBar.Item>
                 <TabBar.Item
-                    title="新闻"
-                    icon={<Icon icon="msg" />}
-                >
-                    <Mall />
-                </TabBar.Item>
-                <TabBar.Item
                     title="购物车"
                     icon={<Icon icon="shopping" />}
                 >

@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { Component, ChangeEvent, CSSProperties } from 'react'
 import Cropper from 'react-easy-crop'
 import axios from 'axios'
 import { isFunction, isString, isObject } from 'lodash'
@@ -132,7 +132,8 @@ export interface IUploadProps {
     fileTypes?: string[]
     headers?: IValue
     name?: string
-    baserUrl?: string
+    baseUrl?: string
+    itemStyle?: CSSProperties
     action?: string
     params?: IValue
     withCredentials?: boolean
@@ -208,7 +209,7 @@ export default class Upload extends Component<IUploadProps, IState> {
     private fileNode: HTMLInputElement | null = null
 
     public render(): JSX.Element {
-        const { className, multiple, crop, cropProps, disabled, theme, fileTypes } = this.props
+        const { className, multiple, crop, cropProps, disabled, itemStyle, theme, fileTypes } = this.props
         const { files, image, cropXY, aspect, zoom, visible } = this.state
         return (
             <Consumer>
@@ -230,6 +231,7 @@ export default class Upload extends Component<IUploadProps, IState> {
                                             uploadTheme={theme || val.theme.uploadTheme}
                                             disabled={disabled || false}
                                             key={`$picker_${index}`}
+                                            style={itemStyle}
                                         >
                                             <UploadItemBox
                                                 className="flex_center mk_picker_img"
@@ -287,7 +289,7 @@ export default class Upload extends Component<IUploadProps, IState> {
     }
 
     private getAddBox(theme: UploadThemeData): JSX.Element | undefined {
-        const { icon, maxLength, disabled } = this.props
+        const { icon, maxLength, disabled, itemStyle } = this.props
         const { files } = this.state
         if (!maxLength || maxLength > files.length) {
             return (
@@ -295,6 +297,7 @@ export default class Upload extends Component<IUploadProps, IState> {
                     onClick={this.handleClick}
                     uploadTheme={theme}
                     disabled={disabled || false}
+                    style={itemStyle}
                 >
                     <UploadItemBox className="flex_center">
                         {isString(icon) ? <UploadIcon icon={icon} theme={theme.iconTheme} /> : icon}

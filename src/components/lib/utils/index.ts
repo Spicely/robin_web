@@ -29,6 +29,7 @@ export { default as NoticeThemeData } from './NoticeThemeData'
 export { default as GridThemeData } from './GridThemeData'
 export { default as RangePickerThemeData } from './RangePickerThemeData'
 export { default as TableThemeData } from './TableThemeData'
+export { default as GirdThemeData } from './GirdThemeData'
 
 export const prefix: string = 'mk_'
 

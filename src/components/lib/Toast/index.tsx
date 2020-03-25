@@ -1,10 +1,13 @@
 import React, { Component, Fragment } from 'react'
 import { Consumer } from '../ThemeProvider'
-import ReactDOM from 'react-dom'
+import ReactDOM, { createPortal } from 'react-dom'
 import styled, { css } from 'styled-components'
 import { isUndefined } from 'lodash'
 import { getUnit, ToastThemeData } from '../utils'
 import Icon from '../Icon'
+
+let globalNode: Element | null
+let glabalView: Element | null
 
 type IType = 'loading' | 'success' | 'info' | 'warning' | 'error'
 
@@ -73,52 +76,103 @@ const ToastContent = styled.span<IToastProps>`
     ${({ toastTheme }) => css`${toastTheme.borderRadius.toString()}`}
 `
 
-let notification: ICreateNotification | undefined
-const notice = (data: INotices) => {
-    if (!notification) notification = createNotification()
-    if (!notification) return () => { }
-    return notification.addNotice(data)
+function createGlobalNode() {
+    if (!glabalView) {
+        glabalView = document.createElement('div')
+        document.body.appendChild(glabalView)
+    }
 }
 
-export default class Notification extends Component<any, IState> {
+export default class Toast {
 
-    public static info(data: INotices) {
-        return notice({
-            ...data,
-            duration: isUndefined(data.duration) ? 2000 : data.duration,
-            type: 'info'
-        })
-    }
-    public static success(data: INotices) {
-        return notice({
-            ...data,
-            type: 'success'
-        })
-    }
-    public static warning(data: INotices) {
-        return notice({
-            ...data,
-            duration: isUndefined(data.duration) ? 2000 : data.duration,
-            type: 'warning'
-        })
-    }
-    public static error(data: INotices) {
-        return notice({
-            ...data,
-            duration: isUndefined(data.duration) ? 2000 : data.duration,
-            type: 'error'
-        })
+    public constructor() {
+       
     }
 
-    public static loading(content?: string) {
-        return notice({
-            content: content || '',
-            type: 'loading'
-        })
+    public static loading = () => {
+        createGlobalNode()
+        ReactDOM.render(<Notification />, glabalView)
+        return () => { }
     }
+    
+    public static info = (data: INotices) => { }
+}
+
+// (data: INotices) => {
+//     if (!glabalView) {
+//         glabalView = document.createElement('div')
+//         document.body.appendChild(glabalView)
+//     }
+//     ReactDOM.render(<Notification />, glabalView)
+//     return {
+//         loading: () => { },
+//         info: () => { }
+//     }
+// }
+
+class Notification extends Component<any, IState> {
+    public constructor(props: any) {
+        super(props)
+        if (typeof document !== 'undefined') {
+            globalNode = document.querySelector(`.mk_mask_toast`)
+            if (globalNode) {
+                this.node = globalNode
+            } else {
+                const dom = document.createElement('div')
+                dom.className = 'mk_mask_toast'
+                const body = document.querySelector('body')
+                if (body) {
+                    body.appendChild(dom)
+                }
+                this.node = dom
+                globalNode = dom
+            }
+        }
+    }
+
+    private node: Element | null = null
+
+    // public static info(data: INotices) {
+    //     return notice({
+    //         ...data,
+    //         duration: isUndefined(data.duration) ? 2000 : data.duration,
+    //         type: 'info'
+    //     })
+    // }
+    // public static success(data: INotices) {
+    //     return notice({
+    //         ...data,
+    //         type: 'success'
+    //     })
+    // }
+    // public static warning(data: INotices) {
+    //     return notice({
+    //         ...data,
+    //         duration: isUndefined(data.duration) ? 2000 : data.duration,
+    //         type: 'warning'
+    //     })
+    // }
+    // public static error(data: INotices) {
+    //     return notice({
+    //         ...data,
+    //         duration: isUndefined(data.duration) ? 2000 : data.duration,
+    //         type: 'error'
+    //     })
+    // }
+
+    // public static loading(content?: string) {
+
+    //     return notice({
+    //         content: content || '',
+    //         type: 'loading'
+    //     })
+    // }
 
     public state: IState = {
-        notices: []
+        notices: [{
+            type: 'loading',
+            content: '',
+        }]
     }
 
     private getNoticeKey() {
@@ -155,55 +209,45 @@ export default class Notification extends Component<any, IState> {
 
     public render(): JSX.Element {
         const { notices } = this.state
-        return (
-            <Consumer>
-                {(init) => (
-                    <Fragment>
-                        {
-                            notices.map(notice => (
-                                <ToastMask
-                                    key={notice.key}
-                                    type={notice.type}
-                                >
-                                    <ToastView
-                                        className="flex_center"
-                                        toastTheme={init.theme.toastTheme}
-                                        type={notice.type}
-                                    >
-                                        <ToastContent
-                                            toastTheme={init.theme.toastTheme}
+        if (!this.node) {
+            return <Fragment />
+        } else {
+            return createPortal(
+                (
+                    <Consumer>
+                        {(init) => (
+                            <Fragment>
+                                {
+                                    notices.map(notice => (
+                                        <ToastMask
+                                            key={notice.key}
                                             type={notice.type}
                                         >
-                                            {notice.type === 'loading' ? <Icon
-                                                icon="loading"
-                                                theme={init.theme.toastTheme.iconTheme}
-                                                rotate
-                                            /> : null}
-                                            {notice.content}
-                                        </ToastContent>
-                                    </ToastView>
-                                </ToastMask>
-                            ))
-                        }
-                    </Fragment>
-                )}
-            </Consumer>
-        )
-    }
-}
-
-function createNotification(): ICreateNotification | undefined {
-    const div = document.createElement('div')
-    document.body.appendChild(div)
-    const notification: any = ReactDOM.render(<Notification />, div)
-    if (!notification) return
-    return {
-        addNotice(notice: INotices) {
-            return notification.addNotice(notice)
-        },
-        destroy() {
-            ReactDOM.unmountComponentAtNode(div)
-            document.body.removeChild(div)
+                                            <ToastView
+                                                className="flex_center"
+                                                toastTheme={init.theme.toastTheme}
+                                                type={notice.type}
+                                            >
+                                                <ToastContent
+                                                    toastTheme={init.theme.toastTheme}
+                                                    type={notice.type}
+                                                >
+                                                    {notice.type === 'loading' ? <Icon
+                                                        icon="loading"
+                                                        theme={init.theme.toastTheme.iconTheme}
+                                                        rotate
+                                                    /> : null}
+                                                    {notice.content}
+                                                </ToastContent>
+                                            </ToastView>
+                                        </ToastMask>
+                                    ))
+                                }
+                            </Fragment>
+                        )}
+                    </Consumer>
+                ), this.node
+            )
         }
     }
 }

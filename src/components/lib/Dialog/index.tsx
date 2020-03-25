@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import styled, { keyframes, css } from 'styled-components'
 import { isFunction, isNull, isUndefined } from 'lodash'
 import { Consumer } from '../ThemeProvider'
-import { getClassName, IStyledProps, DialogThemeData, getUnit } from '../utils'
+import { IStyledProps, DialogThemeData, getUnit } from '../utils'
 import Button from '../Button'
 import NavBar from '../NavBar'
 import Icon from '../Icon'
@@ -149,12 +149,12 @@ export default class Dialog extends Component<IDialogProps, IState> {
         }
 
         if (typeof document !== 'undefined') {
-            globalNode = document.querySelector(`.${getClassName('mask_box')}`)
+            globalNode = document.querySelector(`.mk_mask_box`)
             if (globalNode) {
                 this.node = globalNode
             } else {
                 const dom = document.createElement('div')
-                dom.className = getClassName('mask_box')
+                dom.className = 'mk_mask_box'
                 const body = document.querySelector('body')
                 if (body) {
                     body.appendChild(dom)

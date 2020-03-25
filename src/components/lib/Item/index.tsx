@@ -1,5 +1,4 @@
 import React, { Component, CSSProperties } from 'react'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { isBoolean, isFunction, isNil, isString, isNull } from 'lodash'
 import styled, { css } from 'styled-components'
 import { Consumer } from '../ThemeProvider'
@@ -7,6 +6,10 @@ import Icon from '../Icon'
 import { getClassName, ItemThemeData, getUnit, Color } from '../utils'
 
 type ILineType = 'solid' | 'dashed' | 'none'
+
+const ItemIconNull = styled.div`
+    width: ${getUnit(10)};
+`
 
 export interface IItemProps {
     activeClassName?: string
@@ -18,7 +21,7 @@ export interface IItemProps {
     link?: boolean | string | null
     value?: string | JSX.Element | JSX.ElementClass
     extend?: string | JSX.Element | JSX.ElementClass
-    icon?: string | JSX.Element | JSX.ElementClass
+    icon?: string | JSX.Element | JSX.ElementClass | null
     onPress?: (link?: string) => void
     lineType?: ILineType
     theme?: ItemThemeData
@@ -145,8 +148,11 @@ export default class Item extends Component<IItemProps, IState> {
     }
     private getLinkNode(theme: ItemThemeData): JSX.Element | void {
         const { link, icon } = this.props
+        if (isNull(icon)) {
+            return <div />
+        }
         if (isNull(link)) {
-            return <div style={{ width: getUnit(10) }} />
+            return <ItemIconNull />
         }
         return (
             <ItemLink
