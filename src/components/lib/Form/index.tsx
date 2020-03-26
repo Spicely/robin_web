@@ -235,10 +235,12 @@ export default class Form extends Component<IFormProps, IState> {
                 return
             }
             if (item.field === newChild[index].field) {
-                const newProps = omit(item.props || {}, ['value'])
+                const _porps: IValue = item.props || {}
+                const newProps = omit(_porps, ['value'])
                 newChild[index].props = {
                     ...newChild[index].props,
-                    ...newProps
+                    ...newProps,
+                    value: isUndefined(newVals[field]) ? _porps.value : newVals[field]
                 }
                 newChild[index].additional = item.additional
                 newChild[index].visible = isBool(item.visible) ? item.visible : true
@@ -536,7 +538,7 @@ export default class Form extends Component<IFormProps, IState> {
                     <View
                         {...vProps}
                         key={field}
-                        value={vals[field]}
+                        value={isUndefined(vals[field]) ? _porps.value : vals[field]}
                         onChange={this.setRVal.bind(this, field, onChange)}
                     />
                 )
@@ -547,7 +549,7 @@ export default class Form extends Component<IFormProps, IState> {
                 const onChange: any = _porps.onChange
                 const onClose: any = _porps.onClose || function (val: string) { }
                 return (
-                    <div className="flex mk_divider" key={field}>
+                    <div className={`flex mk_divider ${className || ''}`} key={field}>
                         <div className="flex_1">
                             <View
                                 {...vProps}

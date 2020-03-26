@@ -113,7 +113,7 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
                             <div className="flex_center" style={{ fontSize: getUnit(12) }}>购物</div>
                         </PayItem>
                         <Button className="flex_1" mold="primary" theme={cartBtnTheme}>加入购物车</Button>
-                        <Button className="flex_1" mold="primary" theme={payBtnTheme} >立即购买</Button>
+                        <Button className="flex_1" mold="primary" theme={payBtnTheme} onClick={this.handleToView.bind(this, 'order')} >立即购买</Button>
                     </div>
                 }
             >
@@ -191,6 +191,11 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
         this.getData()
     }
 
+    private handleToView = (url: string) => {
+        const { history, match } = this.props
+        history.push(`/${url}/${match.params.id}`)
+    }
+
     private handleBack = () => {
         const { history } = this.props
         history.goBack()
@@ -199,7 +204,6 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
     private getData = async () => {
         const close = Toast.loading()
         try {
-           
             const { params } = this.props.match
             const res = await http('wxapp/goods/goodsShow', {
                 gid: params.id
@@ -207,8 +211,9 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
             this.setState({
                 data: res.data
             })
-            // close()
+            close()
         } catch (data) {
+            close()
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
             })

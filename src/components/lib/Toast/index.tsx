@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
-import { Consumer } from '../ThemeProvider'
+import { isUndefined } from 'lodash'
 import ReactDOM, { createPortal } from 'react-dom'
 import styled, { css } from 'styled-components'
-import { isUndefined } from 'lodash'
+import { Consumer } from '../ThemeProvider'
 import { getUnit, ToastThemeData } from '../utils'
 import Icon from '../Icon'
 
@@ -15,20 +15,16 @@ interface INotices {
     key?: string
     onClose?: () => void
     duration?: number
-    type?: IType
+    type: IType
     content: string
 }
 
-interface IState {
-    notices: INotices[]
+interface IToastProps {
+    key?: string
+    onClose?: () => void
+    duration?: number
+    content: string
 }
-
-interface ICreateNotification {
-    addNotice: (notice: INotices) => () => void
-    destroy: () => void
-}
-
-
 
 interface IToastMaskPorps {
     type?: IType
@@ -45,12 +41,12 @@ const ToastMask = styled.div<IToastMaskPorps>`
     
 `
 
-interface IToastProps {
+interface IToastViewProps {
     toastTheme: ToastThemeData
     type?: IType
 }
 
-const ToastView = styled.div<IToastProps>`
+const ToastView = styled.div<IToastViewProps>`
     position: absolute;
     ${({ type }) => {
         if (type === 'loading') {
@@ -63,7 +59,7 @@ const ToastView = styled.div<IToastProps>`
     width: 100%;
 `
 
-const ToastContent = styled.span<IToastProps>`
+const ToastContent = styled.span<IToastViewProps>`
     background: ${({ toastTheme }) => toastTheme.toastColor.toString()};
     color: ${({ toastTheme }) => toastTheme.color.toString()};
     ${({ toastTheme, type }) => {
@@ -83,34 +79,65 @@ function createGlobalNode() {
     }
 }
 
-export default class Toast {
+let toastData: INotices[] = []
 
-    public constructor() {
-       
+const toastReader = (data: INotices) => {
+    createGlobalNode()
+    const key = `notice_${Date.now()}_${data.type}_${toastData.length}`
+    const duration = isUndefined(data.duration) ? 2000 : data.duration
+    toastData.push({
+        ...data,
+        key,
+        duration
+    })
+    ReactDOM.render(<Notification data={toastData} />, glabalView)
+    if (duration) {
+        const timer = setTimeout(() => {
+            const index = toastData.findIndex((i) => i.key === key)
+            toastData.splice(index, 1)
+            ReactDOM.render(<Notification data={toastData} />, glabalView)
+            clearTimeout(timer)
+        }, duration)
     }
-
-    public static loading = () => {
-        createGlobalNode()
-        ReactDOM.render(<Notification />, glabalView)
-        return () => { }
+    return () => {
+        ReactDOM.render(<Notification data={toastData} />, glabalView)
     }
-    
-    public static info = (data: INotices) => { }
 }
 
-// (data: INotices) => {
-//     if (!glabalView) {
-//         glabalView = document.createElement('div')
-//         document.body.appendChild(glabalView)
-//     }
-//     ReactDOM.render(<Notification />, glabalView)
-//     return {
-//         loading: () => { },
-//         info: () => { }
-//     }
-// }
+export default class Toast {
 
-class Notification extends Component<any, IState> {
+    public static loading = (content: string = '') => {
+        createGlobalNode()
+        const key = `notice-${Date.now()}`
+        toastData.push({
+            key,
+            type: 'loading',
+            content
+        })
+        ReactDOM.render(<Notification data={toastData} />, glabalView)
+        return () => {
+            const index = toastData.findIndex((i) => i.key === key)
+            toastData.splice(index, 1)
+            ReactDOM.render(<Notification data={toastData} />, glabalView)
+        }
+    }
+
+    public static info = (data: IToastProps) => {
+        return toastReader({
+            ...data,
+            type: 'info'
+        })
+    }
+}
+
+interface IProps {
+    data: INotices[]
+}
+
+class Notification extends Component<IProps, any> {
+
+    private node: Element | null = null
+
     public constructor(props: any) {
         super(props)
         if (typeof document !== 'undefined') {
@@ -130,85 +157,8 @@ class Notification extends Component<any, IState> {
         }
     }
 
-    private node: Element | null = null
-
-    // public static info(data: INotices) {
-    //     return notice({
-    //         ...data,
-    //         duration: isUndefined(data.duration) ? 2000 : data.duration,
-    //         type: 'info'
-    //     })
-    // }
-    // public static success(data: INotices) {
-    //     return notice({
-    //         ...data,
-    //         type: 'success'
-    //     })
-    // }
-    // public static warning(data: INotices) {
-    //     return notice({
-    //         ...data,
-    //         duration: isUndefined(data.duration) ? 2000 : data.duration,
-    //         type: 'warning'
-    //     })
-    // }
-    // public static error(data: INotices) {
-    //     return notice({
-    //         ...data,
-    //         duration: isUndefined(data.duration) ? 2000 : data.duration,
-    //         type: 'error'
-    //     })
-    // }
-
-    // public static loading(content?: string) {
-
-    //     return notice({
-    //         content: content || '',
-    //         type: 'loading'
-    //     })
-    // }
-
-    public state: IState = {
-        notices: [{
-            type: 'loading',
-            content: '',
-        }]
-    }
-
-    private getNoticeKey() {
-        const { notices } = this.state
-        return `notice-${new Date().getTime()}-${notices.length}`
-    }
-
-    private addNotice(notice: any) {
-        const { notices } = this.state
-        notice.key = this.getNoticeKey()
-        if (notices.every(item => item.key !== notice.key)) {
-            notices[0] = notice
-            this.setState({ notices })
-            if (notice.duration > 0) {
-                setTimeout(() => {
-                    this.remove(notice.key)
-                }, notice.duration)
-            }
-        }
-        return () => { this.remove(notice.key) }
-    }
-
-    private remove(key: string) {
-        this.setState(previousState => ({
-            notices: previousState.notices.filter((notice) => {
-                if (notice.key === key) {
-                    if (notice.onClose) notice.onClose()
-                    return false
-                }
-                return true
-            })
-        }))
-    }
-
     public render(): JSX.Element {
-        const { notices } = this.state
+        const { data } = this.props
         if (!this.node) {
             return <Fragment />
         } else {
@@ -218,7 +168,7 @@ class Notification extends Component<any, IState> {
                         {(init) => (
                             <Fragment>
                                 {
-                                    notices.map(notice => (
+                                    data.map(notice => (
                                         <ToastMask
                                             key={notice.key}
                                             type={notice.type}

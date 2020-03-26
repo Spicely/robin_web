@@ -142,6 +142,16 @@ const GlobalStyle = createGlobalStyle<IStyledProps>`
         }
     }
 
+    .mk_divider_none {
+        position: relative;
+        &::after {
+            content: "";
+            position: absolute;
+            height: 0;
+            width: 0;
+        }
+    }
+
     .mk_divider_top {
         position: relative;
 

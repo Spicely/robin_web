@@ -13,6 +13,7 @@ import Bank from '../pages/Bank'
 import AddBank from '../pages/Bank/add'
 import UserBind from '../pages/Bank/bind'
 import Code from '../pages/Code'
+import Order from '../pages/Order'
 
 function Loading(props: any) {
     if (props.error) {
@@ -70,6 +71,9 @@ export const routes: IRoutes[] = [{
 }, {
     component: UserBind,
     path: '/userBind'
+}, {
+    component: Order,
+    path: '/order/:id'
 }]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {
