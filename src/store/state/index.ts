@@ -6,6 +6,7 @@ export interface IGoodsData {
     platform_price: number
     goods_number: number
     image_url: string
+    goods_contents: string
 }
 
 export namespace IGlobal {

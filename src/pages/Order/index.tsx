@@ -135,6 +135,7 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
             platform_price: 0,
             goods_number: 0,
             image_url: '',
+            goods_contents: ''
         }
     }
 

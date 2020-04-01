@@ -77,6 +77,7 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
             platform_price: 0,
             goods_number: 0,
             image_url: '',
+            goods_contents: '',
         },
     }
 
@@ -156,7 +157,7 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
                     />
                     <Gird.Item
                         title="销量"
-                        value="87996"
+                        value={<div>{data.goods_number}</div>}
                         flexType="value"
                     />
                     <Gird.Item
@@ -179,6 +180,7 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
                                 <Divider orientation="center">
                                     <div style={{ fontSize: getUnit(14) }}>图文详情</div>
                                 </Divider>
+                                <div dangerouslySetInnerHTML={{ __html: data.goods_contents }} />
                             </div>
                         </div>
                     </ShopHtml>
@@ -205,11 +207,11 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
         const close = Toast.loading()
         try {
             const { params } = this.props.match
-            const res = await http('wxapp/goods/goodsShow', {
+            const { data } = await http('wxapp/goods/goodsShow', {
                 gid: params.id
             })
             this.setState({
-                data: res.data
+                data
             })
             close()
         } catch (data) {

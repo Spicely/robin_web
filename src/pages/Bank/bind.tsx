@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Item, Image, Button, Gird, Form, Icon } from 'components'
-import { RouteComponentProps } from 'react-router-dom'
+import { Toast, MobileLayout, NavBar, Button, Gird, Form, Icon } from 'components'
 import { getUnit, ButtonThemeData, BorderRadius, Color, IconThemeData } from 'src/components/lib/utils'
 import styled from 'styled-components'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
+import { connect, DispatchProp } from 'react-redux'
+import { IInitState, IGlobal } from 'src/store/state'
+import { SET_USERINFO_DATA } from 'src/store/actions'
+import { RouteComponentProps } from 'react-router-dom'
 
 const PriceText = styled.div`
     font-weight: 700;
@@ -18,12 +21,11 @@ const buttonTheme = new ButtonThemeData({
     buttonColor: Color.fromRGB(0, 0, 0)
 })
 
-interface IState {
+interface IProps extends DispatchProp {
+    userInfo: IGlobal.UserInfo
 }
 
-export default class AddBank extends Component<RouteComponentProps<any>, IState> {
-
-
+class BindBank extends Component<IProps & RouteComponentProps<any>, any> {
 
     private fn?: IFormFun
 
@@ -57,8 +59,6 @@ export default class AddBank extends Component<RouteComponentProps<any>, IState>
         return items
     }
 
-    public state: IState = {}
-
     public render(): JSX.Element {
         return (
             <MobileLayout
@@ -68,7 +68,6 @@ export default class AddBank extends Component<RouteComponentProps<any>, IState>
                         onBack={this.handleBack}
                         title="实名认证"
                         titleCenter
-                        fixed
                     />
                 }
                 footer={
@@ -76,6 +75,8 @@ export default class AddBank extends Component<RouteComponentProps<any>, IState>
                         <Button
                             theme={buttonTheme}
                             mold="primary"
+                            onClick={this.handleNext}
+                            async
                         >
                             下一步
                         </Button>
@@ -119,9 +120,45 @@ export default class AddBank extends Component<RouteComponentProps<any>, IState>
         // }
     }
 
+    private handleNext = async () => {
+        if (this.fn) {
+            const params = this.fn.getFieldValue()
+            if (!params.name) {
+                Toast.info({
+                    content: '请输入真实姓名',
+                })
+                return
+            }
+            if (!params.id_card) {
+                Toast.info({
+                    content: '请输入身份证号码',
+                })
+                return
+            }
+            try {
+
+                const data = await http('news/get_mechanism_info', params)
+                const { userInfo, dispatch } = this.props
+                // dispatch({type: SET_USERINFO_DATA, data: ''})
+                // this.setState({
+                //     ...data.msg
+                // })
+            } catch (data) {
+                Toast.info({
+                    content: data.msg || '服务器繁忙,请稍后再试',
+                })
+            }
+        }
+    }
     private handleBack = () => {
         const { history } = this.props
         history.goBack()
     }
 
 }
+
+export default connect(
+    ({ userInfo }: IInitState) => ({
+        userInfo
+    })
+)(BindBank)
