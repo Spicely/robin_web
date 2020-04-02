@@ -106,12 +106,12 @@ class My extends Component<IProps, IState> {
                         </Link>
                         <Divider type="vertical" />
                         <div className="flex_1">
-                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.cny}</div>
+                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.buyprice}</div>
                             <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>货款通兑</div>
                         </div>
                         <Divider type="vertical" />
                         <div className="flex_1">
-                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥10000</div>
+                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.cny}</div>
                             <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>利润通兑</div>
                         </div>
                         <div className="flex_justify">

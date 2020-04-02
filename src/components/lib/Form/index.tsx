@@ -1,8 +1,8 @@
 import React, { Component, ChangeEvent, CSSProperties, Fragment } from 'react'
 import Loadable from 'react-loadable'
 import moment from 'moment'
-import { get } from 'lodash'
-import { omit, isFunction, isUndefined, hash, isBool, isNil, isArray, isString } from 'muka'
+import { omit, get, isNil, isArray, isString, isFunction, isUndefined } from 'lodash'
+import { hash, isBool } from 'muka'
 import { getClassName, getRatioUnit, InputThemeData, Border, getUnit } from '../utils'
 import { IButtonProps } from '../Button'
 import { RadioGroupProps } from 'antd/lib/radio'
@@ -240,7 +240,7 @@ export default class Form extends Component<IFormProps, IState> {
                 newChild[index].props = {
                     ...newChild[index].props,
                     ...newProps,
-                    value: isUndefined(newVals[field]) ? _porps.value : newVals[field]
+                    value: _porps.value ? _porps.value : newVals[field]
                 }
                 newChild[index].additional = item.additional
                 newChild[index].visible = isBool(item.visible) ? item.visible : true
@@ -538,13 +538,13 @@ export default class Form extends Component<IFormProps, IState> {
                     <View
                         {...vProps}
                         key={field}
-                        value={isUndefined(vals[field]) ? _porps.value : vals[field]}
+                        value={_porps.value}
                         onChange={this.setRVal.bind(this, field, onChange)}
                     />
                 )
             }
             case 'ItemInput': {
-                const vProps = omit(props, ['onChange', 'value'])
+                const vProps: any = omit(props, ['onChange', 'value'])
                 const _porps: any = props
                 const onChange: any = _porps.onChange
                 const onClose: any = _porps.onClose || function (val: string) { }

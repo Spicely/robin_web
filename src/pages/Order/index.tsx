@@ -1,13 +1,19 @@
 import React, { Component } from 'react'
-import { http } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Image, Form, Button } from 'components'
+import { http, imgUrl } from 'src/utils'
+import { Toast, MobileLayout, NavBar, Image, Form, Button, InputNumber } from 'components'
 import { RouteComponentProps, Link } from 'react-router-dom'
 import { getUnit, ItemThemeData, ButtonThemeData, BorderRadius, Color } from 'src/components/lib/utils'
-import { IGoodsData } from 'src/store/state'
+import { IGoodsData, IInitState, IGlobal } from 'src/store/state'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
+import { connect } from 'react-redux'
 
 interface IState {
     data: IGoodsData
+    number: number
+}
+
+interface IProps {
+    defaultAddr: IGlobal.DefaultAddr
 }
 
 const itemTheme = new ItemThemeData({
@@ -25,11 +31,13 @@ const btnTheme = new ButtonThemeData({
     width: 90
 })
 
-export default class Order extends Component<RouteComponentProps<any>, IState> {
+class Order extends Component<IProps & RouteComponentProps<any>, IState> {
 
     private fn?: IFormFun
 
     private getItem = (fn: IFormFun) => {
+        const { defaultAddr } = this.props
+        const { data, number } = this.state
         this.fn = fn
         const items: IFormItem[] = [{
             component: 'Item',
@@ -43,32 +51,34 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
                         <div>
                             <div>
                                 <div className="flex" style={{ fontSize: getUnit(13) }}>
-                                    <div>李四</div>
-                                    <div className="flex_justify" style={{ fontSize: getUnit(12), color: 'rgba(128, 128, 128, 1)', marginLeft: getUnit(5) }}>13999999999</div></div>
-                                <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)' }}>北京市东城区人民中路119号</div>
+                                    <div>{defaultAddr.address_name || '请选择地址'}</div>
+                                    <div className="flex_justify" style={{ fontSize: getUnit(12), color: 'rgba(128, 128, 128, 1)', marginLeft: getUnit(5) }}>{defaultAddr.address_phone}</div></div>
+                                <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)' }}>{defaultAddr.address_province}{defaultAddr.address_city}{defaultAddr.address_area}</div>
                             </div>
                         </div>
                     </div>
                 ),
                 link: true,
                 lineType: 'none',
-            }
+                onPress: this.handleAddress
+            },
+            field: '1'
         }, {
             component: 'Item',
             props: {
                 theme: itemShopTheme,
                 title: (
-                    <Image src={require('../../assets/3.png')} style={{ width: getUnit(78), height: getUnit(78) }} />
+                    <Image src={imgUrl + data.image_url} style={{ width: getUnit(78), height: getUnit(78) }} />
                 ),
                 value: (
                     <div style={{ marginLeft: getUnit(5) }}>
                         <div className="flex">
-                            <div className="flex_1" style={{ fontSize: getUnit(14), fontWeight: 400, color: '#000' }}>史丹利化肥套装限时购</div>
-                            <div style={{ fontSize: getUnit(14), fontWeight: 400, color: '#000' }}>¥10000</div>
+                            <div className="flex_1" style={{ fontSize: getUnit(14), fontWeight: 400, color: '#000' }}>{data.goods_name}</div>
+                            <div style={{ fontSize: getUnit(14), fontWeight: 400, color: '#000' }}>¥{number * data.goods_price}</div>
                         </div>
                         <div className="flex">
                             <div className="flex_1" style={{ fontSize: getUnit(12), color: 'rgba(87, 183, 43, 1)' }}>发货时间：付款后2天内</div>
-                            <div style={{ fontSize: getUnit(12), color: 'rgba(187, 187, 187, 1)' }}>X1</div>
+                            <div style={{ fontSize: getUnit(12), color: 'rgba(187, 187, 187, 1)' }}>X{number}</div>
                         </div>
                     </div>
                 ),
@@ -76,7 +86,8 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
                 link: null,
                 lineType: 'none',
                 flexType: 'value',
-            }
+            },
+            field: '2'
         }, {
             component: 'Item',
             props: {
@@ -90,9 +101,13 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
             component: 'Item',
             props: {
                 title: '购买数量',
+                value: (
+                    <InputNumber value={number} min={1} onChange={this.handleChange} />
+                ),
                 link: null,
                 lineType: 'none',
-            }
+            },
+            field: 'number'
         }, {
             component: 'Item',
             props: {
@@ -109,20 +124,22 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
                 link: null,
                 lineType: 'none',
                 placeholder: '选填，请先和商家协商一致',
-            }
+            },
+            field: 'message'
         }, {
-            component: 'Label',
-            render: () => {
-                return (
+            component: 'Item',
+            props: {
+                value: (
                     <div className="flex">
                         <div className="flex_1"></div>
                         <div className="flex">
                             <div className="flex_justify" style={{ fontSize: getUnit(11), color: 'rgb(16, 16, 16)' }}>共1件  小计：</div>
-                            <div style={{ fontSize: getUnit(14), color: 'rgba(87, 183, 43, 1)', marginRight: getUnit(10) }}>¥10000</div>
+                            <div style={{ fontSize: getUnit(14), color: 'rgba(87, 183, 43, 1)', marginRight: getUnit(10) }}>¥{number * data.goods_price}</div>
                         </div>
                     </div>
                 )
-            }
+            },
+            field: '4'
         }]
         return items
     }
@@ -136,11 +153,18 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
             goods_number: 0,
             image_url: '',
             goods_contents: ''
-        }
+        },
+        number: 1,
+    }
+
+    private handleChange = (val: number) => {
+        this.setState({
+            number: val
+        })
     }
 
     public render(): JSX.Element {
-        const { data } = this.state
+        const { data, number } = this.state
         return (
             <MobileLayout
                 appBar={
@@ -158,17 +182,17 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
                                 <div className="flex_justify">
                                     <div className="flex">
                                         <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', position: 'relative', top: getUnit(5) }}>共1件，合计：</div>
-                                        <div style={{ fontSize: getUnit(20), color: 'rgb(0, 0, 0)', marginRight: getUnit(10) }}>¥10000</div>
+                                        <div style={{ fontSize: getUnit(20), color: 'rgb(0, 0, 0)', marginRight: getUnit(10) }}>¥{number * data.goods_price}</div>
                                     </div>
                                 </div>
-                                <Button mold="primary" theme={btnTheme} async onClick={this.handlePay}>提交订单</Button>
+                                <Button mold="primary" theme={btnTheme} onClick={this.handlePay}>提交订单</Button>
                             </div>
                         </div>
                     </div>
                 }
             >
                 <div style={{ padding: `${getUnit(10)} ${getUnit(5)}` }}>
-                    <Form getItems={this.getItem} style={{ background: '#fff' }} />
+                    <Form getItems={this.getItem} />
                 </div>
 
             </MobileLayout>
@@ -204,20 +228,50 @@ export default class Order extends Component<RouteComponentProps<any>, IState> {
     }
 
     private handlePay = async () => {
-        try {
-            const { history } = this.props
-            // const { data } = await http('wxapp/goods/goodsShow', {
-            //     gid: params.id
-            // })
-            // this.setState({
-            //     data
-            // })
-            history.replace('/pay')
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
+        if (this.fn) {
+            try {
+                const params = this.fn.getFieldValue(['message'])
+                const { number, data } = this.state
+                const { history, defaultAddr, match } = this.props
+                if (!defaultAddr.address_id) {
+                    Toast.info({
+                        content: '请选择收货地址',
+                    })
+                    return
+                }
+                const { msg } = await http('/wxapp/orders/subOrders', {
+                    ...params,
+                    total: number * data.goods_price,
+                    adid: defaultAddr.address_id,
+                    data: {
+                        cart_id: match.params.id,
+                        cart_num: number,
+                    }
+                })
+                this.setState({
+                    data
+                })
+                Toast.info({
+                    content: msg
+                })
+                // history.replace('/pay')
+            } catch (data) {
+                Toast.info({
+                    content: data.msg || '服务器繁忙,请稍后再试',
+                })
+            }
         }
     }
 
+    private handleAddress = () => {
+        const { history } = this.props
+        history.push('/addressList/select')
+    }
+
 }
+
+export default connect(
+    ({ defaultAddr }: IInitState) => ({
+        defaultAddr
+    })
+)(Order)

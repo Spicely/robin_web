@@ -4,9 +4,9 @@ import { Toast, MobileLayout, NavBar, Button, Gird, Form } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { getUnit, ButtonThemeData, BorderRadius, Color } from 'src/components/lib/utils'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
-import { connect } from 'react-redux'
+import { connect, DispatchProp } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
-import { Hide} from 'muka'
+import { Hide } from 'muka'
 
 const buttonTheme = new ButtonThemeData({
     width: '80%',
@@ -15,7 +15,7 @@ const buttonTheme = new ButtonThemeData({
 })
 
 
-interface IProps {
+interface IProps extends DispatchProp {
     userInfo: IGlobal.UserInfo
 }
 
@@ -24,36 +24,35 @@ class AddBank extends Component<IProps & RouteComponentProps<any>, any> {
     private fn?: IFormFun
 
     private getItems = (fn: IFormFun) => {
-        const { userInfo } = this.props
         this.fn = fn
         const items: IFormItem[] = [{
             component: 'Item',
             props: {
                 title: '持卡人',
-                value: Hide.fullName(userInfo.realname),
                 flexType: 'value'
             },
+            field: 'realname'
         }, {
             component: 'Item',
             props: {
                 title: '身份证',
-                value: Hide.card(userInfo.realcard),
                 flexType: 'value'
             },
+            field: 'card',
         }, {
             component: 'ItemInput',
             props: {
                 title: '银行卡',
                 placeholder: '请输入银行卡名称',
             },
-            field: 'bank_name'
+            field: 'bankname'
         }, {
             component: 'ItemInput',
             props: {
                 title: '卡 号',
                 placeholder: '请输入银行卡卡号',
             },
-            field: 'bank_number'
+            field: 'bankcard'
         },]
         return items
     }
@@ -74,6 +73,8 @@ class AddBank extends Component<IProps & RouteComponentProps<any>, any> {
                         <Button
                             theme={buttonTheme}
                             mold="primary"
+                            async
+                            onClick={this.handleAdd}
                         >
                             绑定银行卡
                         </Button>
@@ -86,6 +87,46 @@ class AddBank extends Component<IProps & RouteComponentProps<any>, any> {
                 </Gird>
             </MobileLayout>
         )
+    }
+
+    public componentDidMount() {
+        if (this.fn) {
+            const { userInfo } = this.props
+            this.fn.setFieldValue({
+                realname: Hide.fullName(userInfo.realname),
+                card: Hide.card(userInfo.realcard),
+            })
+        }
+    }
+
+    private handleAdd = async () => {
+        if (this.fn) {
+            const params = this.fn.getFieldValue()
+            if (!params.bankname) {
+                Toast.info({
+                    content: '请输入银行卡名称',
+                })
+                return
+            }
+            if (!params.bankcard) {
+                Toast.info({
+                    content: '请输入银行卡卡号',
+                })
+                return
+            }
+            try {
+                const { msg } = await http('/wxapp/users/addBanks', params)
+                const { history } = this.props
+                Toast.info({
+                    content: msg
+                })
+                history.goBack()
+            } catch (data) {
+                Toast.info({
+                    content: data.msg || '服务器繁忙,请稍后再试',
+                })
+            }
+        }
     }
 
     private handleBack = () => {

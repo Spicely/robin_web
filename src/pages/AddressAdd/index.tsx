@@ -34,7 +34,6 @@ export default class AddressAdd extends Component<RouteComponentProps<any>, ISta
                         onBack={this.handleBack}
                         title={params.id ? '编辑地址' : '新增地址'}
                         titleCenter
-                        fixed
                     />
                 }
                 footer={

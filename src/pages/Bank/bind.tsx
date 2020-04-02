@@ -121,7 +121,7 @@ class BindBank extends Component<IProps & RouteComponentProps<any>, any> {
                 userInfo.realcard = params.realcard
                 userInfo.realname = params.realname
                 dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
-                history.push('/addBank')
+                history.push('/bank')
             } catch (data) {
                 Toast.info({
                     content: data.msg || '服务器繁忙,请稍后再试',

@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { omit, isFunction, isNil } from 'lodash'
 import { Consumer } from '../ThemeProvider'
 import Icon from '../Icon'
-import { IStyledProps, transition, ButtonThemeData, getRatioUnit, getUnit } from '../utils'
+import { IStyledProps, transition, ButtonThemeData, getUnit } from '../utils'
 import Color from '../utils/Color'
 
 export type buttonMold = 'circle' | 'error' | 'primary'
@@ -40,9 +40,9 @@ const Btn = styled.button<IBtnStyleProps>`
     transition: all .1s cubic-bezier(0.65, 0.05, 0.36, 1);
     ${({ buttonTheme, theme }) => css`${buttonTheme.borderRadius || theme.borderRadius}`};
     background: initial;
-    border: ${() => getRatioUnit(1)} solid #ddd;
+    border: ${() => getUnit(1)} solid #ddd;
     outline: none;
-    min-width: ${() => getRatioUnit(78)};
+    min-width: ${({ buttonTheme }) => getUnit(buttonTheme.minWidth)};
     cursor: pointer;
     ${transition(0.5)};
     -webkit-tap-highlight-color: transparent;

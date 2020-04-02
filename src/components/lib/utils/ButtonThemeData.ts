@@ -15,6 +15,7 @@ interface IButtonThemeDataProps {
     borderRadius?: BorderRadius
     height?: number | string
     width?: number | string
+    minWidth?: number | string
     iconTheme?: IconThemeData
     fontSize?: number | string
 }
@@ -35,6 +36,7 @@ export default class ButtonThemeData {
             if (!isNil(data.width)) this.width = data.width
             if (data.borderRadius) this.borderRadius = data.borderRadius
             if (!isNil(data.fontSize)) this.fontSize = data.fontSize
+            if (!isNil(data.minWidth)) this.minWidth = data.minWidth
         }
     }
 
@@ -43,6 +45,8 @@ export default class ButtonThemeData {
     public buttonColor?: Color
 
     public errorColor?: Color
+
+    public minWidth: number | string = 78
 
     public width?: number | string
 

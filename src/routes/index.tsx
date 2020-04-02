@@ -43,7 +43,7 @@ export const routes: IRoutes[] = [{
     path: '/wallet'
 }, {
     component: AddressList,
-    path: '/addressList'
+    path: '/addressList/:select?'
 }, {
     component: AddressAdd,
     path: '/addressAdd/:id?'

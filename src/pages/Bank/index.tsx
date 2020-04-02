@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Hide } from 'muka'
 import { http } from 'src/utils'
 import { Toast, MobileLayout, NavBar, Item, Image, Button } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
@@ -18,13 +19,17 @@ const buttonTheme = new ButtonThemeData({
 })
 
 interface IState {
+    data: any[]
 }
 
 export default class Bank extends Component<RouteComponentProps<any>, IState> {
 
-    public state: IState = {}
+    public state: IState = {
+        data: []
+    }
 
     public render(): JSX.Element {
+        const { data } = this.state
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -33,10 +38,9 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
                         onBack={this.handleBack}
                         title="银行卡"
                         titleCenter
-                        fixed
                     />
                 }
-                onGetData={()=> {}}
+                onGetData={() => { }}
                 footer={
                     <div className="flex_center" style={{ marginBottom: getUnit(10) }}>
                         <Button
@@ -57,50 +61,24 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
                     </div>
                 }
             >
-                {/* <div style={{ padding: getUnit(10) }}>
-                    <Item
-                        style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
-                        title={
-                            <div className="flex">
-                                <Image src={require('../../assets/v2_q6k5js.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>余额</div>
+                {
+                    data.map((i, index: number) => {
+                        return (
+                            <div style={{ padding: getUnit(10) }} key={index}>
+                                <Item
+                                    style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
+                                    title={
+                                        <div className="flex">
+                                            <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>{i.bankname}</div>
+                                        </div>
+                                    }
+                                    value={<PriceText>{Hide.card(i.bankcard)}</PriceText>}
+                                    link
+                                />
                             </div>
-                        }
-                        value={<PriceText>¥10000</PriceText>}
-                        link
-                    />
-                    <Item
-                        style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
-                        title={
-                            <div className="flex">
-                                <Image src={require('../../assets/v2_q6k5en.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>货款通兑</div>
-                            </div>
-                        }
-                        value={<PriceText>¥10000</PriceText>}
-                    />
-                    <Item
-                        style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
-                        title={
-                            <div className="flex">
-                                <Image src={require('../../assets/v2_q6k5r8.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>利润通兑</div>
-                            </div>
-                        }
-                        value={<PriceText>¥10000</PriceText>}
-                    />
-                    <Item
-                        style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
-                        title={
-                            <div className="flex">
-                                <Image src={require('../../assets/v2_q6k5v8.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>银行卡</div>
-                            </div>
-                        }
-                        value={<PriceText>¥10000</PriceText>}
-                        link
-                    />
-                </div> */}
+                        )
+                    })
+                }
             </MobileLayout>
         )
     }
@@ -110,19 +88,20 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
     }
 
     private getData = async () => {
-        // try {
-        //     const { match } = this.props
-        //     const data = await http('news/get_mechanism_info', {
-        //         id: match.params.id
-        //     })
-        //     this.setState({
-        //         ...data.msg
-        //     })
-        // } catch (data) {
-        //     Toast.info({
-        //         content: data.msg || '服务器繁忙,请稍后再试',
-        //     })
-        // }
+        const close = Toast.loading()
+        try {
+            const { data } = await http('/wxapp/users/banks')
+            this.setState({
+                data
+            })
+            close()
+
+        } catch (data) {
+            close()
+            Toast.info({
+                content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
     }
 
     private handleAddBank = () => {

@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { ButtonThemeData, BorderRadius, Color, getUnit, ItemThemeData } from 'src/components/lib/utils'
 import { connect, DispatchProp } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
-import { SET_USERADDRESSLIST_DATA } from 'src/store/actions'
+import { SET_USERADDRESSLIST_DATA, SET_USERADDRESS_DATA } from 'src/store/actions'
 
 interface IState {
 }
@@ -31,7 +31,7 @@ class AddressList extends Component<IProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
-        const { userAddressList } = this.props
+        const { userAddressList, match } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -40,7 +40,6 @@ class AddressList extends Component<IProps & DispatchProp, IState> {
                         onBack={this.handleBack}
                         title="编辑地址"
                         titleCenter
-                        fixed
                     />
                 }
                 emptyElement={
@@ -72,15 +71,23 @@ class AddressList extends Component<IProps & DispatchProp, IState> {
                                         key={index}
                                         theme={itemTheme}
                                         title={
-                                            <Radio
-                                                type="square"
-                                                iconStyle={{ borderRadius: '50%' }}
-                                            >
+                                            match.params.select ? (
                                                 <div>
                                                     <div style={{ fontSize: getUnit(13) }}>{i.address_name}，{i.address_phone}</div>
                                                     <div style={{ fontSize: getUnit(12), color: 'rgb(158, 158, 158)' }}>{i.address_province}{i.address_city}{i.address_area}{i.address_info}</div>
                                                 </div>
-                                            </Radio>
+                                            ) : (
+                                                    <Radio
+                                                        type="square"
+                                                        iconStyle={{ borderRadius: '50%' }}
+                                                    >
+                                                        <div>
+                                                            <div style={{ fontSize: getUnit(13) }}>{i.address_name}，{i.address_phone}</div>
+                                                            <div style={{ fontSize: getUnit(12), color: 'rgb(158, 158, 158)' }}>{i.address_province}{i.address_city}{i.address_area}{i.address_info}</div>
+                                                        </div>
+                                                    </Radio>
+                                                )
+
                                         }
                                         icon={
                                             <Image
@@ -90,6 +97,7 @@ class AddressList extends Component<IProps & DispatchProp, IState> {
                                             />
                                         }
                                         link
+                                        onPress={this.handleSelect.bind(this, i)}
                                     />
                                 )
                             })
@@ -126,6 +134,14 @@ class AddressList extends Component<IProps & DispatchProp, IState> {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
             })
+        }
+    }
+
+    private handleSelect = (data: any) => {
+        const { match, dispatch, history } = this.props
+        if (match.params.select) {
+            dispatch({ type: SET_USERADDRESS_DATA, data: data })
+            history.goBack()
         }
     }
 

@@ -7,7 +7,7 @@ import rootReducer from './reducers'
 const persistConfig = {
     key: 'muka_store',
     storage,
-    blacklist: ['imageModalVisible']
+    blacklist: ['imageModalVisible', 'defaultAddr']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

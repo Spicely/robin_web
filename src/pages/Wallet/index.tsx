@@ -33,7 +33,6 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
 
     public render(): JSX.Element {
         const { userInfo } = this.props
-        console.log(userInfo)
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -146,7 +145,9 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
     private handelToBank = () => {
         const { userInfo, history } = this.props
         if (!userInfo.realname && !userInfo.realcard) {
-            history.push('userBind')
+            history.push('/userBind')
+        } else {
+            history.push('/bank')
         }
     }
 
