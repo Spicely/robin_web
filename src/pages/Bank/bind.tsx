@@ -47,14 +47,14 @@ class BindBank extends Component<IProps & RouteComponentProps<any>, any> {
                 title: '姓    名',
                 placeholder: '真实姓名',
             },
-            field: 'name'
+            field: 'realname'
         }, {
             component: 'ItemInput',
             props: {
                 title: '身份证',
                 placeholder: '身份证号码',
             },
-            field: 'id_card'
+            field: 'realcard'
         },]
         return items
     }
@@ -100,49 +100,28 @@ class BindBank extends Component<IProps & RouteComponentProps<any>, any> {
         )
     }
 
-    public componentDidMount() {
-        this.getData()
-    }
-
-    private getData = async () => {
-        // try {
-        //     const { match } = this.props
-        //     const data = await http('news/get_mechanism_info', {
-        //         id: match.params.id
-        //     })
-        //     this.setState({
-        //         ...data.msg
-        //     })
-        // } catch (data) {
-        //     Toast.info({
-        //         content: data.msg || '服务器繁忙,请稍后再试',
-        //     })
-        // }
-    }
-
     private handleNext = async () => {
         if (this.fn) {
             const params = this.fn.getFieldValue()
-            if (!params.name) {
+            if (!params.realname) {
                 Toast.info({
                     content: '请输入真实姓名',
                 })
                 return
             }
-            if (!params.id_card) {
+            if (!params.realcard) {
                 Toast.info({
                     content: '请输入身份证号码',
                 })
                 return
             }
             try {
-
-                const data = await http('news/get_mechanism_info', params)
-                const { userInfo, dispatch } = this.props
-                // dispatch({type: SET_USERINFO_DATA, data: ''})
-                // this.setState({
-                //     ...data.msg
-                // })
+                await http('/wxapp/users/setRealName', params)
+                const { userInfo, dispatch,history } = this.props
+                userInfo.realcard = params.realcard
+                userInfo.realname = params.realname
+                dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+                history.push('/addBank')
             } catch (data) {
                 Toast.info({
                     content: data.msg || '服务器繁忙,请稍后再试',

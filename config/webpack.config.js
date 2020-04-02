@@ -307,6 +307,7 @@ module.exports = function(webpackEnv) {
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
         'components': paths.appSrc + '/components',
+        'muka': paths.appSrc + '/muka',
         'store': paths.appSrc + '/store',
         // Allows for better profiling with ReactDevTools
         ...(isEnvProductionProfile && {

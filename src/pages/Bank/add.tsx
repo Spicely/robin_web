@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Item, Image, Button, Gird, Form } from 'components'
+import { Toast, MobileLayout, NavBar, Button, Gird, Form } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { getUnit, ButtonThemeData, BorderRadius, Color } from 'src/components/lib/utils'
-import styled from 'styled-components'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
-
-const PriceText = styled.div`
-    font-weight: 700;
-    font-size: ${getUnit(16)};
-    color: rgb(0, 0, 0);
-`
+import { connect } from 'react-redux'
+import { IInitState, IGlobal } from 'src/store/state'
+import { Hide} from 'muka'
 
 const buttonTheme = new ButtonThemeData({
     width: '80%',
@@ -18,29 +14,30 @@ const buttonTheme = new ButtonThemeData({
     buttonColor: Color.fromRGB(0, 0, 0)
 })
 
-interface IState {
+
+interface IProps {
+    userInfo: IGlobal.UserInfo
 }
 
-export default class AddBank extends Component<RouteComponentProps<any>, IState> {
-
-
+class AddBank extends Component<IProps & RouteComponentProps<any>, any> {
 
     private fn?: IFormFun
 
     private getItems = (fn: IFormFun) => {
+        const { userInfo } = this.props
         this.fn = fn
         const items: IFormItem[] = [{
             component: 'Item',
             props: {
                 title: '持卡人',
-                value: '*皓',
+                value: Hide.fullName(userInfo.realname),
                 flexType: 'value'
             },
         }, {
             component: 'Item',
             props: {
                 title: '身份证',
-                value: '430*****************10',
+                value: Hide.card(userInfo.realcard),
                 flexType: 'value'
             },
         }, {
@@ -61,8 +58,6 @@ export default class AddBank extends Component<RouteComponentProps<any>, IState>
         return items
     }
 
-    public state: IState = {}
-
     public render(): JSX.Element {
         return (
             <MobileLayout
@@ -72,7 +67,6 @@ export default class AddBank extends Component<RouteComponentProps<any>, IState>
                         onBack={this.handleBack}
                         title="添加银行卡"
                         titleCenter
-                        fixed
                     />
                 }
                 footer={
@@ -94,29 +88,15 @@ export default class AddBank extends Component<RouteComponentProps<any>, IState>
         )
     }
 
-    public componentDidMount() {
-        this.getData()
-    }
-
-    private getData = async () => {
-        // try {
-        //     const { match } = this.props
-        //     const data = await http('news/get_mechanism_info', {
-        //         id: match.params.id
-        //     })
-        //     this.setState({
-        //         ...data.msg
-        //     })
-        // } catch (data) {
-        //     Toast.info({
-        //         content: data.msg || '服务器繁忙,请稍后再试',
-        //     })
-        // }
-    }
-
     private handleBack = () => {
         const { history } = this.props
         history.goBack()
     }
 
 }
+
+export default connect(
+    ({ userInfo }: IInitState) => ({
+        userInfo
+    })
+)(AddBank)

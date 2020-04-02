@@ -22,8 +22,11 @@ export namespace IGlobal {
         user_phone: string
         wx_headimg: string
         wx_openid: string
+        realname: string
+        realcard: string
         bd_headimg: string
         bd_openid: string
+        buyprice: string
         code: string
         created_time: number
         login_key: string

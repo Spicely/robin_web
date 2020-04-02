@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/core": "7.6.0",
     "@svgr/webpack": "4.3.2",
+    "@types/axios": "^0.14.0",
     "@types/crypto-js": "^3.1.43",
     "@types/echarts": "^4.4.1",
     "@types/jest": "24.0.23",
@@ -67,7 +68,6 @@
     "lodash": "^4.17.15",
     "mini-css-extract-plugin": "0.8.0",
     "moment": "^2.24.0",
-    "muka": "^0.2.3",
     "optimize-css-assets-webpack-plugin": "5.0.3",
     "pnp-webpack-plugin": "1.5.0",
     "postcss-flexbugs-fixes": "4.1.0",

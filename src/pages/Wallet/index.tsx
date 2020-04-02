@@ -95,7 +95,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>货款</div>
                             </div>
                         }
-                        value={<PriceText>¥10000</PriceText>}
+                        value={<PriceText>¥{userInfo.buyprice}</PriceText>}
                     />
                     <Item
                         style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
@@ -145,7 +145,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
 
     private handelToBank = () => {
         const { userInfo, history } = this.props
-        if (!userInfo.user_nickname) {
+        if (!userInfo.realname && !userInfo.realcard) {
             history.push('userBind')
         }
     }

@@ -13,13 +13,16 @@ const initData: IGlobal.UserInfo = {
     wx_openid: '',
     bd_headimg: '',
     bd_openid: '',
+    buyprice: '0.00',
     code: '',
     created_time: 0,
     login_key: '',
     last_login_time: 0,
     remcd: '',
-    cny: '',
+    cny: '0.00',
     price: '',
+    realcard: '',
+    realname: ''
 }
 
 export default function userInfo(state = initData, action: AnyAction) {
