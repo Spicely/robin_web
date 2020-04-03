@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, MouseEvent } from 'react'
 import { isFunction, isNumber } from 'lodash'
 import styled from 'styled-components'
 import { Consumer } from '../ThemeProvider'
@@ -14,7 +14,7 @@ export interface IInputNumberProps {
     max?: number
     addIcon?: iconType
     removeIcon?: iconType
-    onChange?: (val: number) => void
+    onChange?: (val: number, e: MouseEvent<HTMLButtonElement>) => void
 }
 
 const btnTheme = new ButtonThemeData({
@@ -105,21 +105,21 @@ export default class InputNumber extends Component<IInputNumberProps, any> {
             val
         })
         if (isFunction(onChange)) {
-            onChange(val)
+            onChange(val, e)
         }
         return
 
     }
 
-    private handleReduce = () => {
+    private handleReduce = (e: MouseEvent<HTMLButtonElement>) => {
         const { value, onChange, min } = this.props
         if (isNumber(value)) {
             if (isFunction(onChange)) {
                 const val = value - 1
                 if (isNumber(min)) {
-                    onChange(val < min ? min : val)
+                    onChange(val < min ? min : val, e)
                 } else {
-                    onChange(val)
+                    onChange(val, e)
                 }
             }
         } else {
@@ -137,15 +137,15 @@ export default class InputNumber extends Component<IInputNumberProps, any> {
         }
     }
 
-    private handlePlus = () => {
+    private handlePlus = (e: MouseEvent<HTMLButtonElement>) => {
         const { value, onChange, max } = this.props
         if (isNumber(value)) {
             if (isFunction(onChange)) {
                 const val = value + 1
                 if (max) {
-                    onChange(val > max ? max : val)
+                    onChange(val > max ? max : val, e)
                 } else {
-                    onChange(val)
+                    onChange(val, e)
                 }
             }
         } else {

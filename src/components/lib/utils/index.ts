@@ -60,7 +60,7 @@ export const transition = function (time: number, tag?: string[]): string {
 }
 
 export const getRatioUnit = function (num: number) {
-    return num * ThemeData.ratio + ThemeData.unit
+    return (num * ThemeData.ratio).toFixed(2) + ThemeData.unit
 }
 
 export const getUnit = function (value?: number | string, themeValue?: number | string) {

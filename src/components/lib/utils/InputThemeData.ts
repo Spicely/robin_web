@@ -1,4 +1,5 @@
-import { isNumber , isNil} from 'lodash'
+import { BorderRadius } from 'src/components/lib/utils';
+import { isNumber, isNil } from 'lodash'
 import Color from './Color'
 import Border, { BorderStyle } from './Border'
 import IconThemeData from './IconThemeData'
@@ -13,6 +14,7 @@ interface IInputThemeDataProps {
     border?: Border
     hoverColor?: Color
     iconCloseTheme?: IconThemeData
+    borderRadius?: BorderRadius
 }
 
 export default class InputThemeData {
@@ -28,10 +30,13 @@ export default class InputThemeData {
             if (data.border) this.border = data.border
             if (data.hoverColor) this.hoverColor = data.hoverColor
             if (data.iconCloseTheme) this.iconCloseTheme = data.iconCloseTheme
+            if (data.borderRadius) this.borderRadius = data.borderRadius
         }
     }
 
     public fontSize?: number
+
+    public borderRadius?: BorderRadius
 
     public color: Color = Color.fromRGB(18, 18, 18)
 

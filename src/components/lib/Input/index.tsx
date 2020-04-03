@@ -107,6 +107,7 @@ interface IIntViewProps extends IStyleProps {
 
 const IntView = styled.div<IIntViewProps>`
     position: relative;
+    ${({ inputTheme, theme }) => inputTheme.borderRadius || theme.borderRadius};
     ${transition(0.5)};
     ${({ inputTheme }) => {
         if (inputTheme.border) return css`${inputTheme.border.toString()}`
@@ -126,7 +127,8 @@ const PreIcon = styled.div`
 `
 
 const IntLabel = styled.div`
-     width: ${() => getUnit(60)};
+     max-width: ${getUnit(70)};
+     padding-left: ${getUnit(10)};
 `
 const CloseIcon = styled(Icon)`
     ${transition(0.5)};
@@ -171,13 +173,7 @@ export default class Input extends Component<IInputProps, IState> {
                         style={style}
                         inputTheme={theme || data.theme.inputTheme}
                     >
-                        {label ? (
-                            <IntLabel
-                                className={`flex_justify ${labelClassName || ''}`}
-                                style={labelStyle}>
-                                {label}
-                            </IntLabel>
-                        ) : null}
+
                         {placeAnimate && <div className={getClassName(`${prefixClass}_text flex_justify`, moveToTop ? 'active' : '')}>{placeholder}</div>}
                         <IntView
                             className={`flex flex_1 ${disabled ? prefix + 'disabled' : ''}`}
@@ -191,20 +187,28 @@ export default class Input extends Component<IInputProps, IState> {
                                     </PreIcon>
                                 ) : null
                             }
-                            <Int
-                                {...otherProps}
-                                className="flex_1"
-                                placeholder={placeAnimate ? '' : placeholder}
-                                onFocus={this.handleFocus}
-                                onBlur={this.handleBlur}
-                                value={isNil(value) ? val : value}
-                                onChange={this.handleChange}
-                                inputTheme={theme || data.theme.inputTheme}
-                                style={{
-                                    paddingRight: (closeIconShow && showMaxLength) ? 63 : (closeIconShow || showMaxLength) ? 24 : '',
-                                    paddingLeft: preIcon ? 0 : ''
-                                }}
-                            />
+                            {label ? (
+                                <IntLabel
+                                    className={`flex_justify ${labelClassName || ''}`}
+                                    style={labelStyle}>
+                                    {label}
+                                </IntLabel>
+                            ) : null}
+                            <div className="flex_1">
+                                <Int
+                                    {...otherProps}
+                                    placeholder={placeAnimate ? '' : placeholder}
+                                    onFocus={this.handleFocus}
+                                    onBlur={this.handleBlur}
+                                    value={isNil(value) ? val : value}
+                                    onChange={this.handleChange}
+                                    inputTheme={theme || data.theme.inputTheme}
+                                    style={{
+                                        paddingRight: (closeIconShow && showMaxLength) ? 63 : (closeIconShow || showMaxLength) ? 24 : '',
+                                        paddingLeft: preIcon ? 0 : ''
+                                    }}
+                                />
+                            </div>
                             {(showMaxLength && maxLength) ? <div className={getClassName(`${prefixClass}_max_length flex_justify`)} style={{
                                 right: closeIconShow ? 26 : 5
                             }}>{val.length || (value || '').toString().length}/{maxLength}</div> : null}

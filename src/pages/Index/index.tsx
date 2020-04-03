@@ -13,6 +13,7 @@ class Index extends Component<DispatchProp, any> {
     public render(): JSX.Element {
         return (
             <TabBar
+                defaultSelecte={2}
                 mode="menu"
             >
                 <TabBar.Item

@@ -19,7 +19,7 @@ export interface IButtonProps {
     fixed?: boolean
     disabled?: boolean
     async?: boolean
-    onClick?: (e: MouseEvent<HTMLButtonElement, MouseEvent>) => (Promise<void> | void)
+    onClick?: (e: MouseEvent<HTMLButtonElement>) => (Promise<void> | void)
     type?: any
     style?: CSSProperties
     theme?: ButtonThemeData

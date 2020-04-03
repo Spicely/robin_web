@@ -85,6 +85,10 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                         }
                         value={<PriceText>{userInfo.price}手</PriceText>}
                         link
+                        onPress={() => {
+                            const { history } = this.props
+                            history.push('/exchange')
+                        }}
                     />
                     <Item
                         style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}

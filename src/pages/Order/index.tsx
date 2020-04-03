@@ -239,14 +239,12 @@ class Order extends Component<IProps & RouteComponentProps<any>, IState> {
                     })
                     return
                 }
-                const { msg } = await http('/wxapp/orders/subOrders', {
+                const { msg } = await http('/wxapp/orders/onOrder', {
                     ...params,
                     total: number * data.goods_price,
                     adid: defaultAddr.address_id,
-                    data: {
-                        cart_id: match.params.id,
-                        cart_num: number,
-                    }
+                    gid: match.params.id,
+                    number,
                 })
                 this.setState({
                     data
@@ -254,7 +252,7 @@ class Order extends Component<IProps & RouteComponentProps<any>, IState> {
                 Toast.info({
                     content: msg
                 })
-                // history.replace('/pay')
+                history.replace('/pay')
             } catch (data) {
                 Toast.info({
                     content: data.msg || '服务器繁忙,请稍后再试',
