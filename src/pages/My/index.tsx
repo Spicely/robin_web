@@ -54,41 +54,43 @@ class My extends Component<IProps, IState> {
                 backgroundColor="rgb(248, 248, 248)"
             >
                 <HeaderBox>
-                    <div className="flex" style={{ marginTop: getUnit(40) }}>
-                        <Image
-                            src={require('../../assets/v2_q5sp1k.png')}
-                            style={{ width: getUnit(52), height: getUnit(52) }}
-                        />
-                        <div className="flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), marginLeft: getUnit(5) }}>{userInfo.user_name}</div>
-                        <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
-                            <div
-                                className="flex"
-                                style={{
-                                    backgroundColor: 'rgb(0, 0, 0)',
-                                    height: getUnit(11),
-                                    width: getUnit(30),
-                                    borderRadius: getUnit(20)
-                                }}>
-                                <Image
-                                    src={require('../../assets/v2_q5sr7o.png')}
-                                    style={{
-                                        width: getUnit(9), height: getUnit(9),
-                                        marginLeft: getUnit(5),
-                                        marginTop: getUnit(1),
-                                        marginRight: getUnit(2)
-                                    }}
-                                />
-                                <div className="flex_justify" style={{ color: '#fff', fontSize: getUnit(9), marginTop: getUnit(2) }}> V1 </div>
-                            </div>
-
-                        </div>
-                        <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
-                            <Icon
-                                icon="ios-arrow-forward"
-                                theme={new IconThemeData({ size: 14, color: Color.fromRGB(0, 0, 0) })}
+                    <Link to="/info">
+                        <div className="flex" style={{ marginTop: getUnit(40) }}>
+                            <Image
+                                src={require('../../assets/v2_q5sp1k.png')}
+                                style={{ width: getUnit(52), height: getUnit(52) }}
                             />
+                            <div className="flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), marginLeft: getUnit(5) }}>{userInfo.user_name}</div>
+
+                            <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
+                                <div
+                                    className="flex"
+                                    style={{
+                                        backgroundColor: 'rgb(0, 0, 0)',
+                                        height: getUnit(11),
+                                        width: getUnit(30),
+                                        borderRadius: getUnit(20)
+                                    }}>
+                                    <Image
+                                        src={require('../../assets/v2_q5sr7o.png')}
+                                        style={{
+                                            width: getUnit(9), height: getUnit(9),
+                                            marginLeft: getUnit(5),
+                                            marginTop: getUnit(1),
+                                            marginRight: getUnit(2)
+                                        }}
+                                    />
+                                    <div className="flex_justify" style={{ color: '#fff', fontSize: getUnit(9), marginTop: getUnit(2) }}> V1 </div>
+                                </div>
+                            </div>
+                            <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
+                                <Icon
+                                    icon="ios-arrow-forward"
+                                    theme={new IconThemeData({ size: 14, color: Color.fromRGB(0, 0, 0) })}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                     <HeaderItemBox className="flex">
                         <Link to="/wallet" className="flex_1">
                             <div className="flex">

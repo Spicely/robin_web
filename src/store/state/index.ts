@@ -1,5 +1,5 @@
 
-export interface IGoodsData {
+export interface ISoodsData {
     goods_id: number
     goods_name: string
     goods_price: number
@@ -9,9 +9,25 @@ export interface IGoodsData {
     goods_contents: string
 }
 
+export interface IGoodsData {
+    goods_id: number
+    goods_name: string
+    goods_class_ids: string
+    goods_price: number
+    platform_price: number
+    goods_number: number
+    goods_service_tags: string
+    goods_discount: number
+    start_time: number
+    image_url: string
+}
+
 export namespace IGlobal {
     export interface HomeData {
         goods_data: IGoodsData[]
+    }
+    export interface ShopData {
+        goods_data: ISoodsData[]
     }
     export interface UserInfo {
         user_id: number
@@ -34,6 +50,24 @@ export namespace IGlobal {
         remcd: string
         cny: string
         price: string
+    }
+
+    export interface IBanner {
+        banner_id: number
+        banner_title: string
+        banner_image_id: number
+        banner_type_id: number
+        banner_href: string
+        banner_state: number
+        banner_index: number
+        article_id: number
+        created_time: number
+        image_id: number
+        image_title: string
+        image_size: string
+        image_type: string
+        image_class: number
+        image_url: string
     }
 
     export interface UserAddressList {
@@ -68,4 +102,7 @@ export interface IInitState {
     userInfo: IGlobal.UserInfo
     userAddressList: IGlobal.UserAddressList
     defaultAddr: IGlobal.DefaultAddr
+    banner: IGlobal.IBanner[]
+    selected: number
+    shopData: IGlobal.ShopData
 }

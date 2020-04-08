@@ -2,11 +2,15 @@ import * as React from 'react'
 import { omit } from 'lodash'
 import Item, { IItemProps } from '../Item'
 import Input, { IInputProps } from '../Input'
+import { InputThemeData, Border } from '../utils'
 
 export interface IGirdInput extends IInputProps {
     title?: string
 }
 
+const intTheme = new InputThemeData({
+    border: Border.none
+})
 
 export default class GirdInput extends React.Component<IGirdInput & IItemProps, any> {
 
@@ -17,7 +21,8 @@ export default class GirdInput extends React.Component<IGirdInput & IItemProps, 
             <Item
                 {...this.props}
                 title={title || ''}
-                value={<Input {...otherProps} />}
+                flexType="value"
+                value={<Input {...otherProps} theme={intTheme} />}
             />
         )
     }

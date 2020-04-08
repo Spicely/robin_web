@@ -122,7 +122,7 @@ class Shop extends Component<RouteComponentProps<any>, IState> {
                                 </div>
                             }
                             value={
-                                <Button mold="primary" theme={btnTheme}>去结算</Button>
+                                <Button mold="primary" theme={btnTheme} onClick={this.handleOrder}>去结算</Button>
                             }
                         />
                     ) : null
@@ -144,6 +144,18 @@ class Shop extends Component<RouteComponentProps<any>, IState> {
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
+    }
+    private handleOrder = () => {
+        const { data } = this.state
+        const ids = data.filter((i) => i.checked).map((i) => i.cart_id)
+        if (ids.length) {
+            const { history } = this.props
+            history.push(`/order/${ids.join(',')}`)
+        } else {
+            Toast.info({
+                content: '请选择商品'
             })
         }
     }

@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { IGoodsData } from 'src/store/state'
 
 interface IState {
-    data: IGoodsData
+    data: any
 }
 
 const carouselTheme = new CarouselThemeData({
@@ -78,6 +78,7 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
             goods_number: 0,
             image_url: '',
             goods_contents: '',
+            imgs: []
         },
     }
 
@@ -123,8 +124,11 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
                     dotColor="rgb(51, 51, 51)"
                     autoplay
                 >
-                    <Image src={require('../../assets/3.png')} style={{ width: '100%' }} />
-                    <Image src={require('../../assets/3.png')} style={{ width: '100%' }} />
+                    {
+                        data.imgs.map((i: string, index: number) => {
+                            return (<Image src={imgUrl + i} style={{ width: '100%' }} key={index} />)
+                        })
+                    }
                 </Carousel>
                 <Item
                     style={{ marginTop: getUnit(10), paddingBottom: getUnit(10) }}
@@ -193,9 +197,26 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
         this.getData()
     }
 
-    private handleToView = (url: string) => {
-        const { history, match } = this.props
-        history.push(`/${url}/${match.params.id}`)
+    private handleToView = async (url: string) => {
+        const close = Toast.loading()
+        try {
+            const { params } = this.props.match
+            const { history } = this.props
+            const { msg, data } = await http('/wxapp/goods/addShoppingCart', {
+                gid: params.id,
+                num: 1
+            })
+            Toast.info({
+                content: msg
+            })
+            close()
+            history.push(`/${url}/${data}`)
+        } catch (data) {
+            close()
+            Toast.info({
+                content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
     }
 
     private handleBack = () => {

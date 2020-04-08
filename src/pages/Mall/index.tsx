@@ -2,8 +2,11 @@ import React, { Component } from 'react'
 import { Image, MobileLayout, Toast, Carousel } from 'components'
 import { http, imgUrl } from '../../utils'
 import { CarouselThemeData, getUnit } from 'src/components/lib/utils'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
+import { IGlobal, IInitState } from 'src/store/state'
+import { connect } from 'react-redux'
+import { SET_SHOP_DATA } from 'src/store/actions'
 
 interface IState {
     data: any[]
@@ -68,146 +71,65 @@ class Mall extends Component<any, IState> {
     }
 
     public render(): JSX.Element {
+        const { banner, shopData } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
-                appBar={
-                    <Carousel
-                        theme={carouselTheme}
-                        dotType="circular"
-                        dotColor="rgb(51, 51, 51)"
-                        autoplay
-                    >
-                        <Image src={require('../../assets/1.png')} style={{ width: '100%' }} />
-                        <Image src={require('../../assets/2.png')} style={{ width: '100%' }} />
-                    </Carousel>
-                }
             >
+                <Carousel
+                    theme={carouselTheme}
+                    dotType="circular"
+                    dotColor="rgb(51, 51, 51)"
+                    autoplay
+                >
+                    {
+                        banner.map((i: any, index: number) => {
+                            return (
+                                <Image src={imgUrl + i.image_url} style={{ width: '100%' }} key={index} />
+                            )
+                        })
+                    }
+                </Carousel>
                 <div style={{ padding: getUnit(10), paddingTop: 0 }}>
-                    <ShopItemView>
-                        <Link to="/detail">
-                            <div
-                                className="flex_center"
-                                style={{ padding: getUnit(10) }}
-                            >
-                                <Image src={require('../../assets/3.png')} style={{ width: getUnit(120), height: getUnit(120) }} />
-                                <div style={{ paddingTop: getUnit(8), position: 'relative' }}>
-                                    <ShopItemTitle>史丹利复合肥料2019款...</ShopItemTitle>
-                                    <div className="flex">
-                                        <ShopItemPirce>¥10000</ShopItemPirce>
-                                        <div className="flex_justify" style={{ fontSize: getUnit(10), color: 'rgb(16, 16, 16)' }}>通兑</div>
-                                    </div>
-                                    <div style={{ fontSize: getUnit(12), color: 'rgb(130, 130, 130)' }}>已售卖1200</div>
-                                    <ShopLogo />
-                                </div>
-                            </div>
-                        </Link>
-                    </ShopItemView>
-                    <ShopItemView>
-                        <div
-                            className="flex_center"
-                            style={{ padding: getUnit(10) }}
-                        >
-                            <Image src={require('../../assets/3.png')} style={{ width: getUnit(120), height: getUnit(120) }} />
-                            <div style={{ paddingTop: getUnit(8), position: 'relative' }}>
-                                <ShopItemTitle>史丹利复合肥料2019款...</ShopItemTitle>
-                                <div className="flex">
-                                    <ShopItemPirce>¥10000</ShopItemPirce>
-                                    <div className="flex_justify" style={{ fontSize: getUnit(10), color: 'rgb(16, 16, 16)' }}>通兑</div>
-                                </div>
-                                <div style={{ fontSize: getUnit(12), color: 'rgb(130, 130, 130)' }}>已售卖1200</div>
-                                <ShopLogo />
-                            </div>
-                        </div>
-                    </ShopItemView>
-                    <ShopItemView>
-                        <div
-                            className="flex_center"
-                            style={{ padding: getUnit(10) }}
-                        >
-                            <Image src={require('../../assets/3.png')} style={{ width: getUnit(120), height: getUnit(120) }} />
-                            <div style={{ paddingTop: getUnit(8), position: 'relative' }}>
-                                <ShopItemTitle>史丹利复合肥料2019款...</ShopItemTitle>
-                                <div className="flex">
-                                    <ShopItemPirce>¥10000</ShopItemPirce>
-                                    <div className="flex_justify" style={{ fontSize: getUnit(10), color: 'rgb(16, 16, 16)' }}>通兑</div>
-                                </div>
-                                <div style={{ fontSize: getUnit(12), color: 'rgb(130, 130, 130)' }}>已售卖1200</div>
-                                <ShopLogo />
-                            </div>
-                        </div>
-                    </ShopItemView>
-                    <ShopItemView>
-                        <div
-                            className="flex_center"
-                            style={{ padding: getUnit(10) }}
-                        >
-                            <Image src={require('../../assets/3.png')} style={{ width: getUnit(120), height: getUnit(120) }} />
-                            <div style={{ paddingTop: getUnit(8), position: 'relative' }}>
-                                <ShopItemTitle>史丹利复合肥料2019款...</ShopItemTitle>
-                                <div className="flex">
-                                    <ShopItemPirce>¥10000</ShopItemPirce>
-                                    <div className="flex_justify" style={{ fontSize: getUnit(10), color: 'rgb(16, 16, 16)' }}>通兑</div>
-                                </div>
-                                <div style={{ fontSize: getUnit(12), color: 'rgb(130, 130, 130)' }}>已售卖1200</div>
-                                <ShopLogo />
-                            </div>
-                        </div>
-                    </ShopItemView>
-                    <ShopItemView>
-                        <div
-                            className="flex_center"
-                            style={{ padding: getUnit(10) }}
-                        >
-                            <Image src={require('../../assets/3.png')} style={{ width: getUnit(120), height: getUnit(120) }} />
-                            <div style={{ paddingTop: getUnit(8), position: 'relative' }}>
-                                <ShopItemTitle>史丹利复合肥料2019款...</ShopItemTitle>
-                                <div className="flex">
-                                    <ShopItemPirce>¥10000</ShopItemPirce>
-                                    <div className="flex_justify" style={{ fontSize: getUnit(10), color: 'rgb(16, 16, 16)' }}>通兑</div>
-                                </div>
-                                <div style={{ fontSize: getUnit(12), color: 'rgb(130, 130, 130)' }}>已售卖1200</div>
-                                <ShopLogo />
-                            </div>
-                        </div>
-                    </ShopItemView>
+                    {
+                        shopData.goods_data.map((i: any, index: number) => {
+                            return (
+                                <ShopItemView key={index}>
+                                    <Link to={`/detail/${i.goods_id}`}>
+                                        <div
+                                            className="flex_center"
+                                            style={{ padding: getUnit(10) }}
+                                        >
+                                            <Image src={require('../../assets/3.png')} style={{ width: getUnit(120), height: getUnit(120) }} />
+                                            <div style={{ paddingTop: getUnit(8), position: 'relative', width: '100%'}}>
+                                                <ShopItemTitle>{i.goods_name}</ShopItemTitle>
+                                                <div className="flex">
+                                                    <ShopItemPirce>¥{i.goods_price}</ShopItemPirce>
+                                                    <div className="flex_justify" style={{ fontSize: getUnit(10), color: 'rgb(16, 16, 16)' }}>通兑</div>
+                                                </div>
+                                                <div style={{ fontSize: getUnit(12), color: 'rgb(130, 130, 130)' }}>已售卖{i.goods_discount}</div>
+                                                <ShopLogo />
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </ShopItemView>
+                            )
+                        })}
+
                 </div>
             </MobileLayout>
         )
     }
 
     public componentDidMount() {
-        // this.getData()
-    }
-
-    private handleView = (id: string) => {
-        const { err } = this.state
-        const { history } = this.props
-        if (err !== null) {
-            this.setState({
-                visible: true
-            })
-        } else {
-            history.push(`/news/${id}`)
-        }
-    }
-
-    private handleQ1Close = () => {
-        this.setState({
-            visible: false
-        })
+        this.getData()
     }
 
     private getData = async () => {
         try {
-            // const des = await http('news/is_user')
-            // const data = await http('news/index')
-            // const coo = await http('news/cooperation')
-            // this.setState({
-            //     data: data.msg,
-            //     coo: coo.msg,
-            //     err: isObject(des.msg) ? des.msg : null
-            // })
+            const data = await http('/wxapp/goods/goodsList')
+            const { dispatch } = this.props
+            dispatch({ type: SET_SHOP_DATA, data: data.data })
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
@@ -216,4 +138,9 @@ class Mall extends Component<any, IState> {
     }
 }
 
-export default withRouter(Mall)
+export default connect(
+    ({ banner, shopData }: IInitState) => ({
+        banner,
+        shopData
+    })
+)(withRouter(Mall))

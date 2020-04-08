@@ -5,16 +5,26 @@ import Mall from '../Mall'
 import Shop from '../Shop'
 import My from '../My'
 import http from 'src/utils/axios'
-import { SET_USERINFO_DATA } from 'src/store/actions'
+import { SET_USERINFO_DATA, SET_SELECTED_DATA } from 'src/store/actions'
 import { DispatchProp, connect } from 'react-redux'
+import { IInitState, IGlobal } from 'src/store/state'
+import { RouteComponentProps } from 'react-router-dom'
 
-class Index extends Component<DispatchProp, any> {
+interface IProps {
+    selected: number
+    userInfo: IGlobal.UserInfo
+}
+
+class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> {
 
     public render(): JSX.Element {
+        const { selected } = this.props
         return (
             <TabBar
-                defaultSelecte={2}
+                defaultSelecte={selected}
                 mode="menu"
+                selected={selected}
+                onChange={this.handleChange}
             >
                 <TabBar.Item
                     title="首页"
@@ -58,6 +68,20 @@ class Index extends Component<DispatchProp, any> {
             console.log('----------用户没有登录-------------')
         }
     }
+
+    private handleChange = (field: any) => {
+        const { dispatch, userInfo, history } = this.props
+        if (field !== 0 && !userInfo.user_id) {
+            history.push('/login')
+            return
+        }
+        dispatch({ type: SET_SELECTED_DATA, data: field })
+    }
 }
 
-export default connect()(Index)
+export default connect(
+    ({ selected, userInfo }: IInitState) => ({
+        selected,
+        userInfo
+    })
+)(Index)

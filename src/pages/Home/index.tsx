@@ -4,7 +4,7 @@ import { http, imgUrl } from '../../utils'
 import { CarouselThemeData, getUnit, ItemThemeData, ButtonThemeData, BorderRadius } from 'src/components/lib/utils'
 import { withRouter, RouteComponentProps, Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { SET_HOME_DATA } from 'src/store/actions'
+import { SET_HOME_DATA, SET_BANNER_DATA } from 'src/store/actions'
 import { IInitState, IGlobal } from 'src/store/state'
 import { connect, DispatchProp } from 'react-redux'
 
@@ -17,6 +17,7 @@ interface IState {
 
 interface IProps extends RouteComponentProps {
     homeData: IGlobal.HomeData
+    banner: IGlobal.IBanner[]
 }
 
 const ItemView = styled.div`
@@ -49,7 +50,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
     }
 
     public render(): JSX.Element {
-        const { homeData } = this.props
+        const { homeData, banner } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -60,8 +61,13 @@ class Home extends Component<IProps & DispatchProp, IState> {
                     dotColor="rgb(51, 51, 51)"
                     autoplay
                 >
-                    <Image src={require('../../assets/1.png')} style={{ width: '100%' }} />
-                    <Image src={require('../../assets/2.png')} style={{ width: '100%' }} />
+                    {
+                        banner.map((i, index: number) => {
+                            return (
+                                <Image src={imgUrl + i.image_url} style={{ width: '100%' }} key={index} />
+                            )
+                        })
+                    }
                 </Carousel>
                 <Item
                     title={
@@ -97,8 +103,8 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                     <div className="flex_1" style={{ marginLeft: getUnit(10) }}>
                                         <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20) }}>{i.goods_name}</div>
                                         <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额{i.goods_number}件</div>
-                                        <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>08:08</div>
-                                        <div style={{ fontSize: getUnit(16), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.platform_price}</div>
+                                        <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>{i.start_time}</div>
+                                        <div style={{ fontSize: getUnit(16), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.goods_price}</div>
                                     </div>
                                     <div className="flex_column">
                                         <div className="flex_1" />
@@ -106,7 +112,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                             mold="primary"
                                             theme={buttonTheme}
                                         >
-                                            <div style={{ fontSize: getUnit(11) }}>爆卖2548件</div>
+                                            <div style={{ fontSize: getUnit(11) }}>爆卖{i.goods_discount}件</div>
                                             <div style={{ fontSize: getUnit(13) }}>马上抢</div>
                                         </Button>
                                     </div>
@@ -137,8 +143,10 @@ class Home extends Component<IProps & DispatchProp, IState> {
 
     private getData = async () => {
         try {
-            const data = await http('wxapp/goods/goodsList')
+            const data = await http('wxapp/goods/goodsHomeList')
+            const banner = await http('/wxapp/index/get_banner')
             const { dispatch } = this.props
+            dispatch({ type: SET_BANNER_DATA, data: banner.data })
             dispatch({ type: SET_HOME_DATA, data: data.data })
         } catch (data) {
             Toast.info({
@@ -149,7 +157,8 @@ class Home extends Component<IProps & DispatchProp, IState> {
 }
 
 export default connect(
-    ({ homeData }: IInitState) => ({
-        homeData
+    ({ homeData, banner }: IInitState) => ({
+        homeData,
+        banner
     })
 )(withRouter(Home))
