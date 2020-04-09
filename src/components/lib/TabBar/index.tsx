@@ -359,10 +359,11 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
         }
     }
 
-    private handleTabItemChange = (field?: number) => {
+    private handleTabItemChange = (field?: number, e: any) => {
         const { onChange } = this.props
         const { selected } = this.state
         if (selected === field) return
+        console.log(e)
         if (!isNil(field)) {
             this.animation = true
             if (isFunction(onChange)) {
@@ -370,7 +371,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
                 return
             }
             const info = this.getRootNodeInfo()
-            const itemInfo = this.getSelectedNodeInfo()
+            const itemInfo = this.getSelectedNodeInfo(field)
             this.setState({
                 selected: field,
                 width: info.width,

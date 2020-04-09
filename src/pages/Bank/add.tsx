@@ -90,13 +90,14 @@ class AddBank extends Component<IProps & RouteComponentProps<any>, any> {
     }
 
     public componentDidMount() {
-        if (this.fn) {
+        setTimeout(() => {
             const { userInfo } = this.props
-            this.fn.setFieldValue({
+            console.log(this.fn)
+            this.fn?.setFieldValue({
                 realname: Hide.fullName(userInfo.realname),
                 card: Hide.card(userInfo.realcard),
             })
-        }
+        }, 10)
     }
 
     private handleAdd = async () => {

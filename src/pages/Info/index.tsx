@@ -4,6 +4,7 @@ import { DispatchProp, connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router-dom'
 import { getUnit, ButtonThemeData, BorderRadius } from 'src/components/lib/utils'
 import { IInitState, IGlobal } from 'src/store/state'
+import { SET_SELECTED_DATA, SET_USERINFO_DATA } from 'src/store/actions'
 
 interface IProps {
     userInfo: IGlobal.UserInfo
@@ -76,7 +77,7 @@ class Info extends Component<IProps & DispatchProp & RouteComponentProps<any>, a
                         }}
                     />
                     <div style={{ background: '#fff', padding: `${getUnit(10)} ${getUnit(20)}` }}>
-                        <Button mold="primary" theme={btnTheme}>退出登录</Button>
+                        <Button mold="primary" theme={btnTheme} onClick={this.handleExit}>退出登录</Button>
                     </div>
                 </div>
             </MobileLayout>
@@ -85,6 +86,13 @@ class Info extends Component<IProps & DispatchProp & RouteComponentProps<any>, a
     private handleBack = () => {
         const { history } = this.props
         history.goBack()
+    }
+
+    private handleExit = () => {
+        const { dispatch, history } = this.props
+        dispatch({ type: SET_SELECTED_DATA, data: 0 })
+        dispatch({ type: SET_USERINFO_DATA, data: {} })
+        history.replace('/login')
     }
 }
 

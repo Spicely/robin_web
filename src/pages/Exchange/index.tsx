@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { http } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Item, Image, Button, TabBar, Form } from 'components'
+import { Toast, MobileLayout, NavBar, Item, Image, Button, TabBar, Form, Empty } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { getUnit, ButtonThemeData, Color, BorderRadius, TabBarThemeData, InputThemeData, Border, ItemThemeData } from 'src/components/lib/utils'
 import styled from 'styled-components'
@@ -37,11 +37,14 @@ interface IProps {
 }
 
 interface IState {
+    data: any[]
 }
 
 class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
 
-    public state: IState = {}
+    public state: IState = {
+        data: []
+    }
 
     private fn?: IFormFun
 
@@ -54,7 +57,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                 placeholder: '500CNY',
                 theme: intTheme,
             },
-            field: '1',
+            field: 'cny',
         }, {
             component: 'Input',
             props: {
@@ -62,7 +65,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                 type: 'number',
                 theme: intTheme,
             },
-            field: '2',
+            field: 'num',
         }, {
             component: 'Input',
             props: {
@@ -76,7 +79,8 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
     }
 
     public render(): JSX.Element {
-        const { userInfo } = this.props
+        const { data } = this.state
+        const _q = data.filter((i) => i.status == 1)
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -107,110 +111,42 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                     <TabBar theme={tabTheme}>
                         <TabBar.Item title="卖出">
                             <Form getItems={this.getItems} />
-                            <Button mold="primary" theme={btnTheme}>立即卖出</Button>
+                            <Button mold="primary" theme={btnTheme} async onClick={this.handleSale}>立即卖出</Button>
                             <Item
                                 title={<div style={{ fontSize: getUnit(12), color: 'rgb(16, 16, 16)' }}>市场挂单</div>}
                             />
-                            <Item
-                                theme={itemTheme}
-                                title={
-                                    <div>
-                                        <div className="flex">
-                                            <div className="flex_1 flex">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>刘**</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>1分钟前</div>
-                                            </div>
-                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>成交:1673  用时:1分</div>
-                                        </div>
-                                        <div className="flex">
-                                            <div className="flex_1">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>15000CNY</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(13) }}>估价：500CNY（菊花茶）</div>
-                                            </div>
-                                            <div>
-                                                <Image src={require('../../assets/v2_q6nq38.png')} style={{ width: getUnit(18), height: getUnit(18) }} />
-                                                <div style={{ fontSize: getUnit(10), color: 'rgb(194, 194, 194)' }}>卖出</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                link={null}
-                            />
-                            <Item
-                                theme={itemTheme}
-                                title={
-                                    <div>
-                                        <div className="flex">
-                                            <div className="flex_1 flex">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>刘**</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>1分钟前</div>
-                                            </div>
-                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>成交:1673  用时:1分</div>
-                                        </div>
-                                        <div className="flex">
-                                            <div className="flex_1">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>15000CNY</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(13) }}>估价：500CNY（菊花茶）</div>
-                                            </div>
-                                            <div>
-                                                <Image src={require('../../assets/v2_q6nq38.png')} style={{ width: getUnit(18), height: getUnit(18) }} />
-                                                <div style={{ fontSize: getUnit(10), color: 'rgb(194, 194, 194)' }}>卖出</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                link={null}
-                            />
-                            <Item
-                                theme={itemTheme}
-                                title={
-                                    <div>
-                                        <div className="flex">
-                                            <div className="flex_1 flex">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>刘**</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>1分钟前</div>
-                                            </div>
-                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>成交:1673  用时:1分</div>
-                                        </div>
-                                        <div className="flex">
-                                            <div className="flex_1">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>15000CNY</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(13) }}>估价：500CNY（菊花茶）</div>
-                                            </div>
-                                            <div>
-                                                <Image src={require('../../assets/v2_q6nq38.png')} style={{ width: getUnit(18), height: getUnit(18) }} />
-                                                <div style={{ fontSize: getUnit(10), color: 'rgb(194, 194, 194)' }}>卖出</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                link={null}
-                            />
-                            <Item
-                                theme={itemTheme}
-                                title={
-                                    <div>
-                                        <div className="flex">
-                                            <div className="flex_1 flex">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>刘**</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>1分钟前</div>
-                                            </div>
-                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>成交:1673  用时:1分</div>
-                                        </div>
-                                        <div className="flex">
-                                            <div className="flex_1">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>15000CNY</div>
-                                                <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(13) }}>估价：500CNY（菊花茶）</div>
-                                            </div>
-                                            <div>
-                                                <Image src={require('../../assets/v2_q6nq38.png')} style={{ width: getUnit(18), height: getUnit(18) }} />
-                                                <div style={{ fontSize: getUnit(10), color: 'rgb(194, 194, 194)' }}>卖出</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                link={null}
-                            />
+                            {
+                                _q.length ? _q.map((i, index: number) => {
+                                    return (
+                                        <Item
+                                            theme={itemTheme}
+                                            key={index}
+                                            title={
+                                                <div>
+                                                    <div className="flex">
+                                                        <div className="flex_1 flex">
+                                                            <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>刘**</div>
+                                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>1分钟前</div>
+                                                        </div>
+                                                        <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>成交:1673  用时:1分</div>
+                                                    </div>
+                                                    <div className="flex">
+                                                        <div className="flex_1">
+                                                            <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>15000CNY</div>
+                                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(13) }}>估价：{i.cny}CNY（菊花茶）</div>
+                                                        </div>
+                                                        <div>
+                                                            <Image src={require('../../assets/v2_q6nq38.png')} style={{ width: getUnit(18), height: getUnit(18) }} />
+                                                            <div style={{ fontSize: getUnit(10), color: 'rgb(194, 194, 194)' }}>卖出</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            link={null}
+                                        />
+                                    )
+                                }) : <Empty />
+                            }
                         </TabBar.Item>
                         <TabBar.Item title="当前订单"></TabBar.Item>
                         <TabBar.Item title="历史订单"></TabBar.Item>
@@ -225,19 +161,50 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
     }
 
     private getData = async () => {
-        // try {
-        //     const { match } = this.props
-        //     const data = await http('news/get_mechanism_info', {
-        //         id: match.params.id
-        //     })
-        //     this.setState({
-        //         ...data.msg
-        //     })
-        // } catch (data) {
-        //     Toast.info({
-        //         content: data.msg || '服务器繁忙,请稍后再试',
-        //     })
-        // }
+        const close = Toast.loading()
+        try {
+            const { data } = await http('/wxapp/exchange/saleList', {
+                state: 0
+            })
+            this.setState({
+                data
+            })
+            close()
+        } catch (data) {
+            close()
+            Toast.info({
+                content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
+    }
+
+    private handleSale = async () => {
+        if (this.fn) {
+            try {
+                const params = this.fn.getFieldValue(['cny', 'num'])
+                if (!params.cny) {
+                    Toast.info({
+                        content: '请输入估价',
+                    })
+                    return
+                }
+                if (!params.num) {
+                    Toast.info({
+                        content: '请输入卖出数量',
+                    })
+                    return
+                }
+                const { msg } = await http('/wxapp/exchange/sale', params)
+                Toast.info({
+                    content: msg,
+                })
+                this.fn.cleanFieldValue()
+            } catch (data) {
+                Toast.info({
+                    content: data.msg || '服务器繁忙,请稍后再试',
+                })
+            }
+        }
     }
 
     private handelToBank = () => {

@@ -124,13 +124,14 @@ class AddressList extends Component<IProps & DispatchProp, IState> {
 
 
     private getData = async () => {
+        const close = Toast.loading()
         try {
             const { dispatch } = this.props
-            const close = Toast.loading()
             const data = await http('wxapp/goods/getAddressData')
             dispatch({ type: SET_USERADDRESSLIST_DATA, data: data.address_data })
             close()
         } catch (data) {
+            close()
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
             })

@@ -53,6 +53,7 @@ interface IThemeDataProps {
     progressTheme?: ProgressThemeData
     navBarTheme?: NavBarThemeData
     textareaTheme?: TextareaThemeData
+    disabledColor?: Color
     disabledBorderColor?: Color
     itemTheme?: ItemThemeData
     toastTheme?: ToastThemeData
@@ -100,6 +101,7 @@ export default class ThemeData {
             if (data.gridTheme) this.gridTheme = data.gridTheme
             if (data.rangePickerTheme) this.rangePickerTheme = data.rangePickerTheme
             if (data.tableTheme) this.tableTheme = data.tableTheme
+            if (data.disabledColor) this.disabledColor = data.disabledColor
         }
     }
 
@@ -118,6 +120,8 @@ export default class ThemeData {
     public dividerColor: Color = Color.fromRGB(230, 230, 230)
 
     public fontColor: Color = Color.fromRGB(0, 0, 0)
+
+    public disabledColor: Color = Color.fromRGB(231, 231, 231)
 
     public disabledBorderColor: Color = Color.fromRGB(231, 231, 231)
 

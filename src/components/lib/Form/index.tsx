@@ -538,7 +538,7 @@ export default class Form extends Component<IFormProps, IState> {
                     <View
                         {...vProps}
                         key={field}
-                        value={_porps.value}
+                        value={vals[field] || _porps.value}
                         onChange={this.setRVal.bind(this, field, onChange)}
                     />
                 )

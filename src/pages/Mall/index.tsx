@@ -100,7 +100,7 @@ class Mall extends Component<any, IState> {
                                             className="flex_center"
                                             style={{ padding: getUnit(10) }}
                                         >
-                                            <Image src={require('../../assets/3.png')} style={{ width: getUnit(120), height: getUnit(120) }} />
+                                            <Image src={imgUrl + i.image_url} style={{ width: getUnit(120), height: getUnit(120) }} />
                                             <div style={{ paddingTop: getUnit(8), position: 'relative', width: '100%'}}>
                                                 <ShopItemTitle>{i.goods_name}</ShopItemTitle>
                                                 <div className="flex">

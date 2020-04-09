@@ -247,10 +247,6 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                 }),
                 message: msg
             })
-            console.log(data)
-            Toast.info({
-                content: res.msg
-            })
             history.replace('/pay')
         } catch (data) {
             Toast.info({
