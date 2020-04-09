@@ -359,11 +359,10 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
         }
     }
 
-    private handleTabItemChange = (field?: number, e: any) => {
+    private handleTabItemChange = (field?: number) => {
         const { onChange } = this.props
         const { selected } = this.state
         if (selected === field) return
-        console.log(e)
         if (!isNil(field)) {
             this.animation = true
             if (isFunction(onChange)) {
