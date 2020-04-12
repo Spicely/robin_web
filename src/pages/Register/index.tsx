@@ -8,6 +8,7 @@ import { http } from '../../utils'
 import { connect, DispatchProp } from 'react-redux'
 import { SET_TOKEN } from 'src/store/reducers/token'
 import styled from 'styled-components'
+import { random } from 'lodash'
 
 const TitleText = styled.div`
     height: ${getUnit(20)}; 
@@ -22,11 +23,17 @@ const BarTitle = styled.div`
     color: rgb(16, 16, 16);
 `
 
-interface IState { }
+interface IState {
+    code: string
+}
 
 class Register extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private fn?: IFormFun
+
+    public state: IState = {
+        code: ''
+    }
 
     private getItems = (fn: IFormFun) => {
         this.fn = fn
@@ -130,7 +137,14 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                     })
                     return false
                 }
-                await http('wxapp/login/sendPhoneCode', { tel: form.phone })
+                const code = random(1000, 9999)
+                await http('/wxapp/login/sendPhoneCode', {
+                    phone: form.phone,
+                    code,
+                })
+                this.setState({
+                    code: code.toString()
+                })
                 close()
                 return true
             } catch (e) {
@@ -146,6 +160,13 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
         try {
             if (this.fn) {
                 const form = this.fn.getFieldValue()
+                const { code } = this.state
+                if (!code) {
+                    Toast.info({
+                        content: '请先获取验证码',
+                    })
+                    return
+                }
                 if (!verify.isMobile(form.phone)) {
                     Toast.info({
                         content: '请输入正确的电话号码',
@@ -155,6 +176,12 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                 if (!form.code) {
                     Toast.info({
                         content: '请输入短信验证码',
+                    })
+                    return
+                }
+                if (form.code !== code) {
+                    Toast.info({
+                        content: '验证码不正确',
                     })
                     return
                 }

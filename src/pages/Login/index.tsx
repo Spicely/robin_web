@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import { random } from 'lodash'
 import { Link, RouteComponentProps } from 'react-router-dom'
-import { MobileLayout, NavBar, Form, Toast, CountDown, Button } from 'components'
+import { MobileLayout, NavBar, Form, Toast, CountDown } from 'components'
 import { verify } from 'muka'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
 import { getUnit } from 'src/components/lib/utils'
@@ -16,11 +17,17 @@ const TitleText = styled.div`
     color: rgb(16, 16, 16);
 `
 
-interface IState { }
+interface IState {
+    code: string
+}
 
 class Login extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private fn?: IFormFun
+
+    public state: IState = {
+        code: ''
+    }
 
     private getItems = (fn: IFormFun) => {
         this.fn = fn
@@ -113,7 +120,14 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                     })
                     return false
                 }
-                await http('wxapp/login/sendPhoneCode', { tel: form.phone })
+                const code = random(1000, 9999)
+                await http('/wxapp/login/sendPhoneCode', {
+                    phone: form.phone,
+                    code,
+                })
+                this.setState({
+                    code: code.toString()
+                })
                 close()
                 return true
             } catch (e) {
@@ -129,6 +143,13 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
         try {
             if (this.fn) {
                 const form = this.fn.getFieldValue()
+                const { code } = this.state
+                if (!code) {
+                    Toast.info({
+                        content: '请先获取验证码',
+                    })
+                    return
+                }
                 if (!verify.isMobile(form.phone)) {
                     Toast.info({
                         content: '请输入正确的电话号码',
@@ -138,6 +159,12 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
                 if (!form.code) {
                     Toast.info({
                         content: '请输入验证码',
+                    })
+                    return
+                }
+                if (form.code !== code) {
+                    Toast.info({
+                        content: '验证码不正确',
                     })
                     return
                 }

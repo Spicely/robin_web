@@ -50,6 +50,7 @@ export namespace IGlobal {
         remcd: string
         cny: string
         price: string
+        kind: string
     }
 
     export interface IBanner {
@@ -95,6 +96,13 @@ export namespace IGlobal {
         user_id: number
         created_time: number
     }
+
+    export interface Config {
+        website_id: number
+        website_title: string
+        price: string
+        change_time: number
+    }
 }
 
 export interface IInitState {
@@ -105,4 +113,5 @@ export interface IInitState {
     banner: IGlobal.IBanner[]
     selected: number
     shopData: IGlobal.ShopData
+    config: IGlobal.Config
 }

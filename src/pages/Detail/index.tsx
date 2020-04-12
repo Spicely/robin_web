@@ -5,7 +5,8 @@ import { http, imgUrl } from '../../utils'
 import { CarouselThemeData, getUnit, IconThemeData, ButtonThemeData, Border, Color, NavBarThemeData } from 'src/components/lib/utils'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
-import { IGoodsData } from 'src/store/state'
+import { IGoodsData, IInitState, IGlobal } from 'src/store/state'
+import { connect } from 'react-redux'
 
 interface IState {
     data: any
@@ -67,7 +68,11 @@ const ShopHtml = styled.div`
     margin-top: ${getUnit(10)};
 `
 
-class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
+interface IProps {
+    userInfo: IGlobal.UserInfo
+}
+
+class Detail extends Component<IProps & RouteComponentProps<{ id: string }>, IState> {
 
     public state: IState = {
         data: {
@@ -198,6 +203,11 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
     }
 
     private handleToView = async (url: string) => {
+        const { userInfo, history } = this.props
+        if (!userInfo.user_id) {
+            history.push('/login')
+            return
+        }
         const close = Toast.loading()
         try {
             const { params } = this.props.match
@@ -244,6 +254,11 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
     }
 
     private handleCartAdd = async () => {
+        const { userInfo, history } = this.props
+        if (!userInfo.user_id) {
+            history.push('/login')
+            return
+        }
         const close = Toast.loading()
         try {
             const { params } = this.props.match
@@ -264,4 +279,8 @@ class Detail extends Component<RouteComponentProps<{ id: string }>, IState> {
     }
 }
 
-export default withRouter(Detail)
+export default connect(
+    ({ userInfo }: IInitState) => ({
+        userInfo
+    })
+)(Detail)

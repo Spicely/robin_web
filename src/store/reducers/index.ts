@@ -7,6 +7,7 @@ import defaultAddr from './defaultAddr'
 import banner from './banner'
 import selected from './selected'
 import shopData from './shopData'
+import config from './config'
 
 export default combineReducers({
     token,
@@ -16,5 +17,6 @@ export default combineReducers({
     defaultAddr,
     banner,
     selected,
-    shopData
+    shopData,
+    config
 })

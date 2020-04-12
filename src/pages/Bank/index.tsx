@@ -64,9 +64,9 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
                 {
                     data.map((i, index: number) => {
                         return (
-                            <div style={{ padding: getUnit(10) }} key={index}>
+                            <div style={{ padding: `0 ${getUnit(10)}` }} key={index}>
                                 <Item
-                                    style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
+                                    style={{ borderRadius: getUnit(5), marginTop: getUnit(10) }}
                                     title={
                                         <div className="flex">
                                             <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>{i.bankname}</div>

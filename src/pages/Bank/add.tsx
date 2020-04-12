@@ -42,6 +42,13 @@ class AddBank extends Component<IProps & RouteComponentProps<any>, any> {
         }, {
             component: 'ItemInput',
             props: {
+                title: '开户行',
+                placeholder: '请输入银行卡开户行',
+            },
+            field: 'zname'
+        }, {
+            component: 'ItemInput',
+            props: {
                 title: '银行卡',
                 placeholder: '请输入银行卡名称',
             },
@@ -103,6 +110,12 @@ class AddBank extends Component<IProps & RouteComponentProps<any>, any> {
     private handleAdd = async () => {
         if (this.fn) {
             const params = this.fn.getFieldValue()
+            if (!params.zname) {
+                Toast.info({
+                    content: '请输入银行卡开户行',
+                })
+                return
+            }
             if (!params.bankname) {
                 Toast.info({
                     content: '请输入银行卡名称',

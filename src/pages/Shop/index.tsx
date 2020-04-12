@@ -1,4 +1,4 @@
-import React, { Component, MouseEvent } from 'react'
+import React, { Component, MouseEvent, Fragment } from 'react'
 import { http, Empty, imgUrl } from 'src/utils'
 import { Toast, MobileLayout, Button, Image, Item, Radio, InputNumber } from 'components'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
@@ -64,67 +64,73 @@ class Shop extends Component<RouteComponentProps<any>, IState> {
             >
                 {
                     data.length ? (
-                        <Item
-                            title={
-                                <div className="flex">
-                                    <div style={{ color: 'rgb(16, 16, 16)', fontWeight: 400, fontSize: getUnit(14) }}>商品订单</div>
-                                    <div className="flex_justify" style={{ marginLeft: getUnit(10) }}>
-                                        <div style={{ background: 'rgb(0, 0, 0)', fontSize: getUnit(9), borderRadius: getUnit(20), color: '#fff', padding: `0 ${getUnit(5)}` }}>
-                                            直邮到家
+                        <Fragment>
+                            {
+                                data.length ? (
+                                    <Item
+                                        title={
+                                            <div className="flex">
+                                                <div style={{ color: 'rgb(16, 16, 16)', fontWeight: 400, fontSize: getUnit(14) }}>商品订单</div>
+                                                <div className="flex_justify" style={{ marginLeft: getUnit(10) }}>
+                                                    <div style={{ background: 'rgb(0, 0, 0)', fontSize: getUnit(9), borderRadius: getUnit(20), color: '#fff', padding: `0 ${getUnit(5)}` }}>
+                                                        直邮到家
                                         </div>
-                                    </div>
-                                </div>
-                            }
-                        />
-                    ) : null
-                }
-                {
-                    data.map((i, index: number) => {
-                        return (
-                            <Item
-                                key={index}
-                                theme={itemTheme}
-                                title={
-                                    <LRadio
-                                        type="square"
-                                        iconStyle={{ borderRadius: '50%' }}
-                                        style={{ width: '100%' }}
-                                        checked={i.checked}
-                                        onChange={this.handleChange.bind(this, index)}
-                                    >
-                                        <div className="flex">
-                                            <div style={{ marginRight: getUnit(10), marginLeft: getUnit(10) }}>
-                                                <Image src={imgUrl + i.goods_image} style={{ width: getUnit(54), height: getUnit(54) }} />
-                                            </div>
-                                            <div className="flex_1">
-                                                <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), fontWeight: 700, lineHeight: getUnit(20) }}>{i.goods_name}</div>
-                                                <div className="flex">
-                                                    <div className="flex_1 flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(16), fontWeight: 700, lineHeight: getUnit(20), marginTop: getUnit(10) }}>¥{i.goods_price}</div>
-                                                    <div style={{ position: 'relative', top: getUnit(8) }}>
-                                                        <InputNumber value={i.cart_num} min={1} onChange={this.handleNumChange.bind(this, index)} />
-                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </LRadio>
-                                }
-                            // onPress={this.handleSelect.bind(this, i)}
-                            />
-                        )
-                    })
-                }
-                {
-                    data.length ? (
-                        <Item
-                            title={
-                                <div className="flex">
-                                    <div style={{ color: 'rgb(16, 16, 16)', fontWeight: 400, fontSize: getUnit(14) }}>应付合计¥{price}</div>
-                                </div>
+                                        }
+                                    />
+                                ) : null
                             }
-                            value={
-                                <Button mold="primary" theme={btnTheme} onClick={this.handleOrder}>去结算</Button>
+                            {
+                                data.map((i, index: number) => {
+                                    return (
+                                        <Item
+                                            key={index}
+                                            theme={itemTheme}
+                                            title={
+                                                <LRadio
+                                                    type="square"
+                                                    iconStyle={{ borderRadius: '50%' }}
+                                                    style={{ width: '100%' }}
+                                                    checked={i.checked}
+                                                    onChange={this.handleChange.bind(this, index)}
+                                                >
+                                                    <div className="flex">
+                                                        <div style={{ marginRight: getUnit(10), marginLeft: getUnit(10) }}>
+                                                            <Image src={imgUrl + i.goods_image} style={{ width: getUnit(54), height: getUnit(54) }} />
+                                                        </div>
+                                                        <div className="flex_1">
+                                                            <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), fontWeight: 700, lineHeight: getUnit(20) }}>{i.goods_name}</div>
+                                                            <div className="flex">
+                                                                <div className="flex_1 flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(16), fontWeight: 700, lineHeight: getUnit(20), marginTop: getUnit(10) }}>¥{i.goods_price}</div>
+                                                                <div style={{ position: 'relative', top: getUnit(8) }}>
+                                                                    <InputNumber value={i.cart_num} min={1} onChange={this.handleNumChange.bind(this, index)} />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </LRadio>
+                                            }
+                                        // onPress={this.handleSelect.bind(this, i)}
+                                        />
+                                    )
+                                })
                             }
-                        />
+                            {
+                                data.length ? (
+                                    <Item
+                                        title={
+                                            <div className="flex">
+                                                <div style={{ color: 'rgb(16, 16, 16)', fontWeight: 400, fontSize: getUnit(14) }}>应付合计¥{price}</div>
+                                            </div>
+                                        }
+                                        value={
+                                            <Button mold="primary" theme={btnTheme} onClick={this.handleOrder}>去结算</Button>
+                                        }
+                                    />
+                                ) : null
+                            }
+                        </Fragment>
                     ) : null
                 }
             </MobileLayout>

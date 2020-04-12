@@ -17,6 +17,7 @@ import Order from '../pages/Order'
 import Exchange from '../pages/Exchange'
 import Info from '../pages/Info'
 import PayPass from '../pages/PayPass'
+import LinePay from '../pages/LinePay'
 
 function Loading(props: any) {
     if (props.error) {
@@ -86,6 +87,9 @@ export const routes: IRoutes[] = [{
 }, {
     component: PayPass,
     path: '/payPass'
+}, {
+    component: LinePay,
+    path: '/linePay/:orderId'
 }]
 
 export const loadable = (component: Promise<React.ComponentClass<any> | React.StatelessComponent<any> | { default: React.ComponentType<any> }>) => {

@@ -130,12 +130,13 @@ interface ITabBarItemProps {
     field?: number
     tooltipTitle?: string | JSX.Element
     placement?: any //TooltipPlacement
+    style?: CSSProperties
 }
 
 export class TabBarItem extends Component<ITabBarItemProps, any> {
 
     public render(): JSX.Element {
-        const { title, icon, className, field } = this.props
+        const { title, icon, className, field, style } = this.props
         return (
             <ThemeConsumer>
                 {
@@ -148,6 +149,7 @@ export class TabBarItem extends Component<ITabBarItemProps, any> {
                                         tabBarTheme={val.theme || value.theme.tabBarTheme}
                                         onClick={val.itemChange ? val.itemChange.bind(this, field) : undefined}
                                         selected={field === val.selected}
+                                        style={style}
                                     >
                                         {
                                             icon ? (
@@ -336,7 +338,7 @@ export default class TabBar extends Component<ITabBarProps, ITabBarState> {
         const { type } = this.props
         let value = 0
         if (this.node && !isNil(selected)) {
-            const node = this.node.querySelectorAll('.tab_ev_item')[index || selected]
+            const node = this.node.querySelectorAll('.tab_ev_item')[isNil(index) ? selected : index]
             if (node) {
                 const rect = node.getBoundingClientRect()
                 value = type === 'horizontal' ? rect.width : rect.height

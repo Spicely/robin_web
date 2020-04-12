@@ -198,7 +198,7 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
         const close = Toast.loading()
         try {
             const { params } = this.props.match
-            const { dispatch } = this.props
+            const { dispatch, defaultAddr } = this.props
             const { cart_data, address_data } = await http('/wxapp/goods/getCartData', {
                 cartId: params.id
             })
@@ -207,7 +207,9 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
             cart_data.forEach((i: any) => {
                 price += i.cart_num * i.goods_price
             })
-            dispatch({ type: SET_USERADDRESS_DATA, data: address_data })
+            if (!defaultAddr.user_id) {
+                dispatch({ type: SET_USERADDRESS_DATA, data: address_data })
+            }
             this.setState({
                 data: cart_data,
                 price,
@@ -247,7 +249,7 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                 }),
                 message: msg
             })
-            history.replace('/pay')
+            history.replace(`/linePay/${res.data.order_num}`)
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',

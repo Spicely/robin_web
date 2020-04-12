@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
 import { IFormFun, IFormItem } from 'src/components/lib/Form'
+import moment from 'moment'
 
 
 const btnTheme = new ButtonThemeData({
@@ -29,11 +30,12 @@ const tabTheme = new TabBarThemeData({
 })
 
 const itemTheme = new ItemThemeData({
-    minHeight: 70
+    minHeight: 100
 })
 
 interface IProps {
     userInfo: IGlobal.UserInfo
+    config: IGlobal.Config
 }
 
 interface IState {
@@ -54,8 +56,9 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
             component: 'Input',
             props: {
                 label: '卖出估价',
-                placeholder: '500CNY',
+                placeholder: '0',
                 theme: intTheme,
+                disabled: true,
             },
             field: 'cny',
         }, {
@@ -64,23 +67,27 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                 label: '卖出数量',
                 type: 'number',
                 theme: intTheme,
+                onChange: this.handleChange
             },
             field: 'num',
-        }, {
+        },/* {
             component: 'Input',
             props: {
                 label: '显示金额',
                 type: 'number',
                 theme: intTheme,
+                disabled: true
             },
-            field: '3',
-        }]
+            field: 'price'
+        }*/]
         return items
     }
 
     public render(): JSX.Element {
+        const { config, userInfo } = this.props
         const { data } = this.state
         const _q = data.filter((i) => i.status == 1)
+        const _v = data.filter((i) => i.status == 1)
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -102,14 +109,14 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                     <div style={{ color: 'rgb(125, 125, 125)', fontSize: getUnit(10) }}>实时价</div>
                                 </div>
                                 <div className="flex">
-                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11) }}>15000≈30 手菊花茶</div>
-                                    <div style={{ color: 'rgb(235, 36, 36)', fontSize: getUnit(11) }}>500 CNY (菊花茶)</div>
+                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11) }}>{userInfo.cny}≈{Math.floor(Number(userInfo.cny) / Number(config.price))}手{config.website_title}</div>
+                                    <div style={{ color: 'rgb(235, 36, 36)', fontSize: getUnit(11) }}>{config.price} CNY ({config.website_title})</div>
                                 </div>
                             </div>
                         }
                     />
                     <TabBar theme={tabTheme}>
-                        <TabBar.Item title="卖出">
+                        <TabBar.Item title="卖出" style={{width: getUnit(80)}}>
                             <Form getItems={this.getItems} />
                             <Button mold="primary" theme={btnTheme} async onClick={this.handleSale}>立即卖出</Button>
                             <Item
@@ -124,22 +131,15 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                             title={
                                                 <div>
                                                     <div className="flex">
-                                                        <div className="flex_1 flex">
-                                                            <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>刘**</div>
-                                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>1分钟前</div>
-                                                        </div>
-                                                        <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>成交:1673  用时:1分</div>
+                                                        <div className="flex_1" style={{ color: 'rgba(87, 183, 43, 1)', fontSize: getUnit(9) }}>{i.type === 1 ? '卖' : '买'}</div>
+                                                        <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(9) }}>{moment(i.created_time * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
                                                     </div>
+                                                    <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>单号：{i.order_num}</div>
                                                     <div className="flex">
-                                                        <div className="flex_1">
-                                                            <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>15000CNY</div>
-                                                            <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(13) }}>估价：{i.cny}CNY（菊花茶）</div>
-                                                        </div>
-                                                        <div>
-                                                            <Image src={require('../../assets/v2_q6nq38.png')} style={{ width: getUnit(18), height: getUnit(18) }} />
-                                                            <div style={{ fontSize: getUnit(10), color: 'rgb(194, 194, 194)' }}>卖出</div>
-                                                        </div>
+                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{(Number(i.cny) * i.content).toFixed(2)}CNY</div>
+                                                        <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div>
                                                     </div>
+                                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.cny}CNY({config.website_title})</div>
                                                 </div>
                                             }
                                             link={null}
@@ -148,8 +148,60 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                 }) : <Empty />
                             }
                         </TabBar.Item>
-                        <TabBar.Item title="当前订单"></TabBar.Item>
-                        <TabBar.Item title="历史订单"></TabBar.Item>
+                        <TabBar.Item title="当前订单" style={{width: getUnit(80)}}>
+                        {
+                                _v.length ? _v.map((i, index: number) => {
+                                    return (
+                                        <Item
+                                            theme={itemTheme}
+                                            key={index}
+                                            title={
+                                                <div>
+                                                    <div className="flex">
+                                                        <div className="flex_1" style={{ color: 'rgba(87, 183, 43, 1)', fontSize: getUnit(9) }}>{i.type === 1 ? '卖' : '买'}</div>
+                                                        <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(9) }}>{moment(i.created_time * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
+                                                    </div>
+                                                    <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>单号：{i.order_num}</div>
+                                                    <div className="flex">
+                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{(Number(i.cny) * i.content).toFixed(2)}CNY</div>
+                                                        <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div>
+                                                    </div>
+                                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.cny}CNY({config.website_title})</div>
+                                                </div>
+                                            }
+                                            link={null}
+                                        />
+                                    )
+                                }) : <Empty />
+                            }
+                        </TabBar.Item>
+                        <TabBar.Item title="历史订单" style={{width: getUnit(80)}}>
+                            {
+                                data.length ? data.map((i, index: number) => {
+                                    return (
+                                        <Item
+                                            theme={itemTheme}
+                                            key={index}
+                                            title={
+                                                <div>
+                                                    <div className="flex">
+                                                        <div className="flex_1" style={{ color: 'rgba(87, 183, 43, 1)', fontSize: getUnit(9) }}>{i.type === 1 ? '卖' : '买'}</div>
+                                                        <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(9) }}>{moment(i.created_time * 1000).format('YYYY-MM-DD HH:mm:ss')}</div>
+                                                    </div>
+                                                    <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>单号：{i.order_num}</div>
+                                                    <div className="flex">
+                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{(Number(i.cny) * i.content).toFixed(2)}CNY</div>
+                                                        <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div>
+                                                    </div>
+                                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.cny}CNY({config.website_title})</div>
+                                                </div>
+                                            }
+                                            link={null}
+                                        />
+                                    )
+                                }) : <Empty />
+                            }
+                        </TabBar.Item>
                     </TabBar>
                 </div>
             </MobileLayout>
@@ -178,23 +230,36 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
         }
     }
 
+    private handleChange = (e: any) => {
+        const { config } = this.props
+        const num = isNaN(Number(e.target.value)) ? '' : Number(e.target.value)
+        this.fn?.setFieldValue({
+            num,
+            cny: Number(num || 0) * Number(config.price)
+        })
+    }
+
     private handleSale = async () => {
         if (this.fn) {
             try {
                 const params = this.fn.getFieldValue(['cny', 'num'])
-                if (!params.cny) {
-                    Toast.info({
-                        content: '请输入估价',
-                    })
-                    return
-                }
                 if (!params.num) {
                     Toast.info({
                         content: '请输入卖出数量',
                     })
                     return
                 }
-                const { msg } = await http('/wxapp/exchange/sale', params)
+                if (!params.cny) {
+                    Toast.info({
+                        content: '请输入估价',
+                    })
+                    return
+                }
+
+                const { msg } = await http('/wxapp/exchange/sale', {
+                    ...params,
+                    type: 1
+                })
                 Toast.info({
                     content: msg,
                 })
@@ -223,7 +288,8 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
 }
 
 export default connect(
-    ({ userInfo }: IInitState) => ({
-        userInfo
+    ({ userInfo, config }: IInitState) => ({
+        userInfo,
+        config
     })
 )(Wallet)

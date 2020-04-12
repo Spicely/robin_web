@@ -4,8 +4,9 @@ import { Toast, MobileLayout, NavBar, Item, Image, Button } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { getUnit, ButtonThemeData, Color, BorderRadius } from 'src/components/lib/utils'
 import styled from 'styled-components'
-import { connect } from 'react-redux'
+import { connect, DispatchProp } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
+import { SET_USERINFO_DATA } from 'src/store/actions'
 
 const PriceText = styled.div`
     font-weight: 700;
@@ -20,19 +21,24 @@ const btnTheme = new ButtonThemeData({
     borderRadius: BorderRadius.all(5)
 })
 
-interface IProps {
+interface IProps extends DispatchProp {
     userInfo: IGlobal.UserInfo
+    config: IGlobal.Config
 }
 
 interface IState {
+    number: string
 }
 
 class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
 
-    public state: IState = {}
+    public state: IState = {
+        number: ''
+    }
 
     public render(): JSX.Element {
-        const { userInfo } = this.props
+        const { userInfo, config } = this.props
+        const { number } = this.state
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -48,7 +54,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                     <div style={{ paddingBottom: getUnit(10) }}>
                         <div className="flex_center" style={{ color: 'rgba(87, 183, 43, 1)', fontSize: getUnit(11), lineHeight: getUnit(25) }}>现货账户（CNY）</div>
                         <div className="flex_center" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(20), lineHeight: getUnit(25) }}>{userInfo.cny}</div>
-                        <div className="flex_center" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11), lineHeight: getUnit(25) }}>≈30 手菊花茶</div>
+                        <div className="flex_center" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11), lineHeight: getUnit(25) }}>≈{Math.floor(Number(userInfo.cny) / Number(config.price))}手{config.website_title}</div>
                     </div>
                     <div style={{ background: '#fff', padding: getUnit(10), marginBottom: getUnit(10) }}>
                         <div className="flex">
@@ -64,14 +70,14 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                             <div className="flex_1" style={{ border: `${getUnit(1)} solid rgb(234, 234, 234)`, borderRadius: getUnit(5), marginRight: getUnit(5) }}>
                                 <div className="flex">
                                     <div className="flex_1">
-                                        <input style={{ height: getUnit(28), border: 'none', width: '100%' }} />
+                                        <input style={{ height: getUnit(28), border: 'none', width: '100%', paddingLeft: getUnit(10) }} value={number} onChange={this.handelChange} type="number" />
                                     </div>
-                                    <div className="flex_justify" style={{ color: 'rgba(0, 0, 0, 1)', fontSize: getUnit(11), padding: `0 ${getUnit(10)}`, whiteSpace: 'nowrap' }}>菊花茶</div>
-                                    <div className="flex_justify" style={{ color: 'rgba(0, 0, 0, 1)', fontSize: getUnit(11), padding: `0 ${getUnit(20)}`, borderLeft: `${getUnit(1)} solid rgb(234, 234, 234)`, whiteSpace: 'nowrap' }}>菊花茶/CNY</div>
+                                    <div className="flex_justify" style={{ color: 'rgba(0, 0, 0, 1)', fontSize: getUnit(11), padding: `0 ${getUnit(10)}`, whiteSpace: 'nowrap' }}>{config.website_title}</div>
+                                    <div className="flex_justify" style={{ color: 'rgba(0, 0, 0, 1)', fontSize: getUnit(11), padding: `0 ${getUnit(20)}`, borderLeft: `${getUnit(1)} solid rgb(234, 234, 234)`, whiteSpace: 'nowrap' }}>{config.website_title}/CNY</div>
                                 </div>
                             </div>
                             <div className="flex_justify">
-                                <Button theme={btnTheme} mold="primary" style={{ minWidth: getUnit(46) }}>兑换</Button>
+                                <Button theme={btnTheme} mold="primary" style={{ minWidth: getUnit(46) }} onClick={this.handleSale}>兑换</Button>
                             </div>
                         </div>
                     </div>
@@ -80,10 +86,10 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                         title={
                             <div className="flex">
                                 <Image src={require('../../assets/v2_q6k5js.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>菊花茶</div>
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>{config.website_title}</div>
                             </div>
                         }
-                        value={<PriceText>{userInfo.price}手</PriceText>}
+                        value={<PriceText>{userInfo.kind}手</PriceText>}
                         link
                         onPress={() => {
                             const { history } = this.props
@@ -126,26 +132,6 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
         )
     }
 
-    public componentDidMount() {
-        this.getData()
-    }
-
-    private getData = async () => {
-        // try {
-        //     const { match } = this.props
-        //     const data = await http('news/get_mechanism_info', {
-        //         id: match.params.id
-        //     })
-        //     this.setState({
-        //         ...data.msg
-        //     })
-        // } catch (data) {
-        //     Toast.info({
-        //         content: data.msg || '服务器繁忙,请稍后再试',
-        //     })
-        // }
-    }
-
     private handelToBank = () => {
         const { userInfo, history } = this.props
         if (!userInfo.realname && !userInfo.realcard) {
@@ -155,14 +141,46 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
         }
     }
 
+    private handelChange = (e: any) => {
+        this.setState({
+            number: e.target.value
+        })
+    }
+
     private handleBack = () => {
         const { history } = this.props
         history.goBack()
     }
+
+    private handleSale = async () => {
+        const { number } = this.state
+        if (!number) {
+            Toast.info({ content: '请输入数量' })
+        }
+        const close = Toast.loading()
+        try {
+            const { config, dispatch, userInfo } = this.props
+            const cny = Number(config.price) * Number(number)
+            await http('/wxapp/exchange/sale', {
+                num: number,
+                type: 2,
+                cny
+            })
+            userInfo.cny = (Number(userInfo.cny) - cny).toString()
+            dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+            close()
+        } catch (data) {
+            close()
+            Toast.info({
+                content: data.msg || '服务器繁忙,请稍后再试',
+            })
+        }
+    }
 }
 
 export default connect(
-    ({ userInfo }: IInitState) => ({
-        userInfo
+    ({ userInfo, config }: IInitState) => ({
+        userInfo,
+        config
     })
 )(Wallet)

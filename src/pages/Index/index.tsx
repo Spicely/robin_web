@@ -5,7 +5,7 @@ import Mall from '../Mall'
 import Shop from '../Shop'
 import My from '../My'
 import http from 'src/utils/axios'
-import { SET_USERINFO_DATA, SET_SELECTED_DATA } from 'src/store/actions'
+import { SET_USERINFO_DATA, SET_SELECTED_DATA, SET_CONFIG_DATA } from 'src/store/actions'
 import { DispatchProp, connect } from 'react-redux'
 import { IInitState, IGlobal } from 'src/store/state'
 import { RouteComponentProps } from 'react-router-dom'
@@ -62,6 +62,8 @@ class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> 
         try {
             const { dispatch } = this.props
             const data = await http('wxapp/login/userInfo')
+            const config = await http('/wxapp/Wxpay/configWeb')
+            dispatch({ type: SET_CONFIG_DATA, data: config.data })
             dispatch({ type: SET_USERINFO_DATA, data: data.data })
         } catch (e) {
             console.log(e)

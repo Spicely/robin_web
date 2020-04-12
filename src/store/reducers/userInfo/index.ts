@@ -22,7 +22,8 @@ const initData: IGlobal.UserInfo = {
     cny: '0.00',
     price: '',
     realcard: '',
-    realname: ''
+    realname: '',
+    kind: '0'
 }
 
 export default function userInfo(state = initData, action: AnyAction) {
