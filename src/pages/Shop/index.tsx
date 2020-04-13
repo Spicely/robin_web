@@ -99,8 +99,8 @@ class Shop extends Component<RouteComponentProps<any>, IState> {
                                                         <div style={{ marginRight: getUnit(10), marginLeft: getUnit(10) }}>
                                                             <Image src={imgUrl + i.goods_image} style={{ width: getUnit(54), height: getUnit(54) }} />
                                                         </div>
-                                                        <div className="flex_1">
-                                                            <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), fontWeight: 700, lineHeight: getUnit(20) }}>{i.goods_name}</div>
+                                                        <div className="flex_1" style={{ overflow: 'hidden'}}>
+                                                            <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), fontWeight: 700, lineHeight: getUnit(20),  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'  }}>{i.goods_name}</div>
                                                             <div className="flex">
                                                                 <div className="flex_1 flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(16), fontWeight: 700, lineHeight: getUnit(20), marginTop: getUnit(10) }}>¥{i.goods_price}</div>
                                                                 <div style={{ position: 'relative', top: getUnit(8) }}>
@@ -158,7 +158,7 @@ class Shop extends Component<RouteComponentProps<any>, IState> {
         const ids = data.filter((i) => i.checked).map((i) => i.cart_id)
         if (ids.length) {
             const { history } = this.props
-            history.push(`/order/${ids.join(',')}`)
+            history.push(`/order/${ids.join(',')}/1`)
         } else {
             Toast.info({
                 content: '请选择商品'

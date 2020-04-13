@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Image, MobileLayout, Toast, Icon, Divider, Gird } from 'components'
-import { http, imgUrl } from '../../utils'
+import { version } from '../../utils/axios'
 import { getUnit, IconThemeData, Color } from 'src/components/lib/utils'
 import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
@@ -175,7 +175,7 @@ class My extends Component<IProps, IState> {
                         title={
                             <div className="flex">
                                 <Image src={require('../../assets/v2_q6lws6.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>系统版本V1.2</div>
+                        <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>系统版本V{version}</div>
                             </div>
                         }
                         link
