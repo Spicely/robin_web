@@ -27,6 +27,23 @@ const ItemView = styled.div`
     padding: ${getUnit(10)};
 `
 
+const ITag = styled.div`
+    background: #000;
+    right: 0;
+    top: ${getUnit(10)};
+    z-index: 64;
+    background-color: rgb(32, 32, 32);
+    border: none;
+    color: rgb(255, 255, 255);
+    border-radius: ${getUnit(5)} 0;
+    font-size: ${getUnit(11)};
+    text-align: center;
+    line-height: ${getUnit(16)};
+    position: absolute;
+    padding: ${getUnit(2)} ${getUnit(3)};
+`
+
+
 const carouselTheme = new CarouselThemeData({
     height: 108
 })
@@ -97,24 +114,27 @@ class Home extends Component<IProps & DispatchProp, IState> {
                 {
                     homeData.goods_data.map((i, index: number) => {
                         return (
-                            <Link key={index} to={`/detail/${i.goods_id}`}>
+                            <Link key={index} to={`/detail/${i.goods_id}/1`}>
                                 <ItemView className="flex" >
                                     <Image src={imgUrl + i.image_url} style={{ width: getUnit(80), height: getUnit(80) }} />
-                                    <div className="flex_1" style={{ marginLeft: getUnit(10), overflow: 'hidden' }}>
-                                        <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{i.goods_name}</div>
-                                        <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额{i.goods_number}件</div>
-                                        <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>{i.start_time}</div>
-                                        <div style={{ fontSize: getUnit(16), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.goods_price}</div>
-                                    </div>
-                                    <div className="flex_column">
-                                        <div className="flex_1" />
-                                        <Button
-                                            mold="primary"
-                                            theme={buttonTheme}
-                                        >
-                                            <div style={{ fontSize: getUnit(11) }}>爆卖{i.goods_discount}件</div>
-                                            <div style={{ fontSize: getUnit(13) }}>马上抢</div>
-                                        </Button>
+                                    <div className="flex flex_1" style={{ position: 'relative', overflow: 'hidden' }}>
+                                        <div className="flex_1" style={{ marginLeft: getUnit(10), overflow: 'hidden' }}>
+                                            <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{i.goods_name}</div>
+                                            <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额{i.goods_number}件</div>
+                                            <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>{i.start_time}</div>
+                                            <div style={{ fontSize: getUnit(16), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.goods_price}</div>
+                                        </div>
+                                        <div className="flex_column">
+                                            <div className="flex_1" />
+                                            <Button
+                                                mold="primary"
+                                                theme={buttonTheme}
+                                            >
+                                                <div style={{ fontSize: getUnit(11) }}>爆卖{i.goods_discount}件</div>
+                                                <div style={{ fontSize: getUnit(13) }}>马上抢</div>
+                                            </Button>
+                                        </div>
+                                        {i.class_name ? <ITag>{i.class_name}</ITag> : null}
                                     </div>
                                 </ItemView>
                             </Link>

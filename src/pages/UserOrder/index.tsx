@@ -82,6 +82,7 @@ export default class UserOrder extends Component<RouteComponentProps<any>, IStat
                                                                     i.order_state === 3 ? <Button theme={buttonTheme} onClick={this.handleConfirm.bind(this, i, key)}>确认收货</Button> : i.order_state === 1 ? <Button theme={buttonTheme} onClick={this.handlePay.bind(this, i, key)}>去支付</Button> : this.getStatus(i.order_state)
                                                                 }
                                                             </div>
+                                                            {i.order_state === 5 ? <div style={{ color: 'red', marginBottom: getUnit(5) }}>{i.refund_remark}</div> : null}
                                                         </div>
                                                     }
                                                 />
@@ -106,6 +107,7 @@ export default class UserOrder extends Component<RouteComponentProps<any>, IStat
             case 1: return '已下单'
             case 2: return '支付完成'
             case 3: return '发货中'
+            case 5: return <span style={{ color: 'red' }}>驳回</span>
             default: return '已收货'
         }
     }
@@ -137,7 +139,9 @@ export default class UserOrder extends Component<RouteComponentProps<any>, IStat
     private getData = async () => {
         const close = Toast.loading()
         try {
-            const { data } = await http('/wxapp/orders/getOrdersData')
+            const { data } = await http('/wxapp/orders/getOrdersData', {}, {
+                method: 'GET'
+            })
             this.setState({
                 data
             })

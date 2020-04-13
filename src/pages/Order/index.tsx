@@ -231,7 +231,7 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
     private handlePay = async () => {
         try {
             const { price, data, msg } = this.state
-            const { history, defaultAddr } = this.props
+            const { history, defaultAddr, match } = this.props
             if (!defaultAddr.address_id) {
                 Toast.info({
                     content: '请选择收货地址',
@@ -249,7 +249,11 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                 }),
                 message: msg
             })
-            history.replace(`/linePay/${res.data.order_num}`)
+            if (match.params.type === '1') {
+                history.replace(`/linePay/${res.data.order_num}`)
+            } else {
+                history.goBack()
+            }
         } catch (data) {
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',

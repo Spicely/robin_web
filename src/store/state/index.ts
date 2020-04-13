@@ -20,6 +20,7 @@ export interface IGoodsData {
     goods_discount: number
     start_time: number
     image_url: string
+    class_name: string
 }
 
 export namespace IGlobal {

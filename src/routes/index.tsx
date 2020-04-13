@@ -53,7 +53,7 @@ export const routes: IRoutes[] = [{
     path: '/addressAdd/:id?'
 }, {
     component: Detail,
-    path: '/detail/:id'
+    path: '/detail/:id/:type'
 }, {
     component: Pay,
     path: '/pay'
@@ -77,7 +77,7 @@ export const routes: IRoutes[] = [{
     path: '/userBind'
 }, {
     component: Order,
-    path: '/order/:id'
+    path: '/order/:id/:type'
 }, {
     component: Exchange,
     path: '/exchange'

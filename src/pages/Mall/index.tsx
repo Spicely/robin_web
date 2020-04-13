@@ -95,7 +95,7 @@ class Mall extends Component<any, IState> {
                         shopData.goods_data.map((i: any, index: number) => {
                             return (
                                 <ShopItemView key={index}>
-                                    <Link to={`/detail/${i.goods_id}`}>
+                                    <Link to={`/detail/${i.goods_id}/2`}>
                                         <div
                                             className="flex_center"
                                             style={{ padding: getUnit(10) }}

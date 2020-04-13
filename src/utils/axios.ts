@@ -72,6 +72,18 @@ instance.interceptors.response.use(async function (res: any) {
 const http = function (url: string, params?: IValue, config?: AxiosRequestConfig): any {
     const headers = config ? config.headers : {}
     const token = localStorage.getItem('token')
+    if (config?.method === 'GET') {
+        return instance(`${url}`, {
+            ...config,
+            params: {
+                ...params,
+                userId: token
+            },
+            headers: {
+                ...headers,
+            }
+        })
+    }
     return instance(`${url}`, {
         ...config,
         data: {

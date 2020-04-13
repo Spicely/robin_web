@@ -72,7 +72,7 @@ interface IProps {
     userInfo: IGlobal.UserInfo
 }
 
-class Detail extends Component<IProps & RouteComponentProps<{ id: string }>, IState> {
+class Detail extends Component<IProps & RouteComponentProps<{ id: string, type: string }>, IState> {
 
     public state: IState = {
         data: {
@@ -216,11 +216,8 @@ class Detail extends Component<IProps & RouteComponentProps<{ id: string }>, ISt
                 gid: params.id,
                 num: 1
             })
-            Toast.info({
-                content: msg
-            })
             close()
-            history.push(`/${url}/${data}`)
+            history.push(`/${url}/${data}/${params.type}`)
         } catch (data) {
             close()
             Toast.info({
