@@ -73,7 +73,7 @@ class Index extends Component<IProps & DispatchProp & RouteComponentProps, any> 
 
     private handleChange = (field: any) => {
         const { dispatch, userInfo, history } = this.props
-        if (field !== 0 && !userInfo.user_id) {
+        if (!(field === 0 || field === 1) && !userInfo.user_id) {
             history.push('/login')
             return
         }

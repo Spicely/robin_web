@@ -102,7 +102,7 @@ class Mall extends Component<any, IState> {
                                         >
                                             <Image src={imgUrl + i.image_url} style={{ width: getUnit(120), height: getUnit(120) }} />
                                             <div style={{ paddingTop: getUnit(8), position: 'relative', width: '100%'}}>
-                                                <ShopItemTitle>{i.goods_name}</ShopItemTitle>
+                                                <ShopItemTitle style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{i.goods_name}</ShopItemTitle>
                                                 <div className="flex">
                                                     <ShopItemPirce>¥{i.goods_price}</ShopItemPirce>
                                                     <div className="flex_justify" style={{ fontSize: getUnit(10), color: 'rgb(16, 16, 16)' }}>通兑</div>

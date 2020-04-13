@@ -111,15 +111,15 @@ class Login extends Component<RouteComponentProps & DispatchProp, IState> {
 
     private getCode = async () => {
         if (this.fn) {
+            const form = this.fn.getFieldValue()
+            if (!verify.isMobile(form.phone)) {
+                Toast.info({
+                    content: '请输入正确的电话号码',
+                })
+                return false
+            }
             const close = Toast.loading()
             try {
-                const form = this.fn.getFieldValue()
-                if (!verify.isMobile(form.phone)) {
-                    Toast.info({
-                        content: '请输入正确的电话号码',
-                    })
-                    return false
-                }
                 const code = random(1000, 9999)
                 await http('/wxapp/login/sendPhoneCode', {
                     phone: form.phone,

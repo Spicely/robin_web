@@ -100,8 +100,8 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             <Link key={index} to={`/detail/${i.goods_id}`}>
                                 <ItemView className="flex" >
                                     <Image src={imgUrl + i.image_url} style={{ width: getUnit(80), height: getUnit(80) }} />
-                                    <div className="flex_1" style={{ marginLeft: getUnit(10) }}>
-                                        <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20) }}>{i.goods_name}</div>
+                                    <div className="flex_1" style={{ marginLeft: getUnit(10), overflow: 'hidden' }}>
+                                        <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{i.goods_name}</div>
                                         <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额{i.goods_number}件</div>
                                         <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>{i.start_time}</div>
                                         <div style={{ fontSize: getUnit(16), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.goods_price}</div>
