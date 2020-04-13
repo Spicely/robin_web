@@ -130,8 +130,8 @@ class Detail extends Component<IProps & RouteComponentProps<{ id: string }>, ISt
                     autoplay
                 >
                     {
-                        data.imgs.map((i: string, index: number) => {
-                            return (<Image src={imgUrl + i} style={{ width: '100%' }} key={index} />)
+                        data.imgs.map((i: any, index: number) => {
+                            return (<Image src={imgUrl + i.image_url} style={{ width: '100%' }} key={index} />)
                         })
                     }
                 </Carousel>
