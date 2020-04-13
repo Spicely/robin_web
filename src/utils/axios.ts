@@ -7,8 +7,8 @@ interface IValue {
     [name: string]: any
 }
 
-export const baseUrl = 'http://a.k-ww.com/'
-export const imgUrl = 'http://a.k-ww.com/'
+export const baseUrl = 'http://n.public.5151fw.com/'
+export const imgUrl = 'http://n.public.5151fw.com/'
 export const version = '1.0.0'
 
 export interface IRresItem<T = any> {
