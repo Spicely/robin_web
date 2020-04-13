@@ -1,10 +1,13 @@
-import React, { Component } from 'react'
+import React, { Component, ChangeEvent } from 'react'
 import { MobileLayout, NavBar, Toast, Button, Image } from 'components'
 import styled from 'styled-components'
 import { getUnit, ButtonThemeData, BorderRadius } from 'src/components/lib/utils'
 import { http } from 'src/utils'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { RouteComponentProps } from 'react-router-dom'
+import { Modal } from 'antd-mobile'
+
+const alert = Modal.alert;
 
 const btnTheme = new ButtonThemeData({
     width: '100%',
@@ -23,7 +26,7 @@ export default class LinePay extends Component<RouteComponentProps<any>, any> {
         }
     }
 
-    private page = 1
+    private file: any
 
     public render(): JSX.Element {
         const { data } = this.state
@@ -95,6 +98,7 @@ export default class LinePay extends Component<RouteComponentProps<any>, any> {
                     <div style={{ marginTop: getUnit(20) }}>
                         <Button mold="primary" theme={btnTheme} onClick={this.handlePay}>我已付款</Button>
                     </div>
+                    <input type="file" ref={(e) => this.file = e} onChange={this.handleFile} style={{ display: 'none' }} />
                 </div>
             </MobileLayout>
         )
@@ -120,25 +124,51 @@ export default class LinePay extends Component<RouteComponentProps<any>, any> {
         }
     }
 
-    private handlePay = async () => {
-        const close = Toast.loading()
+    private handleFile = async (e: ChangeEvent<HTMLInputElement>) => {
+        let close
         try {
-            const { orderId } = this.props.match.params
-            const { history } = this.props
-            const data = await http('/wxapp/Wxpay/downPay', {
-                order_id: orderId
-            })
-            close()
-            Toast.info({
-                content: data.msg,
-            })
-            history.goBack()
+            const fileList = e.currentTarget.files
+            const file = fileList?.item(0)
+            if (file) {
+                close = Toast.loading()
+                const { orderId } = this.props.match.params
+                const { history } = this.props
+                const form = new FormData()
+                form.append('order_id', orderId)
+                form.append('file', file)
+                await http('/wxapp/users/uPayImg', form)
+                const data = await http('/wxapp/Wxpay/downPay', {
+                    order_id: orderId
+                })
+                close()
+                Toast.info({
+                    content: data.msg,
+                })
+                history.goBack()
+            } else {
+                Toast.info({
+                    content: '上传支付凭证'
+                })
+            }
         } catch (data) {
-            close()
+            close?.()
             Toast.info({
                 content: data.msg || '服务器繁忙,请稍后再试',
             })
         }
+
+    }
+
+    private handlePay = async () => {
+        alert('确认已转款？', '您需要上传支付凭证', [
+            { text: '取消' },
+            {
+                text: '确认',
+                onPress: () => {
+                    this.file.click()
+                }
+            },
+        ])
     }
 
     private handleCopy = () => {

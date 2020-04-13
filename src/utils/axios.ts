@@ -2,6 +2,7 @@ import { isFunction } from 'lodash'
 import { Toast } from 'components'
 import CryptoJS from 'crypto-js'
 import axois, { AxiosRequestConfig } from 'axios'
+import { isFormData } from 'muka'
 
 interface IValue {
     [name: string]: any
@@ -69,7 +70,7 @@ instance.interceptors.response.use(async function (res: any) {
     }
 })
 
-const http = function (url: string, params?: IValue, config?: AxiosRequestConfig): any {
+const http = function (url: string, params?: any, config?: AxiosRequestConfig): any {
     const headers = config ? config.headers : {}
     const token = localStorage.getItem('token')
     if (config?.method === 'GET') {
@@ -79,6 +80,16 @@ const http = function (url: string, params?: IValue, config?: AxiosRequestConfig
                 ...params,
                 userId: token
             },
+            headers: {
+                ...headers,
+            }
+        })
+    }
+    if (isFormData(params)) {
+        params.append('userId', token)
+        return instance(`${url}`, {
+            ...config,
+            data: params,
             headers: {
                 ...headers,
             }
