@@ -252,6 +252,12 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
             if (match.params.type === '1') {
                 history.replace(`/linePay/${res.data.order_num}`)
             } else {
+                const _data = await http('/wxapp/Wxpay/downPay', {
+                    order_id: res.data.order_num
+                })
+                Toast.info({
+                    content: _data.msg
+                })
                 history.goBack()
             }
         } catch (data) {
