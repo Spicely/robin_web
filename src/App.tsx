@@ -52,8 +52,8 @@ class App extends React.Component {
 							}
 							footer={
 								<div className='flex' style={{ justifyContent: 'space-between' }}>
-									<Button style={{ margin: getUnit(5), background: '#3482FE', color: 'white' }} onClick={this.cancel}>取消</Button>
-									<Button style={{ margin: getUnit(5), background: '#3482FE', color: 'white' }} onClick={this.confirm}>确定</Button>
+									<Button style={{ margin: getUnit(5), background: '#000', color: 'white', height: getUnit(34) }} onClick={this.cancel}>取消</Button>
+									<Button style={{ margin: getUnit(5), background: '#000', color: 'white', height: getUnit(34) }} onClick={this.confirm}>确定</Button>
 								</div>
 							}
 						>
@@ -67,7 +67,6 @@ class App extends React.Component {
 
 	public componentDidMount() {
 		document.addEventListener("deviceready", this.onDeviceReady, false)
-		this.onDeviceReady()
 	}
 
 	private confirm = () => {
@@ -112,10 +111,10 @@ class App extends React.Component {
 			visible: false
 		})
 	}
-	
+
 	private onDeviceReady = async () => {
-		// const platform = device.platform.toLowerCase()
-		const platform = 'android'
+		const platform = device.platform.toLowerCase()
+		// const platform = 'android'
 		try {
 			const { data } = await http('/wxapp/login/checkupdate', {
 				version,

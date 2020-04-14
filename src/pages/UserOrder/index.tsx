@@ -77,7 +77,9 @@ export default class UserOrder extends Component<RouteComponentProps<any>, IStat
                                                                 <div style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), lineHeight: getUnit(30) }}>¥{i.order_price}</div>
                                                             </div>
                                                             <div className="flex">
-                                                                <div className="flex_1" />
+                                                                <div className="flex_1 flex_justify" style={{ color: 'rgba(172, 172, 172, 1)', fontSize: getUnit(10)}}>
+                                                                    订单编号：{i.order_num}
+                                                                    </div>
                                                                 {
                                                                     i.order_state === 3 ? <Button theme={buttonTheme} onClick={this.handleConfirm.bind(this, i, key)}>确认收货</Button> : i.order_state === 1 ? <Button theme={buttonTheme} onClick={this.handlePay.bind(this, i, key)}>去支付</Button> : this.getStatus(i.order_state)
                                                                 }
