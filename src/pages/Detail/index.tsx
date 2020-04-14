@@ -159,12 +159,12 @@ class Detail extends Component<IProps & RouteComponentProps<{ id: string, type: 
                 <Gird
                     style={{ marginTop: getUnit(10) }}
                 >
-                    <Gird.Item
+                    {/* <Gird.Item
                         title="配送"
                         value="四川省成都市锦江区"
                         link
                         flexType="value"
-                    />
+                    /> */}
                     <Gird.Item
                         title="运费"
                         value="包邮"
