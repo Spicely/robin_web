@@ -68,6 +68,12 @@ const ShopHtml = styled.div`
     margin-top: ${getUnit(10)};
 `
 
+const Veiwx = styled.div`
+    img {
+        width: 100%;
+    }
+`
+
 interface IProps {
     userInfo: IGlobal.UserInfo
 }
@@ -189,8 +195,8 @@ class Detail extends Component<IProps & RouteComponentProps<{ id: string, type: 
                                 <Divider orientation="center">
                                     <div style={{ fontSize: getUnit(14) }}>图文详情</div>
                                 </Divider>
-                                <div dangerouslySetInnerHTML={{ __html: data.goods_contents }} />
                             </div>
+                            <Veiwx dangerouslySetInnerHTML={{ __html: data.goods_contents }} />
                         </div>
                     </ShopHtml>
                 </Gird>

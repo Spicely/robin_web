@@ -161,13 +161,16 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
         try {
             const { config, dispatch, userInfo } = this.props
             const cny = Number(config.price) * Number(number)
-            await http('/wxapp/exchange/sale', {
+            const data = await http('/wxapp/exchange/sale', {
                 num: number,
                 type: 2,
                 cny
             })
-            userInfo.cny = (Number(userInfo.cny) - cny).toString()
+            userInfo.cny = (Number(userInfo.cny) - cny).toFixed(2)
             dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
+            Toast.info({
+                content: data.msg,
+            })
             close()
         } catch (data) {
             close()
