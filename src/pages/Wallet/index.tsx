@@ -160,6 +160,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
         const { number } = this.state
         if (!number) {
             Toast.info({ content: '请输入数量' })
+            return
         }
         const close = Toast.loading()
         try {
