@@ -183,23 +183,23 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                     {
                         match.params.type === '2' ? (
                             <Fragment>
-                                <Item 
+                                <Item
                                     title="通兑支付"
-                                    value={<Radio type="square" checked={pay === 1}/>}
+                                    value={<Radio type="square" checked={pay === 1} />}
                                     onPress={this.handleTypePay.bind(this, 1)}
                                 />
-                                <Item 
+                                <Item
                                     title="货款支付"
-                                    value={<Radio type="square"  checked={pay === 2}/>}
+                                    value={<Radio type="square" checked={pay === 2} />}
                                     onPress={this.handleTypePay.bind(this, 2)}
                                 />
-                                <Item 
+                                <Item
                                     title="货款+通兑支付"
-                                    value={<Radio type="square"  checked={pay === 3}/>}
+                                    value={<Radio type="square" checked={pay === 3} />}
                                     onPress={this.handleTypePay.bind(this, 3)}
                                 />
                             </Fragment>
-                        ): null
+                        ) : null
                     }
                 </div>
 
@@ -276,7 +276,7 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                         cart_num: i.cart_num
                     }
                 }),
-                paw_way: pay,
+                paw_way: match.params.type === '1' ? 0 : pay,
                 message: msg
             })
             if (match.params.type === '1') {
