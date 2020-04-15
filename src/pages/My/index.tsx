@@ -16,6 +16,8 @@ interface IState {
 
 interface IProps extends RouteComponentProps {
     userInfo: IGlobal.UserInfo
+    config: IGlobal.Config
+    configWeb: IGlobal.ConfigWeb
 }
 
 const HeaderBox = styled.div`
@@ -48,7 +50,7 @@ class My extends Component<IProps, IState> {
     }
 
     public render(): JSX.Element {
-        const { userInfo } = this.props
+        const { userInfo, config, configWeb } = this.props
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -68,7 +70,6 @@ class My extends Component<IProps, IState> {
                                     style={{
                                         backgroundColor: 'rgb(0, 0, 0)',
                                         height: getUnit(11),
-                                        width: getUnit(30),
                                         borderRadius: getUnit(20)
                                     }}>
                                     <Image
@@ -80,7 +81,7 @@ class My extends Component<IProps, IState> {
                                             marginRight: getUnit(2)
                                         }}
                                     />
-                                    <div className="flex_justify" style={{ color: '#fff', fontSize: getUnit(9), marginTop: getUnit(2) }}> V1 </div>
+                                    <div className="flex_justify" style={{ color: '#fff', fontSize: getUnit(9), marginTop: getUnit(2) }}>{userInfo.level_name}</div>
                                 </div>
                             </div>
                             <div className="flex_justify" style={{ marginLeft: getUnit(5) }}>
@@ -102,19 +103,24 @@ class My extends Component<IProps, IState> {
                                 </div>
                                 <div className="flex_1">
                                     <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.price}</div>
-                                    <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>余额</div>
+                                    <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>现货账户</div>
                                 </div>
                             </div>
                         </Link>
                         <Divider type="vertical" />
                         <div className="flex_1">
+                            <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>{userInfo.kind}手</div>
+                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>{config.website_title}</div>
+                        </div>
+                        <Divider type="vertical" />
+                        <div className="flex_1">
                             <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.buyprice}</div>
-                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>货款通兑</div>
+                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>货款</div>
                         </div>
                         <Divider type="vertical" />
                         <div className="flex_1">
                             <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.cny}</div>
-                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>利润通兑</div>
+                            <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>通兑</div>
                         </div>
                         <div className="flex_justify">
                             <Icon icon="ios-arrow-forward" theme={forwardIconTheme} />
@@ -162,6 +168,7 @@ class My extends Component<IProps, IState> {
                         }
                         link="code"
                     />
+
                     <Gird.Item
                         title={
                             <div className="flex">
@@ -169,13 +176,15 @@ class My extends Component<IProps, IState> {
                                 <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>我的客服</div>
                             </div>
                         }
-                        link
+                        lineType="solid"
+                        value={<a href={`tel:${configWeb.tel}`}>{configWeb.tel}</a>}
+                        link={null}
                     />
                     <Gird.Item
                         title={
                             <div className="flex">
                                 <Image src={require('../../assets/v2_q6lws6.png')} style={{ width: getUnit(20), height: getUnit(20) }} />
-                        <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>系统版本V{version}</div>
+                                <div className="flex_justify" style={{ marginLeft: getUnit(10), fontSize: getUnit(14) }}>系统版本V{version}</div>
                             </div>
                         }
                         link
@@ -221,7 +230,9 @@ class My extends Component<IProps, IState> {
 }
 
 export default connect(
-    ({ userInfo }: IInitState) => ({
-        userInfo
+    ({ userInfo, config, configWeb }: IInitState) => ({
+        userInfo,
+        config,
+        configWeb
     })
 )(withRouter(My))

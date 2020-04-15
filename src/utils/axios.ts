@@ -10,7 +10,7 @@ interface IValue {
 
 export const baseUrl = 'http://n.public.5151fw.com/'
 export const imgUrl = 'http://n.public.5151fw.com/'
-export const version = '1.0.2'
+export const version = '1.0.3'
 
 export interface IRresItem<T = any> {
     msg: string
@@ -71,7 +71,6 @@ instance.interceptors.response.use(async function (res: any) {
 })
 
 const http = function (url: string, params?: any, config?: AxiosRequestConfig): any {
-    const headers = config ? config.headers : {}
     const token = localStorage.getItem('token')
     if (config?.method === 'GET') {
         return instance(`${url}`, {
@@ -79,9 +78,6 @@ const http = function (url: string, params?: any, config?: AxiosRequestConfig): 
             params: {
                 ...params,
                 userId: token
-            },
-            headers: {
-                ...headers,
             }
         })
     }
@@ -89,10 +85,7 @@ const http = function (url: string, params?: any, config?: AxiosRequestConfig): 
         params.append('userId', token)
         return instance(`${url}`, {
             ...config,
-            data: params,
-            headers: {
-                ...headers,
-            }
+            data: params
         })
     }
     return instance(`${url}`, {
@@ -100,9 +93,6 @@ const http = function (url: string, params?: any, config?: AxiosRequestConfig): 
         data: {
             ...params,
             userId: token
-        },
-        headers: {
-            ...headers,
         }
     })
 }

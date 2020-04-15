@@ -8,6 +8,7 @@ const initData: IGlobal.UserInfo = {
     user_nickname: '',
     user_sex: 0,
     user_image: 0,
+    level_name: '',
     user_phone: '',
     wx_headimg: '',
     wx_openid: '',

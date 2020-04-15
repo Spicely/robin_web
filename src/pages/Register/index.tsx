@@ -141,6 +141,8 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                 await http('/wxapp/login/sendPhoneCode', {
                     phone: form.phone,
                     code,
+                }, {
+                    method: 'GET'
                 })
                 this.setState({
                     code: code.toString()

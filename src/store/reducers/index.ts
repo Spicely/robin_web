@@ -8,6 +8,7 @@ import banner from './banner'
 import selected from './selected'
 import shopData from './shopData'
 import config from './config'
+import configWeb from './configWeb'
 
 export default combineReducers({
     token,
@@ -18,5 +19,6 @@ export default combineReducers({
     banner,
     selected,
     shopData,
-    config
+    config,
+    configWeb
 })

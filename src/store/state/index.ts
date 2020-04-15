@@ -47,6 +47,7 @@ export namespace IGlobal {
         code: string
         created_time: number
         login_key: string
+        level_name: string
         last_login_time: number
         remcd: string
         cny: string
@@ -104,6 +105,19 @@ export namespace IGlobal {
         price: string
         change_time: number
     }
+    export interface ConfigWeb {
+        website_id: number
+        website_title: string
+        website_logo: number
+        website_icon: number
+        website_keywords: string
+        website_description: string
+        website_code: string
+        website_copyright: string
+        website_state: number
+        change_time: number
+        tel: string
+    }
 }
 
 export interface IInitState {
@@ -115,4 +129,5 @@ export interface IInitState {
     selected: number
     shopData: IGlobal.ShopData
     config: IGlobal.Config
+    configWeb: IGlobal.ConfigWeb
 }
