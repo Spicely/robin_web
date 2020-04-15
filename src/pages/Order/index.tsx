@@ -276,7 +276,7 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                         cart_num: i.cart_num
                     }
                 }),
-                paw_way: match.params.type === '1' ? 0 : pay,
+                pay_way: match.params.type === '1' ? 0 : pay,
                 message: msg
             })
             if (match.params.type === '1') {
