@@ -186,12 +186,12 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                     })
                     return
                 }
-                if (!form.remcd) {
-                    Toast.info({
-                        content: '请输入邀请码',
-                    })
-                    return
-                }
+                // if (!form.remcd) {
+                //     Toast.info({
+                //         content: '请输入邀请码',
+                //     })
+                //     return
+                // }
                 const data = await http('wxapp/login/register', form)
                 const { history, dispatch } = this.props
                 localStorage.setItem('token', data.msg)

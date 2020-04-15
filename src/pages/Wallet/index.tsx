@@ -95,6 +95,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                             const { history } = this.props
                             history.push('/exchange')
                         }}
+                        lineType="none"
                     />
                     <Item
                         style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
@@ -105,6 +106,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                             </div>
                         }
                         value={<PriceText>¥{userInfo.buyprice}</PriceText>}
+                        lineType="none"
                     />
                     <Item
                         style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
@@ -115,6 +117,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                             </div>
                         }
                         value={<PriceText>¥{userInfo.cny}</PriceText>}
+                        lineType="none"
                     />
                     <Item
                         style={{ borderRadius: getUnit(5), marginBottom: getUnit(10) }}
@@ -126,6 +129,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                         }
                         link={true}
                         onPress={this.handelToBank}
+                        lineType="none"
                     />
                 </div>
             </MobileLayout>
