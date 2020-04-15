@@ -66,7 +66,6 @@ class Register extends Component<RouteComponentProps & DispatchProp, IState> {
                 title: '邀请码',
                 placeholder: '请输入邀请码',
                 type: 'tel',
-                maxLength: 6
             },
             field: 'remcd'
         }, {

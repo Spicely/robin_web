@@ -93,7 +93,7 @@ class My extends Component<IProps, IState> {
                         </div>
                     </Link>
                     <HeaderItemBox className="flex">
-                        <Link to="/wallet" className="flex_1">
+                        <Link to="/wallet">
                             <div className="flex">
                                 <div className="flex_justify">
                                     <div className="flex">
@@ -101,7 +101,7 @@ class My extends Component<IProps, IState> {
                                         <div style={{ fontSize: getUnit(14), marginLeft: getUnit(5) }}>钱包</div>
                                     </div>
                                 </div>
-                                <div className="flex_1">
+                                <div className="flex_1" style={{padding: `0 ${getUnit(5)}`}}>
                                     <div style={{ fontSize: getUnit(12), fontWeight: 700, textAlign: 'center', marginTop: getUnit(-5) }}>¥{userInfo.price}</div>
                                     <div style={{ fontSize: getUnit(12), textAlign: 'center', marginTop: getUnit(2) }}>现货账户</div>
                                 </div>
