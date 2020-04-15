@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { http, imgUrl } from 'src/utils'
-import { Toast, MobileLayout, NavBar, Image, Button, InputNumber, Item, Gird } from 'components'
+import { Toast, MobileLayout, NavBar, Image, Button, InputNumber, Item, Gird, Radio } from 'components'
 import { RouteComponentProps } from 'react-router-dom'
 import { getUnit, ItemThemeData, ButtonThemeData, BorderRadius, Color } from 'src/components/lib/utils'
 import { IInitState, IGlobal } from 'src/store/state'
@@ -11,6 +11,7 @@ interface IState {
     data: any[]
     price: number
     msg: string
+    pay: number
 }
 
 interface IProps {
@@ -37,6 +38,7 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
     public state: IState = {
         data: [],
         price: 0,
+        pay: 1,
         msg: '',
     }
 
@@ -54,8 +56,8 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
     }
 
     public render(): JSX.Element {
-        const { data, price, msg } = this.state
-        const { defaultAddr } = this.props
+        const { data, price, msg, pay } = this.state
+        const { defaultAddr, match } = this.props
         return (
             <MobileLayout
                 appBar={
@@ -178,6 +180,27 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                             </div>
                         )}
                     />
+                    {
+                        match.params.type === '2' ? (
+                            <Fragment>
+                                <Item 
+                                    title="通兑支付"
+                                    value={<Radio type="square" checked={pay === 1}/>}
+                                    onPress={this.handleTypePay.bind(this, 1)}
+                                />
+                                <Item 
+                                    title="货款支付"
+                                    value={<Radio type="square"  checked={pay === 2}/>}
+                                    onPress={this.handleTypePay.bind(this, 2)}
+                                />
+                                <Item 
+                                    title="货款+通兑支付"
+                                    value={<Radio type="square"  checked={pay === 3}/>}
+                                    onPress={this.handleTypePay.bind(this, 3)}
+                                />
+                            </Fragment>
+                        ): null
+                    }
                 </div>
 
             </MobileLayout>
@@ -228,9 +251,15 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
         history.goBack()
     }
 
+    private handleTypePay = (type: number) => {
+        this.setState({
+            pay: type
+        })
+    }
+
     private handlePay = async () => {
         try {
-            const { price, data, msg } = this.state
+            const { price, data, msg, pay } = this.state
             const { history, defaultAddr, match } = this.props
             if (!defaultAddr.address_id) {
                 Toast.info({
@@ -247,6 +276,7 @@ class Order extends Component<IProps & RouteComponentProps<any> & DispatchProp, 
                         cart_num: i.cart_num
                     }
                 }),
+                paw_way: pay,
                 message: msg
             })
             if (match.params.type === '1') {

@@ -162,6 +162,10 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
             Toast.info({ content: '请输入数量' })
             return
         }
+        if(!(Number(number) % 1 === 0)) {
+            Toast.info({ content: '请输入整数' })
+            return
+        }
         const close = Toast.loading()
         try {
             const { config, dispatch, userInfo } = this.props
