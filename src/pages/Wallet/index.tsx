@@ -171,7 +171,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                 type: 2,
                 cny
             })
-            userInfo.cny = (Number(userInfo.cny) - cny).toFixed(2)
+            userInfo.price = (Number(userInfo.cny) - cny).toFixed(2)
             dispatch({ type: SET_USERINFO_DATA, data: { ...userInfo } })
             Toast.info({
                 content: data.msg,
