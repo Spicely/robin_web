@@ -53,8 +53,8 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                 <div style={{ padding: getUnit(10) }}>
                     <div style={{ paddingBottom: getUnit(10) }}>
                         <div className="flex_center" style={{ color: 'rgba(87, 183, 43, 1)', fontSize: getUnit(11), lineHeight: getUnit(25) }}>现货账户（CNY）</div>
-                        <div className="flex_center" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(20), lineHeight: getUnit(25) }}>{userInfo.cny}</div>
-                        <div className="flex_center" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11), lineHeight: getUnit(25) }}>≈{Math.floor(Number(userInfo.cny) / Number(config.price))}手{config.website_title}</div>
+                        <div className="flex_center" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(20), lineHeight: getUnit(25) }}>{userInfo.price}</div>
+                        <div className="flex_center" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11), lineHeight: getUnit(25) }}>≈{Math.floor(Number(userInfo.price) / Number(config.price))}手{config.website_title}</div>
                     </div>
                     <div style={{ background: '#fff', padding: getUnit(10), marginBottom: getUnit(10) }}>
                         <div className="flex">
