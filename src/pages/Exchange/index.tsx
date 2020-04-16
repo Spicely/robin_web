@@ -235,7 +235,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
         const num = isNaN(Number(e.target.value)) ? '' : Number(e.target.value)
         this.fn?.setFieldValue({
             num,
-            cny: Number(num || 0) * Number(config.price)
+            cny: Number(num || 0) * Number(config.mprice)
         })
     }
 

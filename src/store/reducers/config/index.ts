@@ -6,6 +6,7 @@ const initData: IGlobal.Config = {
     website_id: 0,
     website_title: '',
     price: '',
+    mprice: '',
     change_time: 1586713438,
 }
 

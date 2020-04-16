@@ -104,6 +104,7 @@ export namespace IGlobal {
         website_title: string
         price: string
         change_time: number
+        mprice: string
     }
     export interface ConfigWeb {
         website_id: number
