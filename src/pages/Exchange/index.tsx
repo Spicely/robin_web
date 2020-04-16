@@ -116,7 +116,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                         }
                     />
                     <TabBar theme={tabTheme}>
-                        <TabBar.Item title="卖出" style={{width: getUnit(80)}}>
+                        <TabBar.Item title="卖出" style={{ width: getUnit(80) }}>
                             <Form getItems={this.getItems} />
                             <Button mold="primary" theme={btnTheme} async onClick={this.handleSale}>立即卖出</Button>
                             <Item
@@ -148,8 +148,8 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                 }) : <Empty />
                             }
                         </TabBar.Item>
-                        <TabBar.Item title="当前订单" style={{width: getUnit(80)}}>
-                        {
+                        <TabBar.Item title="当前订单" style={{ width: getUnit(80) }}>
+                            {
                                 _v.length ? _v.map((i, index: number) => {
                                     return (
                                         <Item
@@ -175,7 +175,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                 }) : <Empty />
                             }
                         </TabBar.Item>
-                        <TabBar.Item title="历史订单" style={{width: getUnit(80)}}>
+                        <TabBar.Item title="历史订单" style={{ width: getUnit(80) }}>
                             {
                                 data.length ? data.map((i, index: number) => {
                                     return (
@@ -249,13 +249,24 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                     })
                     return
                 }
+                if (params.num % 1 !== 0) {
+                    Toast.info({
+                        content: '请输入整数',
+                    })
+                    return
+                }
                 if (!params.cny) {
                     Toast.info({
                         content: '请输入估价',
                     })
                     return
                 }
-
+                if (params.cny < 100) {
+                    Toast.info({
+                        content: '卖出价格不能低于100',
+                    })
+                    return
+                }
                 const { msg } = await http('/wxapp/exchange/sale', {
                     ...params,
                     type: 1
