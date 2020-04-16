@@ -109,8 +109,8 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                     <div style={{ color: 'rgb(125, 125, 125)', fontSize: getUnit(10) }}>实时价</div>
                                 </div>
                                 <div className="flex">
-                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11) }}>{userInfo.cny}≈{Math.floor(Number(userInfo.cny) / Number(config.price))}手{config.website_title}</div>
-                                    <div style={{ color: 'rgb(235, 36, 36)', fontSize: getUnit(11) }}>{config.price} CNY ({config.website_title})</div>
+                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(11) }}>{userInfo.price}</div>
+                                    <div style={{ color: 'rgb(235, 36, 36)', fontSize: getUnit(11) }}>{config.mprice} CNY ({config.website_title})</div>
                                 </div>
                             </div>
                         }
@@ -136,10 +136,10 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                                     </div>
                                                     <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>单号：{i.order_num}</div>
                                                     <div className="flex">
-                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{(Number(i.cny) * i.content).toFixed(2)}CNY</div>
+                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{i.cny}CNY</div>
                                                         <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div>
                                                     </div>
-                                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.cny}CNY({config.website_title})</div>
+                                            <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.content}({config.website_title})</div>
                                                 </div>
                                             }
                                             link={null}
@@ -163,10 +163,10 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                                     </div>
                                                     <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>单号：{i.order_num}</div>
                                                     <div className="flex">
-                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{(Number(i.cny) * i.content).toFixed(2)}CNY</div>
+                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{i.cny}CNY</div>
                                                         <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div>
                                                     </div>
-                                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.cny}CNY({config.website_title})</div>
+                                                    <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.content}({config.website_title})</div>
                                                 </div>
                                             }
                                             link={null}
@@ -191,7 +191,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                                     <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>单号：{i.order_num}</div>
                                                     <div className="flex">
                                                         <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{(Number(i.cny) * i.content).toFixed(2)}CNY</div>
-                                                        <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div>
+                                                        {/* <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div> */}
                                                     </div>
                                                     <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.cny}CNY({config.website_title})</div>
                                                 </div>
