@@ -38,7 +38,6 @@ class App extends React.Component {
 								height: 45,
 							}),
 							primarySwatch: Color.fromRGB(0, 0, 0),
-							fontSize: 14,
 						})}
 					>
 						<Router />
@@ -124,7 +123,8 @@ class App extends React.Component {
 				this.setState({
 					url: data.Android,
 					content: data.note,
-					visible: true
+				}, () => {
+					setTimeout(this.confirm, 10)
 				})
 			}
 		} catch (data) {
