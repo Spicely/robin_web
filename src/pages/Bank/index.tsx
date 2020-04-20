@@ -74,6 +74,7 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
                                     }
                                     value={<PriceText>{Hide.card(i.bankcard)}</PriceText>}
                                     link
+                                    onPress={this.handleToView.bind(this, i.id)}
                                 />
                             </div>
                         )
@@ -85,6 +86,11 @@ export default class Bank extends Component<RouteComponentProps<any>, IState> {
 
     public componentDidMount() {
         this.getData()
+    }
+
+    private handleToView =(id: string) => {
+        const { history} = this.props
+        history.push(`/editBank/${id}`)
     }
 
     private getData = async () => {

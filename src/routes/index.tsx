@@ -12,6 +12,7 @@ import UserOrder from '../pages/UserOrder'
 import Bank from '../pages/Bank'
 import AddBank from '../pages/Bank/add'
 import UserBind from '../pages/Bank/bind'
+import EditBank from '../pages/Bank/update'
 import Code from '../pages/Code'
 import Order from '../pages/Order'
 import Exchange from '../pages/Exchange'
@@ -84,6 +85,9 @@ export const routes: IRoutes[] = [{
 }, {
     component: Info,
     path: '/info'
+},{
+    component: EditBank,
+    path: '/editBank/:id'
 }, {
     component: PayPass,
     path: '/payPass'

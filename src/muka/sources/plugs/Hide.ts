@@ -1,10 +1,10 @@
 function hidden(str: string, frontLen: number, endLen: number, mark: string) {
-    const len = str.length - frontLen - endLen
+    const num = endLen - frontLen
     let sign = ''
-    for (let i = 0; i < len; i++) {
+    for (let i = 0; i < num; i++) {
         sign += mark
     }
-    return str.substring(0, frontLen) + sign + str.substring(str.length - endLen)
+    return str.substring(0, frontLen) + sign + str.substring(endLen)
 }
 
 /**
@@ -16,7 +16,7 @@ export default class Hide {
     public static fullName(name: string, mark?: string): string {
         mark = mark ?? '*'
         const length = name.length > 2 ? 2 : name.length
-        return hidden(name, 0, length, mark)
+        return hidden(name, 0, name.length === 2 ? 1 : length, mark)
     }
 
     public static card(name: string, mark?: string): string {
