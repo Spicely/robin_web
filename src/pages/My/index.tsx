@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Image, MobileLayout, Toast, Icon, Divider, Gird } from 'components'
-import { version } from '../../utils/axios'
+import { version, imgUrl } from '../../utils/axios'
 import { getUnit, IconThemeData, Color } from 'src/components/lib/utils'
 import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
@@ -59,7 +59,7 @@ class My extends Component<IProps, IState> {
                     <Link to="/info">
                         <div className="flex" style={{ marginTop: getUnit(40) }}>
                             <Image
-                                src={require('../../assets/v2_q5sp1k.png')}
+                                src={imgUrl + userInfo.user_image}
                                 style={{ width: getUnit(52), height: getUnit(52) }}
                             />
                             <div className="flex_justify" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(14), marginLeft: getUnit(5) }}>{userInfo.user_name}</div>

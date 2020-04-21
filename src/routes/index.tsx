@@ -19,6 +19,8 @@ import Exchange from '../pages/Exchange'
 import Info from '../pages/Info'
 import PayPass from '../pages/PayPass'
 import LinePay from '../pages/LinePay'
+import UserName from '../pages/UserName'
+
 
 function Loading(props: any) {
     if (props.error) {
@@ -43,6 +45,9 @@ export const routes: IRoutes[] = [{
 }, {
     component: Register,
     path: '/register'
+},{
+    component: UserName,
+    path: '/userName'
 }, {
     component: Wallet,
     path: '/wallet'
@@ -58,7 +63,7 @@ export const routes: IRoutes[] = [{
 }, {
     component: Pay,
     path: '/pay'
-},{
+}, {
     component: UserOrder,
     path: '/userOrder'
 }, {
@@ -85,7 +90,7 @@ export const routes: IRoutes[] = [{
 }, {
     component: Info,
     path: '/info'
-},{
+}, {
     component: EditBank,
     path: '/editBank/:id'
 }, {

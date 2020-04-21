@@ -116,7 +116,10 @@ export default class Item extends Component<IItemProps, IState> {
                         <ItemView
                             className={getClassName(`flex_justify${link ? ` ${activeClass}` : ''}`, className)}
                             lineType={lineType}
-                            style={style}
+                            style={{
+                                ...style,
+                                background: '#fff'
+                            }}
                             itemTheme={theme || init.theme.itemTheme}
                             onClick={this.handlePress}
                             onTouchStart={this.handleAddActive}
