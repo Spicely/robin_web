@@ -190,7 +190,7 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                                                     </div>
                                                     <div style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>单号：{i.order_num}</div>
                                                     <div className="flex">
-                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{i.cny}CNYY</div>
+                                                        <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13), marginTop: getUnit(5) }}>{i.cny}CNY</div>
                                                         {/* <div className="flex_justify" style={{ color: 'rgb(194, 194, 194)', fontSize: getUnit(10) }}>{i.status === 1 ? '刚刚' : i.status === 2 ? '已完成' : '失败'}</div> */}
                                                     </div>
                                                     <div className="flex_1" style={{ color: 'rgb(16, 16, 16)', fontSize: getUnit(13) }}>{i.content}({config.website_title})</div>
