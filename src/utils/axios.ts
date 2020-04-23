@@ -10,7 +10,7 @@ interface IValue {
 
 export const baseUrl = 'http://n.public.5151fw.com/'
 export const imgUrl = 'http://n.public.5151fw.com/'
-export const version = '1.1.1'
+export const version = '1.1.2'
 
 export interface IRresItem<T = any> {
     msg: string

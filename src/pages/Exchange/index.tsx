@@ -267,6 +267,12 @@ class Wallet extends Component<IProps & RouteComponentProps<any>, IState> {
                     })
                     return
                 }
+                if (params.cny % 100 !== 0) {
+                    Toast.info({
+                        content: '卖出价格必须为100的倍数',
+                    })
+                    return
+                }
                 const { msg } = await http('/wxapp/exchange/sale', {
                     ...params,
                     type: 1
