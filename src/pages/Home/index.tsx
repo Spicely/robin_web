@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { SET_HOME_DATA, SET_BANNER_DATA } from 'src/store/actions'
 import { IInitState, IGlobal } from 'src/store/state'
 import { connect, DispatchProp } from 'react-redux'
+import { Divider } from 'antd'
 
 interface IState {
     data: any[]
@@ -45,11 +46,11 @@ const ITag = styled.div`
 
 
 const carouselTheme = new CarouselThemeData({
-    height: 108
+    height: 170
 })
 
 const itmeTheme = new ItemThemeData({
-    minHeight: 40
+    minHeight: 80
 })
 
 const buttonTheme = new ButtonThemeData({
@@ -71,82 +72,66 @@ class Home extends Component<IProps & DispatchProp, IState> {
         const { homeData, banner } = this.state
         return (
             <MobileLayout
-                backgroundColor="rgb(248, 248, 248)"
+                backgroundColor="#fff"
             >
                 <Carousel
                     theme={carouselTheme}
                     dotType="circular"
                     dotColor="rgb(51, 51, 51)"
                     autoplay
+                    style={{ margin: getUnit(10), borderRadius: getUnit(10) }}
                 >
-                    {
-                        banner.map((i: string, index: number) => {
-                            return (
-                                <Image src={imgUrl + i} style={{ width: '100%' }} key={index} />
-                            )
-                        })
-                    }
+                    <Image src={require('../../assets/1.jpg')} style={{ width: '100%' }} />
+                    <Image src={require('../../assets/2.jpg')} style={{ width: '100%' }} />
                 </Carousel>
-                <Item
-                    title={
-                        <div className="flex">
-                            <Icon icon="md-alarm" />
-                            <div
-                                className="flex_justify"
-                                style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', marginLeft: getUnit(10) }}
-                            >
-                                限时秒杀
-                            </div>
+                <div style={{height: getUnit(70)}}>
+                    <div className="flex" style={{paddingTop: getUnit(5)}}>
+                        <div className="flex_1 flex_center">
+                            <Image src={require('../../assets/2.png')} style={{ width: getUnit(40) }} />
+                            <div>转会记录</div>
                         </div>
-                    }
-                />
-                <Item
-                    theme={itmeTheme}
-                    lineType="none"
-                    title={
-                        <div
-                            className="flex_justify"
-                            style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)' }}
-                        >
-                            每日精选 . 限时限量 . 全场包邮
-                         </div>
-                    }
-                />
-                {/* {
-                    homeData.goods_data.map((i, index: number) => {
-                        return (
-                            <Link key={index} to={`/detail/${i.goods_id}/1`}>
-                                <ItemView className="flex" >
-                                    <Image src={imgUrl + i.image_url} style={{ width: getUnit(80), height: getUnit(80) }} />
-                                    <div className="flex flex_1" style={{ position: 'relative', overflow: 'hidden' }}>
-                                        <div className="flex_1" style={{ marginLeft: getUnit(10), overflow: 'hidden' }}>
-                                            <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{i.goods_name}</div>
-                                            <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额{i.goods_number}件</div>
-                                            <div style={{ fontSize: getUnit(16), marginTop: getUnit(15), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.goods_price}</div>
-                                        </div>
-                                        <div className="flex_column">
-                                            <div className="flex_1" />
-                                            <Button
-                                                mold="primary"
-                                                theme={buttonTheme}
-                                            >
-                                                <div style={{ fontSize: getUnit(11) }}>爆卖{i.goods_discount}件</div>
-                                                <div style={{ fontSize: getUnit(13) }}>马上抢</div>
-                                            </Button>
-                                        </div>
-                                        {i.class_name ? <ITag>{i.class_name}</ITag> : null}
-                                    </div>
-                                </ItemView>
-                            </Link>
-                        )
-                    })
-                } */}
+                        <div className="flex_1 flex_center">
+                            <Image src={require('../../assets/2.png')} style={{ width: getUnit(40) }} />
+                            <div>获奖荣誉</div>
+                        </div>
+                        <div className="flex_1 flex_center">
+                            <Image src={require('../../assets/2.png')} style={{ width: getUnit(40) }} />
+                            <div>交锋记录</div>
+                        </div>
+                        <div className="flex_1 flex_center">
+                            <Image src={require('../../assets/2.png')} style={{ width: getUnit(40) }} />
+                            <div>商城订单</div>
+                        </div>
+                    </div>
+                </div>
+                <Carousel
+                    theme={carouselTheme}
+                    dotType="circular"
+                    dotColor="rgb(51, 51, 51)"
+                    autoplay
+                    style={{ margin: getUnit(10), borderRadius: getUnit(10) }}
+                >
+                    <Image src={require('../../assets/1.jpg')} style={{ width: '100%' }} />
+                    <Image src={require('../../assets/2.jpg')} style={{ width: '100%' }} />
+                </Carousel>
+                <Divider/>
+                <div className="flex_center" style={{fontSize: getUnit(20)}}> 
+                    本期球星--“卡卡”
+                </div>
+                <div className="flex" style={{padding: getUnit(10)}}>
+                    <Image src={require('../../assets/2.jpg')} style={{width: getUnit(80), height: getUnit(80), borderRadius: getUnit(5)}}/>
+                    <div style={{marginLeft: getUnit(10)}}>
+                        里卡多·伊泽克森·多斯·桑托斯·雷特，1982年出生于巴西。巴西利亚,巴西足球运动员、前巴西国家队的核心人物，司职前腰，绰号“卡卡”
+                    </div>
+                </div>
+                <div style={{margin: getUnit(10), background: '#d8d8d8', padding: getUnit(10)}}>
+                    <div style={{fontSize: getUnit(12)}}>足球运动员  进攻性中场</div>
+                    <div style={{fontSize: getUnit(12)}}>带球反击、长途奔袭、突破过人、传切远射！</div>
+                    <div style={{fontSize: getUnit(12)}}>巴西圣保罗，AC米兰，皇家马德里，奥兰多城</div>
+                    <div style={{fontSize: getUnit(12)}}>2007世界足球先生，世界杯冠军，欧冠冠军</div>
+                </div>
             </MobileLayout>
         )
-    }
-
-    public componentDidMount() {
-        this.getData()
     }
 
     private handleView = (id: string) => {
@@ -158,20 +143,6 @@ class Home extends Component<IProps & DispatchProp, IState> {
             })
         } else {
             history.push(`/news/${id}`)
-        }
-    }
-
-    private getData = async () => {
-        try {
-            const data = await http('wxapp/goods/goodsHomeList')
-            const banner = await http('/wxapp/index/get_banner')
-            const { dispatch } = this.props
-            dispatch({ type: SET_BANNER_DATA, data: banner.data })
-            dispatch({ type: SET_HOME_DATA, data: data.data })
-        } catch (data) {
-            Toast.info({
-                content: data.msg || '服务器繁忙,请稍后再试',
-            })
         }
     }
 }
