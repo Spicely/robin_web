@@ -11,6 +11,8 @@ interface ISelectThemeDataProps {
     border?: Border
     height?: number | string
     iconTheme?: IconThemeData
+    fontSize?: number | string
+    color?: Color
 }
 
 export default class SelectThemeData {
@@ -20,12 +22,18 @@ export default class SelectThemeData {
             if (data.selectColor) this.selectColor = data.selectColor
             if (!isNil(data.borderRadius)) this.borderRadius = data.borderRadius
             if (!isNil(data.width)) this.width = data.width
+            if (!isNil(data.fontSize)) this.fontSize = data.fontSize
             if (data.border) this.border = data.border
             if (data.iconTheme) this.iconTheme = data.iconTheme
+            if (data.color) this.color = data.color
         }
     }
 
     public height: number | string = 32
+
+    public fontSize?: number | string
+
+    public color: Color = Color.fromRGB(0, 0, 0)
 
     public selectColor?: Color
 

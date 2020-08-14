@@ -197,10 +197,10 @@ export default class NavBar extends Component<INavBarProps, any> {
     }
 
     private handleScroll = () => {
-        const { endVal } = this.props
-        const top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
-        if (isNumber(endVal)) {
-        }
+        // const { endVal } = this.props
+        // const top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
+        // if (isNumber(endVal)) {
+        // }
     }
 
     private handleClick = (link?: string, onClick?: () => boolean | void) => {

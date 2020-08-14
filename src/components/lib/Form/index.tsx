@@ -30,14 +30,15 @@ type props = RadioGroupProps | IInputProps | IButtonProps | ILDatePicker | IForm
 
 export interface IFormItem {
     component: component
-    props?: props
+    props?: props | ((val: any) => props)
     field?: string
-    label?: string | JSX.Element
+    alias?: string
+    label?: string | JSX.Element | ((val: any) => JSX.Element)
     additional?: string | JSX.Element
     className?: string
     render?: (val: any) => JSX.Element
-    visible?: boolean
-    extend?: string | JSX.Element
+    visible?: ((val: any) => boolean) | boolean
+    extend?: string | JSX.Element | ((val: any) => JSX.Element)
 }
 
 export interface IFormProps {
@@ -45,6 +46,8 @@ export interface IFormProps {
     showType?: 'column' | 'row'
     className?: string
     style?: CSSProperties
+    labelSpacing?: number
+    getHideFieldValue?: boolean
 }
 
 export interface IFormFun {
@@ -63,14 +66,15 @@ interface IValue {
 interface IFormChild {
     type: component
     field: string
-    label?: string | JSX.Element
+    alias?: string
+    label?: string | JSX.Element | ((val: any) => JSX.Element)
     className?: string
-    props: IValue
+    props: IValue | ((val: any) => props)
     additional?: string | JSX.Element
     view: any
     render?: (val: any) => JSX.Element
-    visible: boolean
-    extend?: string | JSX.Element
+    visible: ((val: any) => boolean) | boolean
+    extend?: string | JSX.Element | ((val: any) => JSX.Element)
 }
 
 // tslint:disable-next-line: only-arrow-functions tslint:disable-next-line: no-shadowed-variable
@@ -105,16 +109,19 @@ interface IState {
 const prefixClass = 'l_form'
 
 const FormItem = styled.div`
-    min-height: ${getRatioUnit(50)};
+    /* min-height: ${getUnit(50)}; */
+`
+interface FormItemLabelProps {
+    spacing?: number
+}
+
+const FormItemLabel = styled.div<FormItemLabelProps>`
+    min-height: ${getUnit(40)};
+    margin-right: ${({ spacing }) => getUnit(spacing ?? 8)};
 `
 
-const FormItemLabel = styled.div`
-    min-height: ${getRatioUnit(50)};
-    margin-right: ${getRatioUnit(8)};
-`
-
-const ItemExtend = styled.div`
-    padding: 0 ${getUnit(10)};
+const ItemMar = styled.div`
+    margin-top: ${getUnit(10)};
 `
 
 const itemInputTheme = new InputThemeData({
@@ -127,7 +134,8 @@ export default class Form extends Component<IFormProps, IState> {
         getItems: function (exFun: IFormFun) {
             return []
         },
-        showType: 'column'
+        showType: 'column',
+        getHideFieldValue: false
     }
 
     public state: any = {}
@@ -174,6 +182,7 @@ export default class Form extends Component<IFormProps, IState> {
                 type: item.component,
                 view: null,
                 field,
+                alias: item.alias,
                 additional: item.additional,
                 label: item.label,
                 props: item.props || {},
@@ -211,12 +220,13 @@ export default class Form extends Component<IFormProps, IState> {
                     type: item.component,
                     view: null,
                     field,
+                    alias: item.alias,
                     label: item.label,
                     props: _porps,
                     additional: item.additional,
                     className: item.className,
                     render: item.render,
-                    visible: isBool(item.visible) ? item.visible : true,
+                    visible: isUndefined(item.visible) ? true : item.visible,
                     extend: item.extend
                 }
                 switch (item.component) {
@@ -241,12 +251,13 @@ export default class Form extends Component<IFormProps, IState> {
                     ...newChild[index].props,
                     ...newProps,
                 }
-                newVals[field] = _porps.value ? _porps.value : newVals[field]
+                // newVals[field] = _porps.value ? _porps.value : newVals[field]
                 newChild[index].additional = item.additional
-                newChild[index].visible = isBool(item.visible) ? item.visible : true
+                newChild[index].visible = isUndefined(item.visible) ? true : item.visible
                 newChild[index].extend = item.extend
                 newChild[index].render = item.render
                 newChild[index].label = item.label
+                newChild[index].alias = item.alias
             } else if (item.field !== newChild[index].field && item.field) {
                 newChild[index].props = {
                     ...item.props,
@@ -254,10 +265,11 @@ export default class Form extends Component<IFormProps, IState> {
                 }
                 newChild[index].field = item.field
                 newChild[index].additional = item.additional
-                newChild[index].visible = isBool(item.visible) ? item.visible : true
+                newChild[index].visible = isUndefined(item.visible) ? true : item.visible
                 newChild[index].extend = item.extend
                 newChild[index].render = item.render
                 newChild[index].label = item.label
+                newChild[index].alias = item.alias
             }
         })
         this.setState({
@@ -270,13 +282,13 @@ export default class Form extends Component<IFormProps, IState> {
 
     public render(): JSX.Element {
         const { className, showType, style } = this.props
-        const { childs } = this.state
+        const { childs, vals } = this.state
         try {
             return (
                 <div className={getClassName(`l_form ${showType}`, className)} style={style}>
                     {childs.map((item: IFormChild, index: number) => {
-                        if (item.view && item.visible) {
-                            return this.setTypeCom(this.items[index].component, item.view, item.props, item.field, index, item.className, item.label, item.additional, item.render, item.extend)
+                        if (item.view && (isFunction(item.visible) ? item.visible(vals) : item.visible)) {
+                            return this.setTypeCom(this.items[index].component, item.view, isFunction(item.props) ? item.props(vals) : item.props, item.field, index, item.className, item.label, item.additional, item.render, item.extend)
                         }
                         return undefined
                     })}
@@ -364,8 +376,9 @@ export default class Form extends Component<IFormProps, IState> {
     }
 
     // tslint:disable-next-line: no-shadowed-variable
-    private setTypeCom(component: component, View: any, props: props, field: string | undefined, key: number | string, className?: string, label?: string | JSX.Element, additional?: string | JSX.Element, render?: (val: any) => JSX.Element, extend?: string | JSX.Element): JSX.Element | null {
+    private setTypeCom(component: component, View: any, props: props, field: string | undefined, key: number | string, className?: string, label?: string | JSX.Element | ((val: any) => JSX.Element), additional?: string | JSX.Element, render?: (val: any) => JSX.Element, extend?: ((val: any) => JSX.Element) | string | JSX.Element): JSX.Element | null {
         const { vals } = this.state
+        const { labelSpacing } = this.props
         /// 得到field
         field = field ? field : `${component}_${key}`
         props = props || {}
@@ -380,7 +393,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
@@ -390,7 +403,7 @@ export default class Form extends Component<IFormProps, IState> {
                                     key={field}
                                 />
                             </div>
-                            <div className="flex_center">{extend}</div>
+                            <div className="flex_center">{isFunction(extend) ? extend(vals) : extend}</div>
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
                     </FormItem>
@@ -402,9 +415,9 @@ export default class Form extends Component<IFormProps, IState> {
                 // tslint:disable-next-line: only-arrow-functions
                 const onChange: any = _porps.onChange || function (e: ChangeEvent<HTMLButtonElement>) { }
                 return (
-                    <div className={getClassName(`${prefixClass}__list`, className)} key={field}>
+                    <ItemMar className={className} key={field}>
                         <div className="flex" >
-                            {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1">
                                 <View
                                     {...vProps}
@@ -415,7 +428,7 @@ export default class Form extends Component<IFormProps, IState> {
                             </div>
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
-                    </div>
+                    </ItemMar>
                 )
             }
             case 'Colors': {
@@ -425,7 +438,7 @@ export default class Form extends Component<IFormProps, IState> {
                 const onChange: any = _porps.onChange || function (e: ChangeEvent<HTMLButtonElement>) { }
                 return (
                     <div className={getClassName(`${prefixClass}__list  flex`, className)} key={field}>
-                        {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                        {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                         <div className="flex_1 flex_justify">
                             <View
                                 {...vProps}
@@ -442,7 +455,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <div className={getClassName(`${prefixClass}__list`, className)} key={field}>
                         <div className="flex" >
-                            {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1">
                                 <View
                                     {...vProps}
@@ -462,7 +475,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <div className={getClassName(`${prefixClass}__list flex_justify`, className)} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
@@ -481,7 +494,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <View {...vProps} key={field} className={`flex_1 ${_porps.className || ''}`} />
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
@@ -493,9 +506,9 @@ export default class Form extends Component<IFormProps, IState> {
                 const _porps: any = props
                 const onChange: any = _porps.onChange
                 return (
-                    <FormItem className={`flex_justify ${className || ''}`} key={field}>
+                    <ItemMar className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1">
                                 <View
                                     {...vProps}
@@ -506,7 +519,7 @@ export default class Form extends Component<IFormProps, IState> {
                             </div>
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
-                    </FormItem>
+                    </ItemMar>
                 )
             }
             case 'CheckBox': {
@@ -516,7 +529,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
@@ -569,7 +582,7 @@ export default class Form extends Component<IFormProps, IState> {
                                 onChange={this.setRVal.bind(this, field, onChange)}
                             />
                         </div>
-                        {extend && <ItemExtend className="flex_justify">{extend}</ItemExtend>}
+                        <div className="flex_center">{isFunction(extend) ? extend(vals) : extend}</div>
                     </div>
                 )
             }
@@ -580,7 +593,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1">
                                 <View
                                     {...vProps}
@@ -598,7 +611,7 @@ export default class Form extends Component<IFormProps, IState> {
                 const _porps: any = props
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
-                        {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                        {label && <FormItemLabel spacing={labelSpacing} style={{ paddingTop: getUnit(16) }}>{label}</FormItemLabel>}
                         <div className="flex_1">
                             <View
                                 onLocationAddr={this.steArrVal.bind(this, field, _porps.onLocationAddr)}
@@ -615,7 +628,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex">
                                 <View
                                     {...vProps}
@@ -637,7 +650,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex">
                                 <View
                                     {...vProps}
@@ -647,7 +660,7 @@ export default class Form extends Component<IFormProps, IState> {
                                     onChange={this.setTimePickerVal.bind(this, field, onChange)}
                                 />
                             </div>
-                            <div className="flex_center">{extend}</div>
+                            <div className="flex_center">{isFunction(extend) ? extend(vals) : extend}</div>
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
                     </FormItem>
@@ -660,7 +673,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
@@ -695,9 +708,9 @@ export default class Form extends Component<IFormProps, IState> {
                 const vProps = omit(props, ['fileList', 'onChange'])
                 const _porps: any = props
                 return (
-                    <FormItem className={`flex_justify ${className || ''}`} key={field}>
+                    <ItemMar className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1">
                                 {isFunction(render) ? render(vals[field]) : (
                                     <View
@@ -708,7 +721,7 @@ export default class Form extends Component<IFormProps, IState> {
                                 )}
                             </div>
                         </div>
-                    </FormItem>
+                    </ItemMar>
                 )
             }
             case 'RadioGroup': {
@@ -718,8 +731,8 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
-                            <div className="flex_1 flex_justify">
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
+                            <div className="flex_1 flex_justify l_form_item">
                                 <View
                                     {...vProps}
                                     value={vals[field]}
@@ -738,7 +751,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
@@ -747,6 +760,7 @@ export default class Form extends Component<IFormProps, IState> {
                                     onChange={this.setRVal.bind(this, field, onChange)}
                                 />
                             </div>
+                            <div className="flex_center">{isFunction(extend) ? extend(vals) : extend}</div>
                         </div>
                         {additional && <div className={getClassName(`${prefixClass}__additional flex_justify`)}>{additional}</div>}
                     </FormItem>
@@ -759,7 +773,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel className="flex_justify">{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
@@ -779,7 +793,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 <View
                                     {...vProps}
@@ -798,7 +812,7 @@ export default class Form extends Component<IFormProps, IState> {
                 return (
                     <FormItem className={`flex_justify ${className || ''}`} key={field}>
                         <div className="flex">
-                            {label && <FormItemLabel style={{ paddingTop: getRatioUnit(16) }}>{label}</FormItemLabel>}
+                            {label ? (isFunction(label) ? label(vals) : <FormItemLabel spacing={labelSpacing} className="flex_justify">{label}</FormItemLabel>) : null}
                             <div className="flex_1 flex_justify">
                                 {
                                     isFunction(render) ? render(vals[field]) : (
@@ -956,17 +970,51 @@ export default class Form extends Component<IFormProps, IState> {
     }
 
     private getFieldValue(params?: string[]): IValue {
-        const { childs } = this.state
+        const { getHideFieldValue } = this.props
+        const { childs, vals } = this.state
         const val: IValue = {}
         childs.forEach((item: IFormChild, index: number) => {
-            if (params) {
-                params.forEach((i: string) => {
-                    if (item.field === i) {
-                        val[i] = this.getComVal(item, i)
+            if (getHideFieldValue) {
+                if (params) {
+                    params.forEach((i: string) => {
+                        if (item.field === i) {
+                            const ev = item.alias?.indexOf('.')
+                            if (ev) {
+                                val[i] = ev === -1 ? this.getComVal(item, i) : get(this.getComVal(item, i), item.alias?.substr(ev + 1) || i)
+                            } else {
+                                val[i] = this.getComVal(item, i)
+                            }
+                        }
+                    })
+                } else {
+                    const ev = item.alias?.indexOf('.')
+                    if (ev) {
+                        val[item.field] = ev === -1 ? this.getComVal(item, item.field) : get(this.getComVal(item, item.field), item.alias?.substr(ev + 1) || item.field)
+                    } else {
+                        val[item.field] = this.getComVal(item, item.field)
                     }
-                })
-            } else {
-                val[item.field] = this.getComVal(item, item.field)
+
+                }
+            } else if (isFunction(item.visible) ? item.visible(vals) : item.visible) {
+                if (params) {
+                    params.forEach((i: string) => {
+                        if (item.field === i) {
+                            const ev = item.alias?.indexOf('.')
+                            if (ev) {
+                                val[i] = ev === -1 ? this.getComVal(item, i) : get(this.getComVal(item, i), item.alias?.substr(ev + 1) || i)
+                            } else {
+                                val[i] = this.getComVal(item, i)
+                            }
+                        }
+                    })
+                } else {
+                    const ev = item.alias?.indexOf('.')
+                    if (ev) {
+                        val[item.field] = ev === -1 ? this.getComVal(item, item.field) : get(this.getComVal(item, item.field), item.alias?.substr(ev + 1) || item.field)
+                    } else {
+                        val[item.field] = this.getComVal(item, item.field)
+                    }
+                }
             }
         })
         return val

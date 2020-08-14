@@ -1,205 +1,202 @@
 import React, { Component } from 'react'
-import ReactSelect from 'react-select'
-import { isFunction, isNil, isUndefined, isString } from 'lodash'
-import { getClassName, SelectThemeData, getUnit, transition, Color } from '../utils'
+import { Select as ReactSelect } from 'antd'
+import { SelectProps } from 'antd/lib/select'
+import { isFunction, omit } from 'lodash'
+import { SelectThemeData, getUnit, Color, transition } from '../utils'
 import { Consumer } from '../ThemeProvider'
 import Empty from '../Empty'
 import Icon from '../Icon'
-import styled from 'styled-components'
+import styled, { createGlobalStyle, css } from 'styled-components'
+
+const { OptGroup, Option } = ReactSelect
 
 interface ISelectOptionsProps {
     value: string | number
     label: string
-    isDisabled?: boolean
+    disabled?: boolean
     color?: string
+    children?: ISelectOptionsProps[]
 }
 
-export interface ISelectProps {
+export interface ISelectProps extends SelectProps<any> {
     className?: string
     options: ISelectOptionsProps[]
-    onChange?: (value: string | number) => void
-    value?: string | number
-    placeholder?: string
-    isSearchable?: boolean
-    isMulti?: boolean
-    isDisabled?: boolean
     noOptionsMessage?: string | JSX.Element
     theme?: SelectThemeData
 }
 
-const prefixClass = 'select'
+const GlobalSelectDropdown = createGlobalStyle<IStyleProps>`
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+        background: ${({ selectTheme, theme }: any) => Color.setOpacity(selectTheme.selectColor || theme.primarySwatch, 0.6).toString()}
+    }
+    .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+        background: ${({ selectTheme, theme }: any) => Color.setOpacity(selectTheme.selectColor || theme.primarySwatch, 0.3).toString()}
+    }
+`
 
 interface IStyleProps {
     selectTheme: SelectThemeData
 }
 
-const SelectIcon = styled(Icon)``
+const SelectIcon = styled(Icon) <{ iconRotate: boolean }>`
+   ${({ iconRotate }) => {
+        if (iconRotate) return css`transform: rotate(180deg);`
+        else return css`transform: rotate(0deg);`
+    }};
+`
 
-const SelectView = styled(ReactSelect)<IStyleProps>`
+const SelectView = styled.div<IStyleProps>`
     height: ${({ selectTheme }) => getUnit(selectTheme.height)};
-    background: #fff;
-    ${({ selectTheme, theme }) => selectTheme.borderRadius || theme.borderRadius}
-
-    >span {
-        display: none;
+    .ant-select-focused.ant-select-multiple .ant-select-selector {
+        box-shadow: none;
+        border-color: ${({ selectTheme, theme }) => selectTheme.selectColor || theme.primarySwatch};
     }
-
-    .select_icon {
-        width: ${getUnit(24)};
-    }
-
-    .select__control {
-        min-height: initial;
+    .ant-select {
+        width: 100%;
+        background: #fff;
         height: 100%;
-        box-shadow: inherit;
-        border-radius: inherit;
-        ${({ selectTheme }: any) => selectTheme.border};
-        background: inherit;
-        ${transition(0.5)};
-        ${SelectIcon} {
-            ${transition(0.5)};
-            transform: rotate(0deg);
-        }
+        color: ${({ selectTheme }) => selectTheme.color.toString()};
 
-        &--is-focused {
+        .ant-select-selector {
+            ${({ selectTheme, theme }) => selectTheme.borderRadius || theme.borderRadius}
+            ${({ selectTheme }) => selectTheme.border.toString()}
+            outline: none;
+            ${transition(0.5)}
+        }
+       
+        &:not(.ant-select-disabled):hover .ant-select-selector {
             border-color: ${({ selectTheme, theme }) => selectTheme.selectColor || theme.primarySwatch};
-            box-sizing: border-box;
-            border-width: ${getUnit(1)};
-            ${SelectIcon} {
-                fill: ${({ selectTheme, theme }) => selectTheme.selectColor || theme.primarySwatch};
-            }
-            &.select__control--menu-is-open ${SelectIcon} {
-                transform: rotate(180deg);
-            }
         }
 
-        &:hover {
+        &.ant-select-focused.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+            box-shadow: none;
             border-color: ${({ selectTheme, theme }) => selectTheme.selectColor || theme.primarySwatch};
-            ${SelectIcon} {
-                fill: ${({ selectTheme, theme }) => selectTheme.selectColor || theme.primarySwatch};
-            }
+            ${transition(0.5)}
         }
-    }
-
-    .select__placeholder {
-        white-space: nowrap;
-    }
-
-    .select__value-container {
-        min-width: ${getUnit(70)};
-    }
-
-    .select__indicator {
-        padding: 0 ${getUnit(8)};
-
-        &-separator {
-            display: none;
+        .ant-select-single:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input {
+            height: ${({ selectTheme }) => getUnit(selectTheme.height)};
+            ${transition(0.5)}
         }
-    }
-
-    .select__menu {
-        ${({ selectTheme, theme }) => selectTheme.borderRadius || theme.borderRadius};
-    }
-    .select__option {
-        &:hover {
-            background: ${({ selectTheme, theme }) => Color.setOpacity(selectTheme.selectColor || theme.primarySwatch, 0.65).toString()};
+        .ant-select-single .ant-select-selector .ant-select-selection-item, .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+            line-height: ${({ selectTheme }) => getUnit(selectTheme.height)};
+            font-size: ${({ selectTheme, theme }) => getUnit(selectTheme.fontSize || theme.fontSize)};
+            ${transition(0.5)}
         }
-
-        &--is-selected {
-            background: ${({ selectTheme, theme }) => selectTheme.selectColor || theme.primarySwatch};
+        .ant-select-selection-placeholder {
+            opacity: 1;
+            color: ${({ selectTheme }) => Color.setOpacity(selectTheme.color, 0.65).toString()};
         }
-
-        &--is-focused {
-            background: ${({ selectTheme, theme }) => Color.setOpacity(selectTheme.selectColor || theme.primarySwatch, 0.8).toString()};
-        }
-    }
-
-    .select__desc {
-        line-height: ${({ selectTheme }) => getUnit(selectTheme.height)};
     }
 `
 
 interface IState {
     value: any
+    rotate: boolean
 }
 
 export default class Select extends Component<ISelectProps, IState> {
+
     constructor(props: ISelectProps) {
         super(props)
-        this.state.value = isNil(props.value) ? undefined : props.options.find((i) => i.value === props.value)
+        this.state.value = this.props.value
+    }
+
+    public static getDerivedStateFromProps = (props: ISelectProps, state: IState) => {
+        if(props.value !== state.value) {
+            return {
+                value: props.value
+            }
+        }
+        return null
     }
 
     public static defaultProps: ISelectProps = {
         options: [],
         placeholder: '请选择数据',
-        isSearchable: false,
-        isMulti: false,
-        isDisabled: false
+        disabled: false
     }
 
     public state: IState = {
-        value: undefined
+        value: undefined,
+        rotate: false
     }
 
     public render(): JSX.Element {
-        const { className, options, placeholder, isSearchable, isMulti, isDisabled, theme } = this.props
-        const { value } = this.state
+        const { className, options, noOptionsMessage, theme, suffixIcon } = this.props
+        const props = omit(this.props, ['className', 'value', 'onChange', 'options', 'notFoundContent', 'suffixIcon', 'onDropdownVisibleChange'])
+        const { value, rotate } = this.state
         return (
             <Consumer>
                 {
                     (val) => (
                         <SelectView
-                            value={value}
                             selectTheme={theme || val.theme.selectTheme}
                             className={className}
-                            classNamePrefix="select"
-                            options={options}
-                            onChange={this.handleChange}
-                            isSearchable={isSearchable}
-                            placeholder={placeholder}
-                            isMulti={isMulti}
-                            isDisabled={isDisabled}
-                            components={{
-                                IndicatorsContainer: () =>
-                                    <div className={getClassName(`${prefixClass}_icon flex_center`)} >
+                        >
+                            <GlobalSelectDropdown selectTheme={theme || val.theme.selectTheme} />
+                            <ReactSelect
+                                {...props}
+                                value={value || undefined}
+                                onChange={this.handleChange}
+                                onDropdownVisibleChange={this.handleDropdownVisible}
+                                notFoundContent={<Empty description={noOptionsMessage} image={null} />}
+                                suffixIcon={
+                                    suffixIcon || (
                                         <SelectIcon
                                             icon="ios-arrow-down"
                                             theme={theme ? theme.iconTheme : val.theme.selectTheme.iconTheme}
+                                            iconRotate={rotate}
                                         />
-                                    </div>,
-                                NoOptionsMessage: this.handleMessage
-                            }}
-                        />)
+                                    )
+                                }
+
+                            >
+                                {
+                                    options.map((i) => {
+                                        if (i.children) {
+                                            return (
+                                                <OptGroup label={i.label} key={i.value}>
+                                                    {
+                                                        i.children.map((v) => {
+                                                            return (
+                                                                <Option value={v.value} key={v.value} disabled={v.disabled}>{v.label}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </OptGroup>
+                                            )
+                                        } else {
+                                            return <Option value={i.value} key={i.value} disabled={i.disabled}>{i.label}</Option>
+                                        }
+                                    })
+                                }
+                            </ReactSelect>
+                        </SelectView>
+                    )
                 }
             </Consumer>
 
         )
     }
 
-    public UNSAFE_componentWillReceiveProps(nextProps: ISelectProps) {
-        const { value } = this.state
-        const { options } = this.props
-        if (nextProps.value !== value) {
-            const data = options.find((i) => i.value === nextProps.value)
-            this.setState({
-                value: data || null
-            })
+    private handleDropdownVisible = (open: boolean) => {
+        const { onDropdownVisibleChange } = this.props
+        this.setState({
+            rotate: open
+        })
+        if (isFunction(onDropdownVisibleChange)) {
+            onDropdownVisibleChange(open)
         }
     }
 
-    private handleChange = (data: any) => {
+    private handleChange = (data: any, option: any) => {
         const { onChange } = this.props
         this.setState({
-            value: data
+            value: data,
+            rotate: false
         })
         if (isFunction(onChange)) {
-            onChange(data.value)
+            onChange(data, option)
         }
-    }
-    private handleMessage = () => {
-        const { noOptionsMessage } = this.props
-        return (isUndefined(noOptionsMessage) || isString(noOptionsMessage)) ?
-            <Empty description={noOptionsMessage} descClassName={getClassName(`${prefixClass}__desc`)} image={null} /> :
-            noOptionsMessage
     }
 }

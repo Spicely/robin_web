@@ -2,6 +2,7 @@ import React, { Component, ChangeEvent, CSSProperties } from 'react'
 import Cropper from 'react-easy-crop'
 import axios from 'axios'
 import { isFunction, isString, isObject } from 'lodash'
+import { extname } from 'path'
 import styled, { css } from 'styled-components'
 import CropImage from './cropImage'
 import Dragger from './dragger'
@@ -9,7 +10,7 @@ import { Consumer } from '../ThemeProvider'
 import Icon, { iconType } from '../Icon'
 import Dialog from '../Dialog'
 import Image from '../Image'
-import { UploadThemeData, getUnit, transition, IValue } from '../utils'
+import { UploadThemeData, getUnit, transition, IValue, IconThemeData } from '../utils'
 
 export interface ICroppedArea {
     height: number
@@ -42,6 +43,10 @@ const UploadImage = styled(Image)`
 interface IUloadItemProps extends IStyledProps {
     disabled: boolean
 }
+
+const iconFillTheme = new IconThemeData({
+    size: 48
+})
 
 const UploadItem = styled.div<IUloadItemProps>`
     height: ${({ uploadTheme }) => getUnit(uploadTheme.itemHeight)};
@@ -106,11 +111,11 @@ interface ICrop {
     y: number
 }
 
-interface IFile {
+export interface IFile {
     url: string | ArrayBuffer | null
     file?: File
     xhr?: any
-    info: {
+    info?: {
         progress: number,
         status: 'uploading' | 'done' | 'error'
     },
@@ -123,6 +128,7 @@ export interface IUploadProps {
     icon?: iconType | JSX.Element
     iconStyle?: IIconStyle
     multiple?: boolean
+    hasClear?: boolean
     onChange?: (files: IFile[]) => void
     crop?: boolean
     cropProps?: ICropProps
@@ -138,6 +144,7 @@ export interface IUploadProps {
     params?: IValue
     withCredentials?: boolean
     onFileTypeError?: () => void
+    onItemClick?:(val: IFile, index: number) => void
     onUploadSuccess?: (val: IFile, data: any, files: IFile[]) => void
     onUploadError?: (val: IFile, data: any, files: IFile[]) => void
     onBeforeUpload?: (file: File) => (boolean | object | Promise<object | boolean>)
@@ -152,6 +159,8 @@ interface IState {
     visible: boolean
 }
 
+const imgTypes = ['image/png', 'image/jpeg', '.jpg', '.png']
+
 export default class Upload extends Component<IUploadProps, IState> {
 
     public static defaultProps: IUploadProps = {
@@ -161,6 +170,7 @@ export default class Upload extends Component<IUploadProps, IState> {
             color: '#bcbcbc'
         },
         fileTypes: [],
+        hasClear: true,
         onBeforeUpload: () => true
     }
 
@@ -206,10 +216,10 @@ export default class Upload extends Component<IUploadProps, IState> {
         this.setValue(nextProps.fileList, files)
     }
 
-    private fileNode: HTMLInputElement | null = null
+    private fileNode: any = null
 
     public render(): JSX.Element {
-        const { className, multiple, crop, cropProps, disabled, itemStyle, theme, fileTypes } = this.props
+        const { className, multiple, crop, cropProps, disabled, itemStyle, theme, fileTypes, hasClear, onItemClick } = this.props
         const { files, image, cropXY, aspect, zoom, visible } = this.state
         return (
             <Consumer>
@@ -232,21 +242,25 @@ export default class Upload extends Component<IUploadProps, IState> {
                                             disabled={disabled || false}
                                             key={`$picker_${index}`}
                                             style={itemStyle}
+                                            onClick={onItemClick?.bind(this, i, index)}
                                         >
                                             <UploadItemBox
                                                 className="flex_center mk_picker_img"
                                             >
-                                                <UploadImage src={i.url} />
+                                                {
+                                                    imgTypes.includes(i.file?.type || extname(i.url?.toString() || '')) ? <UploadImage src={i.url} /> : <Icon icon="md-filing" theme={iconFillTheme} />
+                                                }
+
                                             </UploadItemBox>
                                             {
-                                                !disabled && (
+                                                !disabled ? hasClear && (
                                                     <UploadCloseIcon
                                                         uploadTheme={theme || val.theme.uploadTheme}
                                                         icon="md-close-circle"
                                                         onClick={this.handleFileRemove.bind(this, index)}
                                                         theme={iconTheme}
                                                     />
-                                                )
+                                                ) : null
                                             }
                                         </UploadItem>
                                     )
@@ -359,6 +373,7 @@ export default class Upload extends Component<IUploadProps, IState> {
         const { files } = this.state
         files.splice(index, 1)
         this.filesList.splice(index, 1)
+        this.fileNode.value = ''
         if (isFunction(onChange)) {
             onChange(files)
         }
@@ -555,7 +570,9 @@ export default class Upload extends Component<IUploadProps, IState> {
                 if (_file && fileTypes) {
                     if (!fileTypes.length || fileTypes.includes(_file.type) || fileTypes.some((i) => _file.name.includes(i))) {
                         this.fileName = _file.name
-                        await this.readFile(_file, length)
+                        if (imgTypes.includes(_file.type)) {
+                            await this.readFile(_file, length)
+                        }
                     } else {
                         if (isFunction(onFileTypeError)) {
                             onFileTypeError()
@@ -588,7 +605,9 @@ export default class Upload extends Component<IUploadProps, IState> {
                                         if (value) {
                                             const obj = this.uploadFile(fileObj, length + i, value)
                                             this.filesList.push(obj)
-                                            await this.readFile(_file, length + i)
+                                            if (imgTypes.includes(_file.type)) {
+                                                await this.readFile(_file, length + i)
+                                            }
                                             this.setState({
                                                 visible: false,
                                                 files: [...this.filesList]
@@ -602,7 +621,9 @@ export default class Upload extends Component<IUploadProps, IState> {
                                 } else if (fn) {
                                     const obj = this.uploadFile(fileObj, files.length)
                                     this.filesList.push(obj)
-                                    await this.readFile(_file, length + i)
+                                    if (imgTypes.includes(_file.type)) {
+                                        await this.readFile(_file, length + i)
+                                    }
                                     this.setState({
                                         visible: false,
                                         files: [...this.filesList]
@@ -624,7 +645,6 @@ export default class Upload extends Component<IUploadProps, IState> {
             if (isFunction(onChange)) {
                 onChange(this.filesList)
             }
-            // e.target.value = ''
         }
     }
 }

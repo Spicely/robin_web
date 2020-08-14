@@ -1,7 +1,5 @@
 import Color from './Color'
-import Padding from './Padding'
 import BorderRadius from './BorderRadius'
-import { IconThemeData } from '.'
 
 interface ITreeThemeDataProps {
     treeColor?: Color

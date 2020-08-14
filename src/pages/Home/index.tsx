@@ -59,15 +59,16 @@ const buttonTheme = new ButtonThemeData({
 
 class Home extends Component<IProps & DispatchProp, IState> {
 
-    public state: IState = {
+    public state: any = {
         data: [],
         coo: [],
+        banner: [],
         visible: false,
         err: null
     }
 
     public render(): JSX.Element {
-        const { homeData, banner } = this.props
+        const { homeData, banner } = this.state
         return (
             <MobileLayout
                 backgroundColor="rgb(248, 248, 248)"
@@ -79,9 +80,9 @@ class Home extends Component<IProps & DispatchProp, IState> {
                     autoplay
                 >
                     {
-                        banner.map((i, index: number) => {
+                        banner.map((i: string, index: number) => {
                             return (
-                                <Image src={imgUrl + i.image_url} style={{ width: '100%' }} key={index} />
+                                <Image src={imgUrl + i} style={{ width: '100%' }} key={index} />
                             )
                         })
                     }
@@ -111,7 +112,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                          </div>
                     }
                 />
-                {
+                {/* {
                     homeData.goods_data.map((i, index: number) => {
                         return (
                             <Link key={index} to={`/detail/${i.goods_id}/1`}>
@@ -121,7 +122,6 @@ class Home extends Component<IProps & DispatchProp, IState> {
                                         <div className="flex_1" style={{ marginLeft: getUnit(10), overflow: 'hidden' }}>
                                             <div style={{ fontSize: getUnit(14), color: 'rgb(16, 16, 16)', lineHeight: getUnit(20), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{i.goods_name}</div>
                                             <div style={{ fontSize: getUnit(12), color: 'rgba(130, 130, 130, 1)', lineHeight: getUnit(20) }}>每日限额{i.goods_number}件</div>
-                                            {/* <div style={{ fontSize: getUnit(13), color: 'rgba(87, 183, 43, 1)', lineHeight: getUnit(20) }}>{i.start_time}</div> */}
                                             <div style={{ fontSize: getUnit(16), marginTop: getUnit(15), color: '#000', fontWeight: 700, lineHeight: getUnit(20) }}>¥{i.goods_price}</div>
                                         </div>
                                         <div className="flex_column">
@@ -140,7 +140,7 @@ class Home extends Component<IProps & DispatchProp, IState> {
                             </Link>
                         )
                     })
-                }
+                } */}
             </MobileLayout>
         )
     }
